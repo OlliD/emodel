@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<Events>
+	<event id="person_enters">
+		<reaction>start_dialog_greeting</reaction>
+	</event>
+	<event id="phone_rings">
+	        <reaction>start_dialog_phone_rings</reaction>
+	</event>
+</Events>
