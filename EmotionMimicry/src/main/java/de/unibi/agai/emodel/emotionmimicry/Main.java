@@ -17,9 +17,9 @@ public class Main
     
     public static void main( String[] args ) throws XcfException, InterruptedException
     {
-
         MemoryConnector mc = new MemoryConnector();
-        Gui gui = new Gui(mc);
+        ComputeMimicry cm = new ComputeMimicry(mc);
+        Gui gui = new Gui(mc, cm);
         gui.setVisible(true);
         }
     }

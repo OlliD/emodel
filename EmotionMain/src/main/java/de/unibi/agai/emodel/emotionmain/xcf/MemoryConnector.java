@@ -6,6 +6,8 @@
 
 package de.unibi.agai.emodel.emotionmain.xcf;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 import net.sf.xcf.ActiveMemory;
 import net.sf.xcf.InitializeException;
@@ -18,6 +20,8 @@ import net.sf.xcf.memory.MemoryAction;
 import net.sf.xcf.memory.MemoryException;
 import net.sf.xcf.naming.NameNotFoundException;
 import net.sf.xcf.transport.XOPData;
+import nu.xom.Attribute;
+import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Node;
 import nu.xom.Nodes;
@@ -38,11 +42,20 @@ public class MemoryConnector {
         private static final Logger LOGGER = Logger.getLogger(MemoryConnector.class.getName());
 	private static final String EMOTION_XPATH = "/eModel";
         private String xpath = "";
+        private Map<String, Float> emotions;
+
         
-        public MemoryConnector(String xpath) throws InitializeException, NameNotFoundException {
-            xm = XcfManager.createXcfManager();
-            am = xm.createActiveMemory("ShortTerm");
+        public MemoryConnector(String xpath, ActiveMemory mem) throws InitializeException, NameNotFoundException {
+            this.am = mem;
+            //xm = XcfManager.createXcfManager();
+            //am = xm.createActiveMemory("ShortTerm");
             this.xpath = xpath;
+            emotions = new HashMap<String, Float>();
+            emotions.put("Happy", 0f);
+            emotions.put("Angry", 0f);
+            emotions.put("Sad", 0f);
+            emotions.put("Surprised", 0f);
+
 	} 
 
         public synchronized void startListening() throws MemoryException {
@@ -59,15 +72,17 @@ public class MemoryConnector {
                                                 XOPData xml = e.getData();
 
 						Nodes emotionNodes = xml.getDocument().query(
-								"/*");
-
+								"//OBJECT/ATTRIBUTES[@creator]/ATTRIBUTE[@name=\"Emotion\"]/RELIABILITY");
 						// Get the phoneme chain text
 						for (int i = 0; i < emotionNodes.size(); i++) {
-
+                                                        //System.out.println("SIze " + emotionNodes.size());
 							Node node = emotionNodes.get(i);
 							if (node instanceof Element) {
 								Element partElement = (Element) node;
-                                                                System.out.println(partElement.getAttributeValue("EModel"));
+                                                                //System.out.println("found " + partElement.getAttributeValue("name") + "with " +partElement.getAttributeValue("value"));
+                                                                float value = Float.parseFloat(partElement.getAttributeValue("value"));
+                                                                //System.out.println(value);
+                                                                emotions.put(partElement.getAttributeValue("name"), value);
                                                         } 
 						}
 
@@ -97,9 +112,19 @@ public class MemoryConnector {
             isListening = false;
 
         }
-            
+           
       }
-
+        public Map<String, Float> getEmotionMap(){
+            return emotions;
+            
+        }
+        public synchronized void insertToMemory(String elementName, String attributeKey, String attributeValue) throws MemoryException{
+            Element root = new Element(elementName);
+            root.addAttribute(new Attribute("Emotion", attributeKey));
+            root.addAttribute(new Attribute("Reliability", attributeValue));
+            System.err.println("EmotionMain: " +root.toString());
+            am.insert(new XOPData(new Document(root)));
+        }
 
 }
 

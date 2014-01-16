@@ -25,8 +25,6 @@ import nu.xom.Element;
 import nu.xom.Node;
 import nu.xom.Nodes;
 
-
-
 /**
  *
  * @author odamm
@@ -41,6 +39,9 @@ public class MemoryConnector {
         private static final Logger LOGGER = Logger.getLogger(MemoryConnector.class.getName());
 	private static final String EMOTION_XPATH = "/eModel";
         private String xpath = "";
+        private boolean eventTrigger = false;
+        private String event = "";
+
 
         public MemoryConnector() throws InitializeException, NameNotFoundException {
             xm = XcfManager.createXcfManager();
@@ -48,14 +49,14 @@ public class MemoryConnector {
 
 	} 
 
-        public synchronized void startListening() throws MemoryException {
-		
+        public synchronized void startListening(String inputSelector) throws MemoryException {
+            final String is = inputSelector;
             if (!isListening) {
                     if (memoryEventAdapter == null){
 				MemoryAction action = MemoryAction.INSERT;
 
 				memoryEventAdapter = new MemoryEventAdapter(action, new XPath(
-						"/*")) {
+						"/"+is)) {
 
 					@Override
 					synchronized public void handleEvent(MemoryEvent e) {
@@ -63,21 +64,26 @@ public class MemoryConnector {
 
 						Nodes emotionNodes = xml.getDocument().query(
 								"/*");
+                                                
+                                                if(is.equals("rmimic")){
+                                                    System.out.println("handle rmimic");
+                                                    
+                                                }
+                                                else if(is.equals("shore")){
+                                                    for (int i = 0; i < emotionNodes.size(); i++) {
 
-						// Get the phoneme chain text
-						for (int i = 0; i < emotionNodes.size(); i++) {
-
-							Node node = emotionNodes.get(i);
-							if (node instanceof Element) {
-								Element partElement = (Element) node;
-                                                                System.out.println(partElement.getAttributeValue("EModel"));
-                                                        } 
-						}
+                                                            Node node = emotionNodes.get(i);
+                                                            if (node instanceof Element) {
+                                                                    Element partElement = (Element) node;
+                                                                    System.out.println(partElement.getAttributeValue("emotion"));
+                                                            } 
+                                                    }
+                                                }
 
 					}
 				};
 			}
-                        System.out.println("Now Listening to " + am.getName() + "for /" + xpath + " events");
+                        System.out.println("Now Listening to " + am.getName() + "for /" + is + " events");
 
 			am.addListener(memoryEventAdapter);
 			isListening = true;
@@ -100,6 +106,20 @@ public class MemoryConnector {
             am.removeListener(memoryEventAdapter);
             this.isListening = false;
     }
+    
+	
+
+        public boolean eventTriggered () {
+            return eventTrigger;
+        }
+        
+        
+        
+        public String getEvent(){
+            eventTrigger = false;
+            return event;
+        }
+
     }
 
 

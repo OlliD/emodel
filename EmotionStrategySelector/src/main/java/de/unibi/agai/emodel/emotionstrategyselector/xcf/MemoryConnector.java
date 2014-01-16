@@ -61,7 +61,6 @@ public class MemoryConnector {
             Element root = new Element("eModel");
             root.addAttribute(new Attribute("EModel", "MyMimicry"));
             am.insert(new XOPData(new Document(root)));
-            System.out.println("inserted in " + am.getName());
 
         }
         
@@ -104,8 +103,8 @@ public class MemoryConnector {
 							Node node = emotionNodes.get(i);
 							if (node instanceof Element) {
 								Element partElement = (Element) node;
-                                                                System.out.println("Mimicry Event: "  + partElement.getAttributeValue("emotion"));  
-                                                                ssg.setLayer1Text(partElement.getAttributeValue("emotion"));
+                                                                System.out.println("Mimicry Event: "  + partElement.getAttributeValue("Emotion"));  
+                                                                ssg.setLayer1Text(partElement.getAttributeValue("Emotion"));
 
                                                         } 
 						}
