@@ -1,6 +1,7 @@
 package de.unibi.agai.emodel.emotionstrategyselector;
 
 import de.unibi.agai.emodel.emotionstrategyselector.gui.StrategySelectorGui;
+import de.unibi.agai.emodel.emotionstrategyselector.robotconnector.HCGui;
 import de.unibi.agai.emodel.emotionstrategyselector.xcf.MemoryConnector;
 import net.sf.xcf.InitializeException;
 import net.sf.xcf.XcfException;
@@ -15,13 +16,7 @@ public class App
 {
     public static void main( String[] args ) throws XcfException, InterruptedException
     {
-        StrategySelectorGui ssg = new StrategySelectorGui();
-        ssg.setVisible(true);
-        System.err.println( "StrategySelector startet!" );
-        MemoryConnector mc = new MemoryConnector(ssg);
-        mc.startListening();
-        while(true){
-            Thread.sleep(1000);
-        }
+        Controller c = new Controller();
+        c.worker();
     }
 }
