@@ -11,9 +11,23 @@ import de.unibi.agai.emodel.emotionstrategyselector.robotconnector.HCGui;
 import de.unibi.agai.emodel.emotionstrategyselector.robotconnector.HeadPositions;
 import de.unibi.agai.emodel.emotionstrategyselector.robotconnector.Robot;
 import de.unibi.agai.emodel.emotionstrategyselector.xcf.MemoryConnector;
+import de.unibi.flobi.Actuators;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import net.sf.xcf.InitializeException;
 import net.sf.xcf.memory.MemoryException;
 import net.sf.xcf.naming.NameNotFoundException;
+import nu.xom.Attribute;
+import nu.xom.Document;
+import nu.xom.Element;
 
 /**
  *
@@ -23,33 +37,60 @@ import net.sf.xcf.naming.NameNotFoundException;
 
 
 public class Controller {
-    private Robot r;
-        HeadPositions hp;
-
+        private Robot r;
+        private HeadPositions hp;
+        MemoryConnector mc;
+        private String strategicEmotion;
+        private String mimircyEmotion;
+        private String schematicEmotion;
         
-        public Controller() throws MemoryException, InitializeException, NameNotFoundException{
+        public Controller() throws MemoryException, InitializeException, NameNotFoundException, IOException, ExecutionException, InterruptedException, TimeoutException{
             
         StrategySelectorGui ssg = new StrategySelectorGui();
         ssg.setVisible(true);
         
         System.err.println( "StrategySelector startet!" );
-        MemoryConnector mc = new MemoryConnector(ssg);
+        mc = new MemoryConnector(ssg);
         
         r = new Robot();
         hp = new HeadPositions();
         
-        HCGui eg = new HCGui(r, hp);
-        eg.setVisible(true);
-        mc.startListening();
+        List<String> poses = new ArrayList();
+        for (String s : hp.getPositions().keySet()) {
+            poses.add(s);
+        }
+        Collections.sort(poses);
         
+        //HCGui eg = new HCGui(r, hp);
+        //eg.setVisible(true);
+        mc.startListening();
+        worker();
         }
 
         
 
-    public void worker() throws InterruptedException {
+    public void worker() throws InterruptedException, IOException, ExecutionException, TimeoutException {
+        String emotion ="";
+        int cooldown = 0;
         while(true){
-            Thread.sleep(1000);
-            
-    }
+                    emotion = mc.expressEmotion();
+                    if (emotion!=""){
+                        sendEmotion(emotion);
+                    }
+                    cooldown++;
+                    Thread.sleep(1000);
+                    if (cooldown == 5){
+                        cooldown = 0;
+                        r.executeMovement(hp.getPosition("neutral").getActuatorList(),30, 150);
+                    }
+        }
+        
+   
+        
+
 }
+    private void sendEmotion (String emotion) throws IOException, ExecutionException, TimeoutException, InterruptedException{
+        r.executeMovement(hp.getPosition(emotion.toLowerCase()).getActuatorList(),30, 150);
+
+    }
 }

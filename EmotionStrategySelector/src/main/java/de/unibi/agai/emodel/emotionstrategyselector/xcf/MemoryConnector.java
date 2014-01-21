@@ -8,6 +8,9 @@ package de.unibi.agai.emodel.emotionstrategyselector.xcf;
 
 
 import de.unibi.agai.emodel.emotionstrategyselector.gui.StrategySelectorGui;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 import net.sf.xcf.ActiveMemory;
 import net.sf.xcf.InitializeException;
@@ -46,14 +49,15 @@ public class MemoryConnector {
         private static final Logger LOGGER = Logger.getLogger(MemoryConnector.class.getName());
 	private static final String EMOTION_XPATH = "/eModel";
         private StrategySelectorGui ssg; 
+        private boolean expressEmotion;
+        private String emotionToExpress="";
+        
         
         public MemoryConnector(StrategySelectorGui ssg) throws InitializeException, NameNotFoundException {
             xm = XcfManager.createXcfManager();
             am = xm.createActiveMemory("ShortTerm");
             this.ssg = ssg;
 
-            
-            
 	} 
 
 
@@ -61,7 +65,6 @@ public class MemoryConnector {
             Element root = new Element("eModel");
             root.addAttribute(new Attribute("EModel", "MyMimicry"));
             am.insert(new XOPData(new Document(root)));
-
         }
         
         public synchronized void listenToMemory(){
@@ -81,7 +84,6 @@ public class MemoryConnector {
         
         
         public synchronized void startListening() throws MemoryException {
-		
             if (!isListening) {
                     System.out.println("Now Listening to " + am.getName());
                     if (mimircyEventAdapter == null){
@@ -103,8 +105,11 @@ public class MemoryConnector {
 							Node node = emotionNodes.get(i);
 							if (node instanceof Element) {
 								Element partElement = (Element) node;
-                                                                System.out.println("Mimicry Event: "  + partElement.getAttributeValue("Emotion"));  
-                                                                ssg.setLayer1Text(partElement.getAttributeValue("Emotion"));
+                                                                if (!expressEmotion){
+                                                                    emotionToExpress = partElement.getAttributeValue("Emotion");
+                                                                    ssg.setLayer1Text(emotionToExpress);
+                                                                    expressEmotion = true;
+                                                                            }
 
                                                         } 
 						}
@@ -131,9 +136,11 @@ public class MemoryConnector {
 							Node node = emotionNodes.get(i);
 							if (node instanceof Element) {
 								Element partElement = (Element) node;
-                                                                System.out.println("Schematic Event: " + partElement.getAttributeValue("emotion"));
-                                                                ssg.setLayer2Text(partElement.getAttributeValue("emotion"));
-
+                                                                if (!expressEmotion){
+                                                                    emotionToExpress = partElement.getAttributeValue("Emotion");
+                                                                    ssg.setLayer2Text(emotionToExpress);
+                                                                    expressEmotion = true;
+                                                                }
                                                         } 
 						}
 
@@ -159,8 +166,11 @@ public class MemoryConnector {
 							Node node = emotionNodes.get(i);
 							if (node instanceof Element) {
 								Element partElement = (Element) node;
-                                                                System.out.println("Strategic Event: " + partElement.getAttributeValue("emotion"));
-                                                                ssg.setLayer3Text(partElement.getAttributeValue("emotion"));
+                                                                if (!expressEmotion){
+                                                                    emotionToExpress = partElement.getAttributeValue("Emotion");
+                                                                    ssg.setLayer3Text(emotionToExpress);
+                                                                    expressEmotion = true;
+                                                                    }
                                                         } 
                                                         
 						}
@@ -182,11 +192,22 @@ public class MemoryConnector {
 		return isListening;
 	}
 
-    void stopListening() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        public String expressEmotion(){
+            if (expressEmotion){
+                expressEmotion = false;
+                return emotionToExpress;
+            }
+            else
+                return "";
+            
+        }
+        
+    void stopListening() throws MemoryException {
+        if (isListening){
+            am.removeListener(mimircyEventAdapter);
+            am.removeListener(schematicEventAdapter);
+            am.removeListener(strategicEventAdapter);
+            isListening = false;
+        }
     }
-    }
-
-
-    
-
+}

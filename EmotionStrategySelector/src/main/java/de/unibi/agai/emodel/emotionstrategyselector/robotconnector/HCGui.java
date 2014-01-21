@@ -69,11 +69,11 @@ public class HCGui extends javax.swing.JFrame {
             lip_left.setMaximum((int) (r.getMax(Actuators.lip_left_upper) * 100));
             lip_left.setMinimum((int) (r.getMin(Actuators.lip_left_upper) * 100));
 
-            lip_right.setMaximum((int) (r.getMin(Actuators.lip_right_upper) * 100));
-            lip_right.setMinimum((int) (r.getMax(Actuators.lip_right_upper) * 100));
+            lip_right.setMaximum((int) (r.getMax(Actuators.lip_right_upper) * 100));
+            lip_right.setMinimum((int) (r.getMin(Actuators.lip_right_upper) * 100));
 
-            lip_center_down.setMaximum((int) (r.getMin(Actuators.lip_center_lower) * 100));
-            lip_center_down.setMinimum((int) (r.getMax(Actuators.lip_center_lower) * 100));
+            lip_center_down.setMaximum((int) (r.getMax(Actuators.lip_center_lower) * 100));
+            lip_center_down.setMinimum((int) (r.getMin(Actuators.lip_center_lower) * 100));
 
             lip_center_up.setMaximum((int) (r.getMax(Actuators.lip_center_upper) * 100));
             lip_center_up.setMinimum((int) (r.getMin(Actuators.lip_center_upper) * 100));
@@ -87,14 +87,14 @@ public class HCGui extends javax.swing.JFrame {
             neck_roll.setMaximum((int) (r.getMin(Actuators.neck_roll) * 100));
             neck_roll.setMinimum((int) (r.getMax(Actuators.neck_roll) * 100));
 
-            eye_left.setMaximum((int) (r.getMin(Actuators.left_eye_pan) * 100));
-            eye_left.setMinimum((int) (r.getMax(Actuators.left_eye_pan) * 100));
+            eye_left.setMaximum((int) (r.getMax(Actuators.left_eye_pan) * 100));
+            eye_left.setMinimum((int) (r.getMin(Actuators.left_eye_pan) * 100));
 
-            eye_right.setMaximum((int) (r.getMin(Actuators.right_eye_pan) * 100));
-            eye_right.setMinimum((int) (r.getMax(Actuators.right_eye_pan) * 100));
+            eye_right.setMaximum((int) (r.getMax(Actuators.right_eye_pan) * 100));
+            eye_right.setMinimum((int) (r.getMin(Actuators.right_eye_pan) * 100));
 
-            eye_tilt.setMaximum((int) (r.getMin(Actuators.eye_tilt) * 100));
-            eye_tilt.setMinimum((int) (r.getMax(Actuators.eye_tilt) * 100));
+            eye_tilt.setMaximum((int) (r.getMax(Actuators.eye_tilt) * 100));
+            eye_tilt.setMinimum((int) (r.getMin(Actuators.eye_tilt) * 100));
 
         } catch (InterruptedException ex) {
             Logger.getLogger(HCGui.class.getName()).log(Level.SEVERE, null, ex);
@@ -107,6 +107,10 @@ public class HCGui extends javax.swing.JFrame {
             System.exit(-1);
         }
 
+    }
+
+    private HCGui() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     /**
@@ -690,6 +694,11 @@ public class HCGui extends javax.swing.JFrame {
         cbPos.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 cbPosItemStateChanged(evt);
+            }
+        });
+        cbPos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbPosActionPerformed(evt);
             }
         });
         cbPos.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
@@ -1374,8 +1383,7 @@ public class HCGui extends javax.swing.JFrame {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(btnSurprised)
                                     .addComponent(btnAngry)
-                                    .addComponent(btnSad))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addComponent(btnSad)))
                             .addGroup(layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -2078,6 +2086,10 @@ public class HCGui extends javax.swing.JFrame {
             Logger.getLogger(HCGui.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnSadActionPerformed
+
+    private void cbPosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbPosActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbPosActionPerformed
 
     /**
      * @param args the command line arguments

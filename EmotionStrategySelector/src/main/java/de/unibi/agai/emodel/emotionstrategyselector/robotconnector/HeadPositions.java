@@ -23,8 +23,8 @@ public class HeadPositions {
     private String filename;
 
     public HeadPositions() {
-        filename = System.getenv("prefix") + "/share/HeadControl/positions.xml";
-        //filename = "/homes/odamm/develop/trunk/src/main/resources/positions.xml";
+        //filename = System.getenv("prefix") + "/share/HeadControl/positions.xml";
+        filename = "/homes/odamm/positions.xml";
 
         System.out.println("Path: " + System.getenv("prefix") + "/share/HeadControl/positions.xml");
         try {
@@ -43,7 +43,6 @@ public class HeadPositions {
             throw new IllegalArgumentException("Action " + action + " not in list.");
         }
         return positions.get(action);
-
     }
 
     public Map<String, PositionElement> getPositions() {
@@ -53,7 +52,6 @@ public class HeadPositions {
     public void parsePositions() throws ParsingException, ValidityException, IOException {
         Builder b = new Builder();
         Document doc;
-
         File in = new File(filename);
         if (in.exists()) {
             doc = b.build(in);
@@ -65,10 +63,9 @@ public class HeadPositions {
             doc = b.build(inStream);
         }
 
-        Elements childElements = doc.getRootElement().getChildElements("Position");
+        Elements childElements = doc.getRootElement().getChildElements("position");
 
         for (int i = 0; i < childElements.size(); i++) {
-
             String positionName = childElements.get(i).getAttribute("id").getValue().toString();
             int ramp = Integer.valueOf(childElements.get(i).getAttribute("ramp").getValue());
             int speed = Integer.valueOf(childElements.get(i).getAttribute("maxSpeed").getValue());

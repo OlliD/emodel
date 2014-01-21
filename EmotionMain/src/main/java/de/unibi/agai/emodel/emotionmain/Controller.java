@@ -48,10 +48,13 @@ public class Controller {
     private void worker() throws InterruptedException, MemoryException{
         faceConnector.startListening();
 
+        
         while(true){
         
             Thread.sleep(2000);
             emotions = faceConnector.getEmotionMap();
+            //Looking for the emotion map and receive a map of emotions (happy, sad, surprised, angry) with value for reliability
+            //when one value is over the threshold the label will be inserted into the memory
             for (Map.Entry<String, Float> entry : emotions.entrySet()) {
                 if (entry.getValue()>threshold){
                     System.out.println(entry.getKey() + " = " + entry.getValue());
