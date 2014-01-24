@@ -12,6 +12,10 @@ import de.unibi.agai.emodel.emotionstrategyselector.robotconnector.HeadPositions
 import de.unibi.agai.emodel.emotionstrategyselector.robotconnector.Robot;
 import de.unibi.agai.emodel.emotionstrategyselector.xcf.MemoryConnector;
 import de.unibi.flobi.Actuators;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,11 +47,12 @@ public class Controller {
         private String strategicEmotion;
         private String mimircyEmotion;
         private String schematicEmotion;
-        
+        private StrategySelectorGui ssg;
         public Controller() throws MemoryException, InitializeException, NameNotFoundException, IOException, ExecutionException, InterruptedException, TimeoutException{
             
-        StrategySelectorGui ssg = new StrategySelectorGui();
+        ssg = new StrategySelectorGui();
         ssg.setVisible(true);
+        addListener();
         
         System.err.println( "StrategySelector startet!" );
         mc = new MemoryConnector(ssg);
@@ -89,8 +94,66 @@ public class Controller {
         
 
 }
+    
+
+    
     private void sendEmotion (String emotion) throws IOException, ExecutionException, TimeoutException, InterruptedException{
         r.executeMovement(hp.getPosition(emotion.toLowerCase()).getActuatorList(),30, 150);
+
+    }
+    
+    
+        private void addListener(){
+        this.ssg.setLayer1CheckboxListener(new Layer1CheckboxListener());
+        this.ssg.setLayer2CheckboxListener(new Layer2CheckboxListener());
+        this.ssg.setLayer3CheckboxListener(new Layer3CheckboxListener());
+    }
+
+    
+    class Layer1CheckboxListener implements ActionListener{
+
+        public void actionPerformed(ActionEvent e) {
+
+            boolean wert = ssg.getOnOffCheckBoxLayer1();
+            System.out.println("Set Layer 1? " + ssg.getOnOffCheckBoxLayer1());
+            try {
+                mc.startListeningLayer1(wert);
+            } catch (MemoryException ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+    }
+    
+    class Layer2CheckboxListener implements ActionListener{
+
+        public void actionPerformed(ActionEvent e) {
+
+            boolean wert = ssg.getOnOffCheckBoxLayer2();
+            System.out.println("Set Layer 2? " + ssg.getOnOffCheckBoxLayer2());
+            try {
+                mc.startListeningLayer2(wert);
+            } catch (MemoryException ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
+
+    }
+    
+    class Layer3CheckboxListener implements ActionListener{
+
+        public void actionPerformed(ActionEvent e) {
+
+            boolean wert = ssg.getOnOffCheckBoxLayer3();
+            System.out.println("Set Layer 3? " + ssg.getOnOffCheckBoxLayer3());
+            try {
+                mc.startListeningLayer3(wert);
+            } catch (MemoryException ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
 
     }
 }

@@ -177,10 +177,6 @@ public class MemoryConnector {
 					}
 				};
 			}
-			am.addListener(mimircyEventAdapter);
-			am.addListener(schematicEventAdapter);
-			am.addListener(strategicEventAdapter);
-			isListening = true;
 		}
 	}
         
@@ -199,7 +195,42 @@ public class MemoryConnector {
             }
             else
                 return "";
-            
+        }
+        
+        public void startListeningLayer1(boolean status) throws MemoryException{
+            if (status){
+                am.addListener(mimircyEventAdapter);
+                System.err.println("ESS:MemoryConnector - mimicry inserted");
+                isListening = true;
+            }
+            else {
+                am.removeListener(mimircyEventAdapter);
+                isListening = false;
+            }
+        }
+
+        public void startListeningLayer2(boolean status) throws MemoryException{
+            if (status){
+                am.addListener(schematicEventAdapter);
+                System.err.println("ESS:MemoryConnector - mimicry schematic");
+                isListening = true;
+            }
+            else {
+                am.removeListener(schematicEventAdapter);
+                isListening = false;
+            }
+        }
+        
+        public void startListeningLayer3(boolean status) throws MemoryException{
+            if (status){
+                am.addListener(strategicEventAdapter);
+                System.err.println("ESS:MemoryConnector - strategic inserted");
+                isListening = true;
+            }
+            else {
+                am.removeListener(strategicEventAdapter);
+                isListening = false;
+            }
         }
         
     void stopListening() throws MemoryException {

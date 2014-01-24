@@ -7,6 +7,8 @@
 package de.unibi.agai.emodel.emotionmain;
 
 import de.unibi.agai.emodel.emotionmain.xcf.MemoryConnector;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
 import net.sf.xcf.ActiveMemory;
@@ -66,5 +68,6 @@ public class Controller {
             }
         
         }
+
 
 }   

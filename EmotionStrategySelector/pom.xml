@@ -52,7 +52,7 @@
         <dependency>
             <groupId>de.unibi.agai.flobi</groupId>
             <artifactId>flobi-xsc2</artifactId>
-            <version>1.2.4</version>
+            <version>1.2.5</version>
             <type>jar</type>
         </dependency>
     </dependencies>
