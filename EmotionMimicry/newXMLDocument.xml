@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+
+
+<root>
+    <?xml version="1.0" encoding="UTF-8"?>
+    <OBJECTS FrameRate="14.983922" GallerySize="3" ImageCount="10343" ImageHeight="600" ImageWidth="800" PatchCount="2">
+        <xcf:metadata xmlns:xcf="http://xcf.sf.net">
+            <timing>
+                <ts key="xcf:cre" src="vision" ms="1390914709792" ns="806884" dateTime="xs:dateTime"/>
+                <ts key="xcf:pub" src="vision" ms="1390914709792" ns="806884" dateTime="xs:dateTime"/>
+            </timing>
+        </xcf:metadata>
+        <OBJECT>
+            <TIMESTAMPS>
+                <CREATED dateTime="1970-01-23T02:20:13Z" ms="1909213611" ns="611328000" value="1909213611"/>
+                <UPDATED dateTime="2014-01-28T13:11:49Z" ms="1390914709759" ns="759698000" value="1390914709759"/>
+            </TIMESTAMPS>
+            <RATING creator="FaceTracker">
+                <RELIABILITY value="36.11967849731445"/>
+            </RATING>
+            <ATTRIBUTES creator="FaceTracker">
+                <ATTRIBUTE name="MouthOpen" value="100"/>
+                <ATTRIBUTE name="Uptime" unit="Seconds" value="320.163818359375"/>
+                <ATTRIBUTE left_eye_closed="31.875" name="EyesClosed" right_eye_closed="33.125"/>
+            </ATTRIBUTES>
+            <CLASS Id="0" Pitch="0" PreviousIds="12 5 2 0" Roll="0" ViewCount="2" Yaw="0" creator="FaceTracker">Face</CLASS>
+            <REGION creator="FaceTracker">
+                <RECTANGLE h="41.65628051757812" w="41.65631103515625" x="609.0560913085938" y="228.601318359375"/>
+                <CENTER_OFFSET x="20.82815551757812" y="20.82814025878906"/>
+            </REGION>
+            <MARKERS creator="FaceTracker">
+                <MARKER name="LeftEye" x="639.3780517578125" y="239.9643859863281"/>
+                <MARKER name="LeftMouthCorner" x="633.28515625" y="258.6056518554688"/>
+                <MARKER name="NoseTip" x="629.4525756835938" y="252.2165679931641"/>
+                <MARKER name="RightEye" x="619.1392822265625" y="238.4901275634766"/>
+                <MARKER name="RightMouthCorner" x="619.5996704101562" y="258.6056518554688"/>
+            </MARKERS>
+            <PARTS creator="FaceTracker">
+                <OBJECT>
+                    <RATING creator="FaceTracker">
+                        <RELIABILITY value="15"/>
+                    </RATING>
+                    <ATTRIBUTES creator="FaceTracker"/>
+                    <CLASS creator="FaceTracker">LeftEye.Front</CLASS>
+                    <REGION creator="FaceTracker">
+                        <RECTANGLE h="16.06455993652344" w="16.0645751953125" x="631.3457641601562" y="231.9320983886719"/>
+                        <CENTER_OFFSET x="8.03228759765625" y="8.032279968261719"/>
+                    </REGION>
+                    <MARKERS creator="FaceTracker">
+                        <MARKER name="LeftEye" x="639.3780517578125" y="239.9643859863281"/>
+                    </MARKERS>
+                </OBJECT>
+                <OBJECT>
+                    <RATING creator="FaceTracker">
+                        <RELIABILITY value="28"/>
+                    </RATING>
+                    <ATTRIBUTES creator="FaceTracker"/>
+                    <CLASS creator="FaceTracker">Mouth.Front</CLASS>
+                    <REGION creator="FaceTracker">
+                        <RECTANGLE h="15.96636962890625" w="18.247314453125" x="617.3187866210938" y="250.6224670410156"/>
+                        <CENTER_OFFSET x="9.1236572265625" y="7.983184814453125"/>
+                    </REGION>
+                    <MARKERS creator="FaceTracker">
+                        <MARKER name="LeftMouthCorner" x="633.28515625" y="258.6056518554688"/>
+                        <MARKER name="RightMouthCorner" x="619.5996704101562" y="258.6056518554688"/>
+                    </MARKERS>
+                </OBJECT>
+                <OBJECT>
+                    <RATING creator="FaceTracker">
+                        <RELIABILITY value="63"/>
+                    </RATING>
+                    <ATTRIBUTES creator="FaceTracker"/>
+                    <CLASS creator="FaceTracker">Nose.Front</CLASS>
+                    <REGION creator="FaceTracker">
+                        <RECTANGLE h="17.68833923339844" w="17.6883544921875" x="620.6083984375" y="241.1613311767578"/>
+                        <CENTER_OFFSET x="8.84417724609375" y="8.844169616699219"/>
+                    </REGION>
+                    <MARKERS creator="FaceTracker">
+                        <MARKER name="NoseTip" x="629.4525756835938" y="252.2165679931641"/>
+                    </MARKERS>
+                </OBJECT>
+                <OBJECT>
+                    <RATING creator="FaceTracker">
+                        <RELIABILITY value="56"/>
+                    </RATING>
+                    <ATTRIBUTES creator="FaceTracker"/>
+                    <CLASS creator="FaceTracker">RightEye.Front</CLASS>
+                    <REGION creator="FaceTracker">
+                        <RECTANGLE h="16.92878723144531" w="16.92877197265625" x="610.6748657226562" y="230.0257415771484"/>
+                        <CENTER_OFFSET x="8.464385986328125" y="8.464393615722656"/>
+                    </REGION>
+                    <MARKERS creator="FaceTracker">
+                        <MARKER name="RightEye" x="619.1392822265625" y="238.4901275634766"/>
+                    </MARKERS>
+                </OBJECT>
+            </PARTS>
+        </OBJECT>
+        <OBJECT>
+            <TIMESTAMPS>
+                <CREATED dateTime="1970-01-23T02:20:13Z" ms="1909213611" ns="611328000" value="1909213611"/>
+                <UPDATED dateTime="2014-01-28T13:11:49Z" ms="1390914709774" ns="774536000" value="1390914709774"/>
+            </TIMESTAMPS>
+            <ATTRIBUTES creator="FaceTracker">
+                <ATTRIBUTE name="Uptime" unit="Seconds" value="130.2689971923828"/>
+                <ATTRIBUTE name="Tracking">
+                    <RELIABILITY value="67.36842346191406"/>
+                </ATTRIBUTE>
+            </ATTRIBUTES>
+            <CLASS Id="18" PreviousIds="" ViewCount="8" creator="FaceTracker">Face.Tracked</CLASS>
+            <REGION creator="FaceTracker">
+                <RECTANGLE h="201.6726226806641" w="201.672607421875" x="350.6904907226562" y="163.7447662353516"/>
+                <CENTER_OFFSET x="100.8363037109375" y="100.836311340332"/>
+            </REGION>
+        </OBJECT>
+    </OBJECTS>
+
+</root>

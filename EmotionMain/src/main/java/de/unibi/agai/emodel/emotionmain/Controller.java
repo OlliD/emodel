@@ -9,7 +9,9 @@ package de.unibi.agai.emodel.emotionmain;
 import de.unibi.agai.emodel.emotionmain.xcf.MemoryConnector;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import net.sf.xcf.ActiveMemory;
 import net.sf.xcf.InitializeException;
@@ -32,7 +34,7 @@ public class Controller {
     private MemoryConnector faceConnector;
     private Map<String, Float> emotions;
     private Float threshold = 50f; 
-
+    private List<Faces> faceList; 
          
     public Controller() throws InitializeException, NameNotFoundException, InterruptedException, MemoryException{
         XcfManager xm = XcfManager.createXcfManager();
@@ -43,6 +45,7 @@ public class Controller {
         speechConnector = new MemoryConnector("speech", am_ST);
         faceConnector = new MemoryConnector("OBJECTS", am_V);
         emotions = new HashMap<String, Float>();
+        faceList = new ArrayList<Faces>();
         this.worker();
         }
         
@@ -69,5 +72,16 @@ public class Controller {
         
         }
 
+    public List<Faces> getFaceList() {
+        return faceList;
+    }
+
+    public void setFaceList(List<Faces> faceList) {
+        this.faceList = faceList;
+    }
+
+    public void addFace(Faces face){
+        this.faceList.add(face);
+    }
 
 }   
