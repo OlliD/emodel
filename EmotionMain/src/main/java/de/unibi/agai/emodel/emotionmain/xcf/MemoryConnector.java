@@ -6,7 +6,9 @@
 package de.unibi.agai.emodel.emotionmain.xcf;
 
 import de.unibi.agai.emodel.emotionmain.Faces;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import net.sf.xcf.ActiveMemory;
@@ -20,17 +22,12 @@ import net.sf.xcf.memory.MemoryAction;
 import net.sf.xcf.memory.MemoryException;
 import net.sf.xcf.naming.NameNotFoundException;
 import net.sf.xcf.transport.XOPData;
-//import nu.xom.Attribute;
-//import nu.xom.Document;
-//import nu.xom.Element;
-//import nu.xom.Node;
+import nu.xom.Attribute;
+import nu.xom.Document;
+import nu.xom.Element;
+import nu.xom.Node;
 import nu.xom.Nodes;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.DocumentBuilder;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Node;
-import org.w3c.dom.Element;
+
 /**
  *
  * @author odamm
@@ -47,13 +44,17 @@ public class MemoryConnector {
     private String xpath = "";
     private Map<String, Float> emotions;
     private Faces face;
-
+    private List<Faces> faceList;
+    boolean faceReady = false;
+    
     public MemoryConnector(String xpath, ActiveMemory mem) throws InitializeException, NameNotFoundException {
         this.am = mem;
         //xm = XcfManager.createXcfManager();
         //am = xm.createActiveMemory("ShortTerm");
         this.xpath = xpath;
+        faceList = new ArrayList<Faces>();
         emotions = new HashMap<String, Float>();
+        
         emotions.put("Happy", 0f);
         emotions.put("Angry", 0f);
         emotions.put("Sad", 0f);
@@ -62,7 +63,7 @@ public class MemoryConnector {
     }
 
     public synchronized void startListening() throws MemoryException {
-
+        
         if (!isListening) {
             if (EventAdapter == null) {
                 MemoryAction action = MemoryAction.INSERT;
@@ -73,41 +74,56 @@ public class MemoryConnector {
                             @Override
                             synchronized public void handleEvent(MemoryEvent e) {
                                 XOPData xml = e.getData();
-                                
-                                Nodes objectNodes = xml.getDocument().query("//OBJECTS/OBJECT");
-                                System.out.println("OBJECT " + objectNodes.size() + "  nodes" );
+                                faceReady = false;
+                                faceList.clear();
+                                Nodes objectNodes =  xml.getDocument().query("/OBJECTS/OBJECT");
                                 for (int j = 0; j < objectNodes.size(); j++) {
+                                    
                                     Node currentNode = objectNodes.get(j);
-                                    System.out.println("looking at "+ j+ " node " + currentNode.getDocument().toString());
-                                    Nodes emotionNodes = currentNode.getDocument().query(
-                                            "//OBJECT/ATTRIBUTES[@creator]/ATTRIBUTE[@name=\"Emotion\"]/RELIABILITY");
+                                    
+                                    Document doc = new Document((Element) currentNode.copy());
+                                    
+                                    Nodes timeNodes = doc.query("//OBJECT/TIMESTAMPS/UPDATED[@ms]");
+                                    Node timeNode = timeNodes.get(0);
+                                    Element element = (Element) timeNode;
+                                    long timpStamp = Long.parseLong(element.getAttributeValue("ms"));
+                                    Nodes faceCountNodes = doc.query(
+                                            "//OBJECT/CLASS[@Id]");
+                                    int id=0;
+                                    
+                                    for (int i = 0; i < faceCountNodes.size(); i++) {
+                                        Node node = faceCountNodes.get(i);
+                                        Element partElement = (Element) node;
+                                        //System.out.println("found ID: " + partElement.getAttributeValue("Id") + " found prevID: " + partElement.getAttributeValue("PreviousIds"));
+                                        String str = partElement.getAttributeValue("Id");
+                                        id = Integer.parseInt(partElement.getAttributeValue("Id"));
+                                    }
+                                    face = new Faces(id);
+                                    face.setTimpStamp(timpStamp);
+                                    
+                                    Nodes emotionNodes = doc.query(
+                                            "//ATTRIBUTES[@creator]/ATTRIBUTE[@name=\"Emotion\"]/RELIABILITY");
+                                    
                                     for (int i = 0; i < emotionNodes.size(); i++) {
                                         Node node = emotionNodes.get(i);
                                         if (node instanceof Element) {
                                             Element partElement = (Element) node;
-                                            System.out.println("found " + partElement.getAttributeValue("name") + " with " + partElement.getAttributeValue("value"));
+                                            //System.out.println("found " + partElement.getAttributeValue("name") + " with " + partElement.getAttributeValue("value"));
                                             float value = Float.parseFloat(partElement.getAttributeValue("value"));
                                             emotions.put(partElement.getAttributeValue("name"), value);
+                                            face.addEmotion(partElement.getAttributeValue("name"), Float.parseFloat(partElement.getAttributeValue("value")));
                                         }
 
                                     }
-                                    Nodes faceCountNodes = currentNode.getDocument().query(
-                                            "//OBJECT/CLASS[@Id]");
-                                    System.out.println(faceCountNodes.size() + " classes found");
-                                    for (int i = 0; i < faceCountNodes.size(); i++) {
-                                        Node node = faceCountNodes.get(i);
-
-                                        Element partElement = (Element) node;
-                                        System.out.println("found ID: " + partElement.getAttributeValue("Id") + " found prevID: " + partElement.getAttributeValue("PreviousIds"));
-                                    }
-
+                                    //face.printFace();
+                                    faceList.add(face);
                                 }
+                                faceReady = true;
                             }
                         };
             }
 
             System.out.println("STARTET Listening to " + am.getName() + " for /" + xpath + " events");
-
             am.addListener(EventAdapter);
             isListening = true;
         }
@@ -128,12 +144,22 @@ public class MemoryConnector {
             isListening = false;
 
         }
-
     }
 
     public Map<String, Float> getEmotionMap() {
         return emotions;
-
+    }
+    
+    public List<Faces> getFace(){
+        if (faceReady){
+            System.out.println("Sending List with " + faceList.size() + " items");
+            return faceList;
+        }
+        else {
+            List<Faces> faceListDummy = new ArrayList<Faces>();
+            return faceListDummy;
+        }
+            
     }
 
     public synchronized void insertToMemory(String elementName, String attributeKey, String attributeValue) throws MemoryException {
@@ -143,5 +169,4 @@ public class MemoryConnector {
         System.err.println("EmotionMain: " + root.toString());
         am.insert(new XOPData(new Document(root)));
     }
-
 }

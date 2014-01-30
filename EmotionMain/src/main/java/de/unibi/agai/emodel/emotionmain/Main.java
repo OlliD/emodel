@@ -1,5 +1,6 @@
 package de.unibi.agai.emodel.emotionmain;
 
+import de.unibi.agai.eb.BusException;
 import de.unibi.agai.emodel.emotionmain.xcf.MemoryConnector;
 import de.unibi.agai.emodel.gui.MainGui;
 import java.util.HashMap;
@@ -17,7 +18,7 @@ import net.sf.xcf.naming.NameNotFoundException;
 public class Main 
 {
     
-    public static void main( String[] args ) throws InitializeException, NameNotFoundException, MemoryException, InterruptedException
+    public static void main( String[] args ) throws InitializeException, NameNotFoundException, MemoryException, InterruptedException, BusException
         {
         MainGui gui = new MainGui();
         gui.setVisible(true);

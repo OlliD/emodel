@@ -14,18 +14,18 @@ import java.util.Map;
  */
 public class Faces {
 
-    private String currentEmotion;
+    //private String currentEmotion;
     private String lastEmotion;
+    private long timeStamp;
     private int viewCount;
     private int lastId;
     private int currentId;
     private Map<String, Float> emotions;
 
-    public Faces(String currentEmotion, int viewCount, int currentId) {
-        this.currentEmotion = currentEmotion;
-        this.viewCount = viewCount;
+    
+    public Faces(int currentId) {
         this.currentId = currentId;
-        emotions = new HashMap<String, Float>();
+        this.timeStamp = 0;
         emotions = new HashMap<String, Float>();
         emotions.put("Happy", 0f);
         emotions.put("Angry", 0f);
@@ -34,14 +34,26 @@ public class Faces {
 
     }
 
+    public long getTimpStamp() {
+        return timeStamp;
+    }
+
+    public void setTimpStamp(long timpStamp) {
+        this.timeStamp = timpStamp;
+    }
+
+    public Faces getFace(){
+        return new Faces(999);
+    }
+    
     public String getLastEmotion() {
         return lastEmotion;
     }
-    
+/*    
     public String getcurrentEmotion() {
         return currentEmotion;
     }
-
+*/
     public int getViewCount() {
         return viewCount;
     }
@@ -53,11 +65,11 @@ public class Faces {
     public int getCurrentId() {
         return currentId;
     }
-
+/*
     public void setCurrentEmotion(String currentEmotion) {
         this.currentEmotion = currentEmotion;
     }
-
+*/
     public void setLastEmotion(String lastEmotion) {
         this.lastEmotion = lastEmotion;
     }
@@ -78,15 +90,23 @@ public class Faces {
         return emotions;
     }
 
+    public void setEmotions(Map<String, Float> emotions){
+        this.emotions = emotions;
+    }
+    
     public void addEmotion(String emotion, float value) {
         emotions.put(emotion, value);
     }
     public void printFace(){
+        System.out.println("##### FACES #####");
         System.out.println("Current ID: " + this.getCurrentId());
-        System.out.println("Current ID: " + this.getLastId());
-        System.out.println("Current ID: " + this.getViewCount());
+        System.out.println("Last ID: " + this.getLastId());
+        System.out.println("ViewCount: " + this.getViewCount());
         for (Map.Entry<String, Float> entry : emotions.entrySet()) {
-            System.out.println("Emotion " + entry.getKey() + "Value: " +entry.getValue());
+            System.out.println("Emotion " + entry.getKey() + " Value: " +entry.getValue());
         }
+        System.out.println("TimeStamp: " + this.timeStamp );
+        System.out.println("##### ##### #####");
+
     }
 }

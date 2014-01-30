@@ -7,21 +7,16 @@
 package de.unibi.agai.emodel.emotionstrategyselector;
 
 import de.unibi.agai.emodel.emotionstrategyselector.gui.StrategySelectorGui;
-import de.unibi.agai.emodel.emotionstrategyselector.robotconnector.HCGui;
 import de.unibi.agai.emodel.emotionstrategyselector.robotconnector.HeadPositions;
 import de.unibi.agai.emodel.emotionstrategyselector.robotconnector.Robot;
 import de.unibi.agai.emodel.emotionstrategyselector.xcf.MemoryConnector;
-import de.unibi.flobi.Actuators;
+import de.unibi.agai.emotionlib.communication.EmotionTaskHandler;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
@@ -29,9 +24,7 @@ import java.util.logging.Logger;
 import net.sf.xcf.InitializeException;
 import net.sf.xcf.memory.MemoryException;
 import net.sf.xcf.naming.NameNotFoundException;
-import nu.xom.Attribute;
-import nu.xom.Document;
-import nu.xom.Element;
+        
 
 /**
  *
@@ -48,6 +41,10 @@ public class Controller {
         private String mimircyEmotion;
         private String schematicEmotion;
         private StrategySelectorGui ssg;
+        
+        
+        
+        
         public Controller() throws MemoryException, InitializeException, NameNotFoundException, IOException, ExecutionException, InterruptedException, TimeoutException{
             
         ssg = new StrategySelectorGui();
@@ -65,6 +62,7 @@ public class Controller {
             poses.add(s);
         }
         Collections.sort(poses);
+        
         
         //HCGui eg = new HCGui(r, hp);
         //eg.setVisible(true);
