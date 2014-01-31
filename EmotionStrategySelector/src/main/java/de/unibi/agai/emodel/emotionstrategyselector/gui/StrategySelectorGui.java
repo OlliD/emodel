@@ -5,6 +5,7 @@
  */
 package de.unibi.agai.emodel.emotionstrategyselector.gui;
 
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
 
@@ -14,11 +15,15 @@ import java.beans.PropertyChangeListener;
  */
 public class StrategySelectorGui extends javax.swing.JFrame {
 
+    private ActionListener OnOffListener;
+
     /**
      * Creates new form StrategySelectorGui
      */
     public StrategySelectorGui() {
+
         initComponents();
+        RadioButtonOnOffStrategy.addActionListener(OnOffListener);
     }
 
     /**
@@ -40,16 +45,16 @@ public class StrategySelectorGui extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jRadioButton4 = new javax.swing.JRadioButton();
         jButton1 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jSpinner1 = new javax.swing.JSpinner();
-        jSpinner2 = new javax.swing.JSpinner();
+        SpinnerLayer3 = new javax.swing.JSpinner();
+        SpinnerLayer2 = new javax.swing.JSpinner();
         jLabel6 = new javax.swing.JLabel();
-        jSpinner3 = new javax.swing.JSpinner();
-        jRadioButton5 = new javax.swing.JRadioButton();
+        SpinnerLayer1 = new javax.swing.JSpinner();
+        RadioButtonTimeStrategy = new javax.swing.JRadioButton();
+        jButton2 = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jSlider1 = new javax.swing.JSlider();
         jSlider2 = new javax.swing.JSlider();
@@ -57,12 +62,17 @@ public class StrategySelectorGui extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
-        jRadioButton2 = new javax.swing.JRadioButton();
+        RadioButtonPercentageStrategy = new javax.swing.JRadioButton();
+        jButton4 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jCheckBox3 = new javax.swing.JCheckBox();
         jCheckBox2 = new javax.swing.JCheckBox();
         jCheckBox1 = new javax.swing.JCheckBox();
-        jRadioButton3 = new javax.swing.JRadioButton();
+        RadioButtonOnOffStrategy = new javax.swing.JRadioButton();
+        jButton3 = new javax.swing.JButton();
+        jPanel6 = new javax.swing.JPanel();
+        ButtonStop = new javax.swing.JButton();
+        ButtonStart = new javax.swing.JButton();
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -101,39 +111,28 @@ public class StrategySelectorGui extends javax.swing.JFrame {
 
         jLabel3.setText("Layer 3:");
 
-        buttonGroup1.add(jRadioButton4);
-        jRadioButton4.setText("Activate");
-        jRadioButton4.setToolTipText("");
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(24, 24, 24)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(24, 24, 24)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel3))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(jTextField2)
-                                .addComponent(jTextField3, javax.swing.GroupLayout.DEFAULT_SIZE, 95, Short.MAX_VALUE))))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jRadioButton4)))
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jTextField2)
+                        .addComponent(jTextField3, javax.swing.GroupLayout.DEFAULT_SIZE, 95, Short.MAX_VALUE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jRadioButton4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(42, 42, 42)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3))
@@ -145,7 +144,7 @@ public class StrategySelectorGui extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(84, Short.MAX_VALUE))
         );
 
         jButton1.setText("Exit");
@@ -161,54 +160,84 @@ public class StrategySelectorGui extends javax.swing.JFrame {
 
         jLabel5.setText("sec");
 
+        SpinnerLayer3.setEnabled(false);
+
+        SpinnerLayer2.setEnabled(false);
+
         jLabel6.setText("sec");
 
-        buttonGroup1.add(jRadioButton5);
-        jRadioButton5.setText("Activate");
+        SpinnerLayer1.setEnabled(false);
+
+        buttonGroup1.add(RadioButtonTimeStrategy);
+        RadioButtonTimeStrategy.setText("Activate");
+        RadioButtonTimeStrategy.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                RadioButtonTimeStrategyStateChanged(evt);
+            }
+        });
+        RadioButtonTimeStrategy.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RadioButtonTimeStrategyActionPerformed(evt);
+            }
+        });
+        RadioButtonTimeStrategy.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                RadioButtonTimeStrategyPropertyChange(evt);
+            }
+        });
+
+        jButton2.setText("Set");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
+                .addComponent(RadioButtonTimeStrategy)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(SpinnerLayer3, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel4))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                            .addComponent(jSpinner3)
+                            .addComponent(SpinnerLayer1)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(jLabel6))
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                            .addComponent(jSpinner2, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(SpinnerLayer2, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(jLabel5))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(jRadioButton5)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addContainerGap(23, Short.MAX_VALUE))
+            .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jRadioButton5)
+                .addComponent(RadioButtonTimeStrategy)
                 .addGap(17, 17, 17)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(SpinnerLayer3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jSpinner2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(SpinnerLayer2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jSpinner3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(SpinnerLayer1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton2))
         );
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Percentage Strategy"));
@@ -225,8 +254,16 @@ public class StrategySelectorGui extends javax.swing.JFrame {
 
         jLabel9.setText("Layer 1:");
 
-        buttonGroup1.add(jRadioButton2);
-        jRadioButton2.setText("Activate");
+        buttonGroup1.add(RadioButtonPercentageStrategy);
+        RadioButtonPercentageStrategy.setText("Activate");
+        RadioButtonPercentageStrategy.setEnabled(false);
+
+        jButton4.setText("Set");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -247,33 +284,36 @@ public class StrategySelectorGui extends javax.swing.JFrame {
                         .addComponent(jLabel9)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jSlider3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jRadioButton2))
+                    .addComponent(RadioButtonPercentageStrategy))
                 .addContainerGap())
+            .addComponent(jButton4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jRadioButton2)
+                .addComponent(RadioButtonPercentageStrategy)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel7))
                     .addComponent(jSlider1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jSlider2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jSlider3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(36, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton4))
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("OnOff-Strategy"));
 
         jCheckBox3.setText("Layer 3:");
+        jCheckBox3.setEnabled(false);
         jCheckBox3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jCheckBox3ActionPerformed(evt);
@@ -281,6 +321,7 @@ public class StrategySelectorGui extends javax.swing.JFrame {
         });
 
         jCheckBox2.setText("Layer 2:");
+        jCheckBox2.setEnabled(false);
         jCheckBox2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jCheckBox2ActionPerformed(evt);
@@ -288,14 +329,22 @@ public class StrategySelectorGui extends javax.swing.JFrame {
         });
 
         jCheckBox1.setText("Layer 1:");
+        jCheckBox1.setEnabled(false);
         jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jCheckBox1ActionPerformed(evt);
             }
         });
 
-        buttonGroup1.add(jRadioButton3);
-        jRadioButton3.setText("Activate");
+        buttonGroup1.add(RadioButtonOnOffStrategy);
+        RadioButtonOnOffStrategy.setText("Activate");
+
+        jButton3.setText("Set");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -307,21 +356,68 @@ public class StrategySelectorGui extends javax.swing.JFrame {
                     .addComponent(jCheckBox3, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jCheckBox1, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jCheckBox2, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jRadioButton3, javax.swing.GroupLayout.Alignment.TRAILING))
+                    .addComponent(RadioButtonOnOffStrategy, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addContainerGap())
+            .addComponent(jButton3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jRadioButton3)
-                .addGap(26, 26, 26)
+                .addComponent(RadioButtonOnOffStrategy)
+                .addGap(18, 18, 18)
                 .addComponent(jCheckBox3)
                 .addGap(18, 18, 18)
                 .addComponent(jCheckBox2)
                 .addGap(18, 18, 18)
                 .addComponent(jCheckBox1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton3))
+        );
+
+        jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Engine"));
+
+        ButtonStop.setEnabled(false);
+        ButtonStop.setLabel("Stop");
+        ButtonStop.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ButtonStopActionPerformed(evt);
+            }
+        });
+
+        ButtonStart.setEnabled(false);
+        ButtonStart.setLabel("Start");
+        ButtonStart.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ButtonStartActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(ButtonStop, javax.swing.GroupLayout.DEFAULT_SIZE, 88, Short.MAX_VALUE)
+                .addContainerGap())
+            .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel6Layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(ButtonStart, javax.swing.GroupLayout.DEFAULT_SIZE, 88, Short.MAX_VALUE)
+                    .addContainerGap()))
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+                .addContainerGap(52, Short.MAX_VALUE)
+                .addComponent(ButtonStop)
+                .addGap(21, 21, 21))
+            .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel6Layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(ButtonStart)
+                    .addContainerGap(59, Short.MAX_VALUE)))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -336,22 +432,30 @@ public class StrategySelectorGui extends javax.swing.JFrame {
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton1)
-                .addContainerGap())
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(22, 22, 22))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton1)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton1)
+                        .addContainerGap())
+                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
 
         pack();
@@ -381,30 +485,150 @@ public class StrategySelectorGui extends javax.swing.JFrame {
         // Layer 3
     }//GEN-LAST:event_jCheckBox3ActionPerformed
 
-    public boolean getOnOffCheckBoxLayer1(){
+    private void RadioButtonTimeStrategyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RadioButtonTimeStrategyActionPerformed
+    }//GEN-LAST:event_RadioButtonTimeStrategyActionPerformed
+
+    private void RadioButtonTimeStrategyPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_RadioButtonTimeStrategyPropertyChange
+        System.out.println("actual state: " + RadioButtonTimeStrategy.isSelected());
+    }//GEN-LAST:event_RadioButtonTimeStrategyPropertyChange
+
+    private void RadioButtonTimeStrategyStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_RadioButtonTimeStrategyStateChanged
+
+    }//GEN-LAST:event_RadioButtonTimeStrategyStateChanged
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        ButtonStart.setEnabled(true);
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+                ButtonStart.setEnabled(true);
+
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        ButtonStart.setEnabled(true);
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void ButtonStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonStartActionPerformed
+        ButtonStart.setEnabled(false);
+        jButton2.setEnabled(false);
+        jButton3.setEnabled(false);
+        jButton4.setEnabled(false);
+        ButtonStop.setEnabled(true);
+    }//GEN-LAST:event_ButtonStartActionPerformed
+
+    private void ButtonStopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonStopActionPerformed
+        ButtonStart.setEnabled(true);
+        jButton2.setEnabled(true);
+        jButton3.setEnabled(true);
+        jButton4.setEnabled(true);
+        ButtonStop.setEnabled(false);
+    }//GEN-LAST:event_ButtonStopActionPerformed
+
+    public void setjButton2Listener(ActionListener l) {
+        this.jButton2.addActionListener(l);
+    }
+
+    public void setjButton3Listener(ActionListener l) {
+        this.jButton3.addActionListener(l);
+
+    }
+
+    public void setjButton4Listener(ActionListener l) {
+        this.jButton4.addActionListener(l);
+
+    }
+
+    public boolean getOnOffCheckBoxLayer1() {
         return jCheckBox1.isSelected();
     }
-    public boolean getOnOffCheckBoxLayer2(){
+
+    public boolean getOnOffCheckBoxLayer2() {
         return jCheckBox2.isSelected();
     }
-    
-    public boolean getOnOffCheckBoxLayer3(){
+
+    public boolean getOnOffCheckBoxLayer3() {
         return jCheckBox3.isSelected();
     }
-        
-    
-    public void setLayer1CheckboxListener(ActionListener l){
-                this.jCheckBox1.addActionListener(l);
+
+    public void setLayer1CheckboxListener(ActionListener l) {
+        this.jCheckBox1.addActionListener(l);
 
     }
-    public void setLayer2CheckboxListener(ActionListener l){
-                this.jCheckBox2.addActionListener(l);
 
-    } 
-    public void setLayer3CheckboxListener(ActionListener l){
-                this.jCheckBox3.addActionListener(l);
+    public void setLayer2CheckboxListener(ActionListener l) {
+        this.jCheckBox2.addActionListener(l);
 
     }
+
+    public void setLayer3CheckboxListener(ActionListener l) {
+        this.jCheckBox3.addActionListener(l);
+
+    }
+
+    public void setRadioButtonOnOffStragtegyListener(ActionListener l) {
+        this.RadioButtonOnOffStrategy.addActionListener(l);
+    }
+
+    public void setRadioButtonPercentageStrategyListener(ActionListener l) {
+        this.RadioButtonPercentageStrategy.addActionListener(l);
+    }
+
+    public void setRadioButtonTimeStrategyListener(ActionListener l) {
+        this.RadioButtonTimeStrategy.addActionListener(l);
+    }
+
+    public void toggleTimeStrategy() {
+        if (RadioButtonTimeStrategy.isSelected()) {
+            SpinnerLayer1.setEnabled(true);
+            SpinnerLayer2.setEnabled(true);
+            SpinnerLayer3.setEnabled(true);
+            jButton2.setEnabled(true);
+            jCheckBox1.setEnabled(false);
+            jCheckBox2.setEnabled(false);
+            jCheckBox3.setEnabled(false);
+
+        }
+    }
+
+    public void toggleOnOffStrategy() {
+        if (RadioButtonOnOffStrategy.isSelected()) {
+            SpinnerLayer1.setEnabled(false);
+            SpinnerLayer2.setEnabled(false);
+            SpinnerLayer3.setEnabled(false);
+            jButton2.setEnabled(false);
+            jCheckBox1.setEnabled(true);
+            jCheckBox2.setEnabled(true);
+            jCheckBox3.setEnabled(true);
+
+        }
+    }
+
+    public int getLayer1Time() {
+        return (Integer) SpinnerLayer1.getValue();
+    }
+
+    public int getLayer2Time() {
+        return (Integer) SpinnerLayer2.getValue();
+    }
+
+    public int getLayer3Time() {
+        return (Integer) SpinnerLayer3.getValue();
+    }
+
+    public boolean getLayer1Checkbox() {
+        return jCheckBox1.isEnabled();
+    }
+
+    public boolean getLayer2Checkbox() {
+        return jCheckBox2.isEnabled();
+    }
+
+    public boolean getLayer3Checkbox() {
+        return jCheckBox3.isEnabled();
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -456,8 +680,19 @@ public class StrategySelectorGui extends javax.swing.JFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton ButtonStart;
+    private javax.swing.JButton ButtonStop;
+    private javax.swing.JRadioButton RadioButtonOnOffStrategy;
+    private javax.swing.JRadioButton RadioButtonPercentageStrategy;
+    private javax.swing.JRadioButton RadioButtonTimeStrategy;
+    private javax.swing.JSpinner SpinnerLayer1;
+    private javax.swing.JSpinner SpinnerLayer2;
+    private javax.swing.JSpinner SpinnerLayer3;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JCheckBox jCheckBox2;
     private javax.swing.JCheckBox jCheckBox3;
@@ -475,17 +710,11 @@ public class StrategySelectorGui extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JRadioButton jRadioButton2;
-    private javax.swing.JRadioButton jRadioButton3;
-    private javax.swing.JRadioButton jRadioButton4;
-    private javax.swing.JRadioButton jRadioButton5;
+    private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollBar jScrollBar1;
     private javax.swing.JSlider jSlider1;
     private javax.swing.JSlider jSlider2;
     private javax.swing.JSlider jSlider3;
-    private javax.swing.JSpinner jSpinner1;
-    private javax.swing.JSpinner jSpinner2;
-    private javax.swing.JSpinner jSpinner3;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
