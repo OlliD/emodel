@@ -502,7 +502,7 @@ public class StrategySelectorGui extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-                ButtonStart.setEnabled(true);
+        ButtonStart.setEnabled(true);
 
     }//GEN-LAST:event_jButton3ActionPerformed
 
@@ -577,6 +577,14 @@ public class StrategySelectorGui extends javax.swing.JFrame {
 
     public void setRadioButtonTimeStrategyListener(ActionListener l) {
         this.RadioButtonTimeStrategy.addActionListener(l);
+    }
+
+    public void setStartButtonListener(ActionListener l) {
+        this.ButtonStart.addActionListener(l);
+    }
+
+    public void setStopButtonListener(ActionListener l) {
+        this.ButtonStop.addActionListener(l);
     }
 
     public void toggleTimeStrategy() {

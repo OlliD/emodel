@@ -5,6 +5,7 @@
  */
 package de.unibi.agai.emodel.emotionstrategyselector;
 
+import com.sun.jmx.snmp.Timestamp;
 import de.unibi.agai.emodel.emotionstrategyselector.gui.StrategySelectorGui;
 import de.unibi.agai.emodel.emotionstrategyselector.robotconnector.HeadPositions;
 import de.unibi.agai.emodel.emotionstrategyselector.robotconnector.Robot;
@@ -43,6 +44,15 @@ public class Controller {
     private boolean layer1Active;
     private boolean layer2Active;
     private boolean layer3Active;
+    private Timestamp tstamp;
+    private String currentStrategy;
+
+    public enum strategy {
+
+        ONOFF,
+        TIME,
+        PERCENTAGE
+    }
 
     public Controller() throws MemoryException, InitializeException, NameNotFoundException, IOException, ExecutionException, InterruptedException, TimeoutException {
 
@@ -62,12 +72,48 @@ public class Controller {
         }
         Collections.sort(poses);
 
+// Connection to the Robot
         //HCGui eg = new HCGui(r, hp);
         //eg.setVisible(true);
         mc.startListening();
     }
 
+    // Worker-Loop, die zu zeigende Emotion wir abgefragt und an den Roboter gesendet. Der Cooldown von 5sek 
+    // führt zu einem neutralen Gesichtsausdruck
     public void worker() throws InterruptedException, IOException, ExecutionException, TimeoutException {
+        String emotion = "";
+        int cooldown = 0;
+        strategy st = strategy.valueOf(currentStrategy.toUpperCase());
+
+        switch (st) {
+            case TIME:
+
+                while (true) {
+                    emotion = mc.expressEmotion();
+                    if (emotion != "") {
+                        sendEmotion(emotion);
+                    }
+                    cooldown++;
+                    Thread.sleep(1000);
+                    if (cooldown == 5) {
+                        cooldown = 0;
+                        r.executeMovement(hp.getPosition("neutral").getActuatorList(), 30, 150);
+                    }
+
+                }
+                break;
+
+        }
+    }
+
+    private void sendEmotion(String emotion) throws IOException, ExecutionException, TimeoutException, InterruptedException {
+        r.executeMovement(hp.getPosition(emotion.toLowerCase()).getActuatorList(), 30, 150);
+
+    }
+
+    private void onOffStrategy() throws IOException, ExecutionException, TimeoutException, InterruptedException {
+
+        System.out.println("OnOffStrategic selected");
         String emotion = "";
         int cooldown = 0;
         while (true) {
@@ -86,9 +132,26 @@ public class Controller {
 
     }
 
-    private void sendEmotion(String emotion) throws IOException, ExecutionException, TimeoutException, InterruptedException {
-        r.executeMovement(hp.getPosition(emotion.toLowerCase()).getActuatorList(), 30, 150);
+    private void timeStrategy() throws IOException, ExecutionException, TimeoutException, InterruptedException {
+        if (layer1Time > 0 || layer2Time > 0 || layer3Time > 0) {
+            long currentTime = tstamp.getDate().getTime();
+            System.out.println("Time Strategy selected - current Time" + tstamp);
+            String emotion = "";
+            int cooldown = 0;
+            while (true) {
+                emotion = mc.expressEmotion();
+                if (emotion != "") {
+                    sendEmotion(emotion);
+                }
+                cooldown++;
+                Thread.sleep(1000);
+                if (cooldown == 5) {
+                    cooldown = 0;
+                    r.executeMovement(hp.getPosition("neutral").getActuatorList(), 30, 150);
+                }
 
+            }
+        }
     }
 
     private void addListener() {
@@ -99,6 +162,7 @@ public class Controller {
         this.ssg.setRadioButtonTimeStrategyListener(new TimeStragtegyActionListener());
         this.ssg.setjButton2Listener(new TimeStrategySetActionListener());
         this.ssg.setjButton3Listener(new OnOffStrategySetActionListener());
+
     }
 
     class Layer1CheckboxListener implements ActionListener {
@@ -171,6 +235,7 @@ public class Controller {
             layer2Time = ssg.getLayer2Time();
             layer3Time = ssg.getLayer3Time();
             System.out.println("TimeTimeTimeSET to " + layer1Time + " " + layer2Time + " " + layer3Time);
+            currentStrategy = "Time";
         }
     }
 
@@ -181,6 +246,9 @@ public class Controller {
             layer2Active = ssg.getOnOffCheckBoxLayer2();
             layer3Active = ssg.getOnOffCheckBoxLayer3();
             System.out.println("OnOffOnOffSET to " + layer1Active + " " + layer2Active + " " + layer3Active);
+            currentStrategy = "OnOff";
         }
     }
+    
+    class StartButton
 }
