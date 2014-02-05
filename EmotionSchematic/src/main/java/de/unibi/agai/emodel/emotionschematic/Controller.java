@@ -29,12 +29,12 @@ public class Controller {
     private MemoryConnector mc;
     private SchemataSelector ss;
     private boolean run = false;
-    private ArrayList<Person> persons;
+    private Persons persons;
 
     public Controller() throws InitializeException, NameNotFoundException {
         gui = new SchematicGui();
         addActionListener();
-        ArrayList<Person> persons = new ArrayList<Person>();
+        ArrayList<Persons> persons = new ArrayList<Persons>();
         mc = new MemoryConnector();
         //ss = new SchemataSelector();
         gui.setVisible(true);
@@ -53,6 +53,8 @@ public class Controller {
                 public void run() {
                     while (run){
                         try {
+                            if (mc.getPerson().getId()!=9999)
+                                persons.addNewPerson(mc.getPerson());
                             Thread.sleep(1000);
                             
                         } catch (InterruptedException ex) {

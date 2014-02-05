@@ -5,6 +5,7 @@
  */
 package de.unibi.agai.emodel.emotionschematic.xcf;
 
+import de.unibi.agai.emodel.emotionschematic.Person;
 import java.util.logging.Logger;
 import net.sf.xcf.ActiveMemory;
 import net.sf.xcf.InitializeException;
@@ -39,10 +40,15 @@ public class MemoryConnector {
     private static final String EMOTION_XPATH = "/eModel";
     private boolean eventTrigger = false;
     private String event = "";
+    private boolean personReady = false;
+    private Person person;
+    private int cooldownCounter;
+    private int threshold = 20;
 
     public MemoryConnector() throws InitializeException, NameNotFoundException {
         xm = XcfManager.createXcfManager();
         am = xm.createActiveMemory("ShortTerm");
+        cooldownCounter = threshold;
 
     }
 
@@ -58,40 +64,43 @@ public class MemoryConnector {
         if (!isListening) {
             System.out.println("Now Listening to " + am.getName());
             if (memoryEventAdapter == null) {
-                MemoryAction action = MemoryAction.ALL;
+                MemoryAction action = MemoryAction.REPLACE;
 
                 memoryEventAdapter = new MemoryEventAdapter(action, new XPath(
                         xpath)) {
 
                             @Override
                             synchronized public void handleEvent(MemoryEvent e) {
-                                XOPData xml = e.getData();
-                                Nodes bodyNodes = xml.getDocument().query("//BODYSKELETON");
-                                for (int i = 0; i < bodyNodes.size(); i++) {
-                                    
-                                    Node bodyNode = bodyNodes.get(i);
-                                    Nodes comNodes = bodyNode.query("//COM");
-                                    for (int j = 0; j < comNodes.size(); j++) {
-                                        Node node = comNodes.get(j);
-                                        Element partElement = (Element) node;
-                                        
-                                        System.out.println("Found Person: " + j +" at " + "(" +partElement.getAttributeValue("x") + " , " + partElement.getAttributeValue("y") + " , " + partElement.getAttributeValue("z") +" )" );
-
+                                cooldownCounter--;
+                                if (cooldownCounter == 0) {
+                                    System.out.println("Pick Up The Person");
+                                    personReady = false;
+                                    XOPData xml = e.getData();
+                                    Nodes bodyNodes = xml.getDocument().query("//BODYSKELETON");
+                                    int x = 0;
+                                    int y = 0;
+                                    int z = 0;
+                                    int id = 0;
+                                    for (int i = 0; i < bodyNodes.size(); i++) {
+                                        Node bodyNode = bodyNodes.get(i);
+                                        Element bodyElement = (Element) bodyNode;
+                                        id = Integer.parseInt(bodyElement.getAttributeValue("id"));
+                                        Nodes comNodes = bodyNode.query("//COM");
+                                        for (int j = 0; j < comNodes.size(); j++) {
+                                            Node node = comNodes.get(j);
+                                            Element partElement = (Element) node;
+                                            x = Integer.parseInt(partElement.getAttributeValue("x"));
+                                            y = Integer.parseInt(partElement.getAttributeValue("y"));
+                                            z = Integer.parseInt(partElement.getAttributeValue("z"));
+                                        }
                                     }
-                                }
-                                /*
-                                 for (int i = 0; i < emotionNodes.size(); i++) {
+                                    person = new Person(id, x, y, z);
+                                    personReady = true;
 
-                                 Node node = emotionNodes.get(i);
-                                 if (node instanceof Element) {
-                                 Element partElement = (Element) node;
-                                 System.out.println("nodename" + node.getDocument().toXML());
-                                 System.out.println(partElement.getAttributeValue("event"));
-                                 event = partElement.getAttributeValue("event");
-                                 eventTrigger = true;
-                                 }
-                                 }
-                                 */
+                                } else {
+                                    System.out.println("wait for cooldown" + cooldownCounter);
+                                }
+
                             }
                         };
             }
@@ -125,5 +134,17 @@ public class MemoryConnector {
 
     public void insertToMemory() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public Person getPerson() {
+        if (personReady) {
+            cooldownCounter = threshold;
+            personReady = false;
+            return person;
+        } else {
+            personReady = false;
+            return new Person(9999, 0, 0, 0);
+        }
+
     }
 }

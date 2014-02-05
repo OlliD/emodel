@@ -11,13 +11,18 @@ package de.unibi.agai.emodel.emotionschematic;
  */
 public class Person {
 
+    int id = 0;
     long x = 0;
     long y = 0;
     long z = 0;
     long detected = 0;
     long updated = 0;
-    
-    public Person (){
+
+    public Person(int id, long x, long y, long z) {
+        this.id = id;
+        this.x = x;
+        this.y = y;
+        this.z = z;
     }
 
     public long getX() {
@@ -59,6 +64,12 @@ public class Person {
     public void setUpdated(long updated) {
         this.updated = updated;
     }
-    
-    
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 }
