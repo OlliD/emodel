@@ -44,6 +44,10 @@ this.mc = mc;
         
         
     }
+
+    SchemataSelector() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
    
     private void checkForSchemata() throws InterruptedException{
         while (true){

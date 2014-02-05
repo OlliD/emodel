@@ -512,10 +512,10 @@ public class StrategySelectorGui extends javax.swing.JFrame {
 
     private void ButtonStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonStartActionPerformed
         ButtonStart.setEnabled(false);
+        ButtonStop.setEnabled(true);
         jButton2.setEnabled(false);
         jButton3.setEnabled(false);
         jButton4.setEnabled(false);
-        ButtonStop.setEnabled(true);
     }//GEN-LAST:event_ButtonStartActionPerformed
 
     private void ButtonStopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonStopActionPerformed

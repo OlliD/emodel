@@ -53,6 +53,7 @@ public class MemoryConnector {
         private String emotionToExpress="";
         
         
+        
         public MemoryConnector(StrategySelectorGui ssg) throws InitializeException, NameNotFoundException {
             xm = XcfManager.createXcfManager();
             am = xm.createActiveMemory("ShortTerm");

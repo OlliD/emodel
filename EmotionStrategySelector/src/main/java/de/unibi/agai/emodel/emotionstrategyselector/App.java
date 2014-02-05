@@ -20,6 +20,6 @@ public class App
     public static void main( String[] args ) throws XcfException, InterruptedException, MemoryException, InitializeException, NameNotFoundException, IOException, ExecutionException, TimeoutException
     {
         Controller c = new Controller();
-        c.worker();
+        //c.worker();
     }
 }

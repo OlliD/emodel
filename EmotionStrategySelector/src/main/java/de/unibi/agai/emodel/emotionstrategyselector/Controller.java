@@ -44,6 +44,7 @@ public class Controller {
     private boolean layer1Active;
     private boolean layer2Active;
     private boolean layer3Active;
+    private boolean run = false;
     private Timestamp tstamp;
     private String currentStrategy;
 
@@ -72,7 +73,7 @@ public class Controller {
         }
         Collections.sort(poses);
 
-// Connection to the Robot
+        // Connection to the Robot
         //HCGui eg = new HCGui(r, hp);
         //eg.setVisible(true);
         mc.startListening();
@@ -81,29 +82,70 @@ public class Controller {
     // Worker-Loop, die zu zeigende Emotion wir abgefragt und an den Roboter gesendet. Der Cooldown von 5sek 
     // führt zu einem neutralen Gesichtsausdruck
     public void worker() throws InterruptedException, IOException, ExecutionException, TimeoutException {
-        String emotion = "";
-        int cooldown = 0;
-        strategy st = strategy.valueOf(currentStrategy.toUpperCase());
+        new Thread() {
+            @Override
+            public void run() {
+                String emotion = "";
+                int cooldown = 0;
+                strategy st = strategy.valueOf(currentStrategy.toUpperCase());
+                switch (st) {
+                    case TIME:
+                        while (run) {
+                            try {
+                                System.err.println("Running TIME");
+                                emotion = mc.expressEmotion();
+                                if (emotion != "") {
+                                    try {
+                                        sendEmotion(emotion);
+                                    } catch (IOException ex) {
+                                        Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                                    } catch (ExecutionException ex) {
+                                        Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                                    } catch (TimeoutException ex) {
+                                        Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                                    } catch (InterruptedException ex) {
+                                        Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
+                                }
+                                Thread.sleep(2000);
+                                cooldown++;
 
-        switch (st) {
-            case TIME:
+                                if (cooldown == 5) {
+                                    cooldown = 0;
+                                    try {
+                                        r.executeMovement(hp.getPosition("neutral").getActuatorList(), 30, 150);
+                                    } catch (IOException ex) {
+                                        Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                                    } catch (ExecutionException ex) {
+                                        Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                                    } catch (InterruptedException ex) {
+                                        Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                                    } catch (TimeoutException ex) {
+                                        Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
+                                }
+                            } catch (InterruptedException ex) {
+                                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                            }
 
-                while (true) {
-                    emotion = mc.expressEmotion();
-                    if (emotion != "") {
-                        sendEmotion(emotion);
-                    }
-                    cooldown++;
-                    Thread.sleep(1000);
-                    if (cooldown == 5) {
-                        cooldown = 0;
-                        r.executeMovement(hp.getPosition("neutral").getActuatorList(), 30, 150);
-                    }
+                        }
+                        break;
+                    case ONOFF:
+                        while (run) {
+                            try {
+                                Thread.sleep(2000);
+                                System.err.println("Running OnOff");
+                            } catch (InterruptedException ex) {
+                                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                            }
 
+                        }
+                        break;
                 }
-                break;
 
-        }
+            }
+        }.start();
+
     }
 
     private void sendEmotion(String emotion) throws IOException, ExecutionException, TimeoutException, InterruptedException {
@@ -114,6 +156,8 @@ public class Controller {
     private void onOffStrategy() throws IOException, ExecutionException, TimeoutException, InterruptedException {
 
         System.out.println("OnOffStrategic selected");
+        currentStrategy = "onoff";
+
         String emotion = "";
         int cooldown = 0;
         while (true) {
@@ -134,6 +178,7 @@ public class Controller {
 
     private void timeStrategy() throws IOException, ExecutionException, TimeoutException, InterruptedException {
         if (layer1Time > 0 || layer2Time > 0 || layer3Time > 0) {
+            currentStrategy = "time";
             long currentTime = tstamp.getDate().getTime();
             System.out.println("Time Strategy selected - current Time" + tstamp);
             String emotion = "";
@@ -162,6 +207,8 @@ public class Controller {
         this.ssg.setRadioButtonTimeStrategyListener(new TimeStragtegyActionListener());
         this.ssg.setjButton2Listener(new TimeStrategySetActionListener());
         this.ssg.setjButton3Listener(new OnOffStrategySetActionListener());
+        this.ssg.setStopButtonListener(new StopButtonListener());
+        this.ssg.setStartButtonListener(new StartButtonListener());
 
     }
 
@@ -212,6 +259,37 @@ public class Controller {
 
     }
 
+    class StopButtonListener implements ActionListener {
+
+        public void actionPerformed(ActionEvent e) {
+
+            System.out.println("Stopp requested");
+            run = false;
+        }
+
+    }
+
+    class StartButtonListener implements ActionListener {
+
+        public void actionPerformed(ActionEvent e) {
+
+            System.out.println("Start requested");
+            run = true;
+            try {
+                worker();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ExecutionException ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (TimeoutException ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+    }
+
     class TimeStragtegyActionListener implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
@@ -249,6 +327,5 @@ public class Controller {
             currentStrategy = "OnOff";
         }
     }
-    
-    class StartButton
+
 }

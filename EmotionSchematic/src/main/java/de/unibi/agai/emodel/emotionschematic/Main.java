@@ -1,6 +1,6 @@
 package de.unibi.agai.emodel.emotionschematic;
 
-import de.unibi.agai.emodel.emotionschematic.gui.Gui;
+import de.unibi.agai.emodel.emotionschematic.gui.SchematicGui;
 import de.unibi.agai.emodel.emotionschematic.xcf.MemoryConnector;
 import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
@@ -17,11 +17,7 @@ public class Main
 {
     public static void main( String[] args ) throws InitializeException, NameNotFoundException, MemoryException, InterruptedException, ParserConfigurationException, SAXException, IOException
     {
-        MemoryConnector mc = new MemoryConnector();
-        Gui gui = new Gui(mc);
-        gui.setVisible(true);
-        SchemataSelector ss = new SchemataSelector(mc);
+        Controller c = new Controller();
 
-    
     }
 }
