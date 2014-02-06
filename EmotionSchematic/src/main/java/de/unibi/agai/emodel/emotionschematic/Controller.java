@@ -30,11 +30,12 @@ public class Controller {
     private SchemataSelector ss;
     private boolean run = false;
     private Persons persons;
+    private Person p;
 
     public Controller() throws InitializeException, NameNotFoundException {
         gui = new SchematicGui();
         addActionListener();
-        ArrayList<Persons> persons = new ArrayList<Persons>();
+        persons = new Persons();
         mc = new MemoryConnector();
         //ss = new SchemataSelector();
         gui.setVisible(true);
@@ -51,17 +52,21 @@ public class Controller {
             new Thread() {
                 @Override
                 public void run() {
-                    while (run){
+                    while (run) {
                         try {
-                            if (mc.getPerson().getId()!=9999)
-                                persons.addNewPerson(mc.getPerson());
-                            Thread.sleep(1000);
+                            p = mc.getPerson();
+                            if (p.getId() != 9999) {
+                                persons.addNewPerson(p);
+                            }
+                            Thread.sleep(2000);
+                            
+                            System.out.println("Currently detected " + persons.getSize());
                             
                         } catch (InterruptedException ex) {
                             Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
-                    
+
                 }
             }.start();
 
@@ -89,7 +94,7 @@ public class Controller {
     class ButtonStopListener implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
-          run = false;
+            run = false;
         }
 
     }

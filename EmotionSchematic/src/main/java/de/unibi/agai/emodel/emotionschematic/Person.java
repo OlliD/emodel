@@ -12,40 +12,40 @@ package de.unibi.agai.emodel.emotionschematic;
 public class Person {
 
     int id = 0;
-    long x = 0;
-    long y = 0;
-    long z = 0;
+    int x = 0;
+    int y = 0;
+    int z = 0;
     long detected = 0;
     long updated = 0;
 
-    public Person(int id, long x, long y, long z) {
+    public Person(int id, int x, int y, int z) {
         this.id = id;
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
-    public long getX() {
+    public int getX() {
         return x;
     }
 
-    public void setX(long x) {
+    public void setX(int x) {
         this.x = x;
     }
 
-    public long getY() {
+    public int getY() {
         return y;
     }
 
-    public void setY(long y) {
+    public void setY(int y) {
         this.y = y;
     }
 
-    public long getZ() {
+    public int getZ() {
         return z;
     }
 
-    public void setZ(long z) {
+    public void setZ(int z) {
         this.z = z;
     }
 
@@ -71,5 +71,17 @@ public class Person {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public void print() {
+        System.out.println(" ");
+        System.out.println("#######");
+        System.out.println("ID: " + id);
+        System.out.println("X: " + x);
+        System.out.println("Y: " + y);
+        System.out.println("Z: " + z);
+        System.out.println("#######");
+        System.out.println(" ");
+        
     }
 }

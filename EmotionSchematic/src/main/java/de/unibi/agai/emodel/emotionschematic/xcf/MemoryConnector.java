@@ -43,7 +43,7 @@ public class MemoryConnector {
     private boolean personReady = false;
     private Person person;
     private int cooldownCounter;
-    private int threshold = 20;
+    private int threshold = 15;
 
     public MemoryConnector() throws InitializeException, NameNotFoundException {
         xm = XcfManager.createXcfManager();
@@ -77,9 +77,9 @@ public class MemoryConnector {
                                     personReady = false;
                                     XOPData xml = e.getData();
                                     Nodes bodyNodes = xml.getDocument().query("//BODYSKELETON");
-                                    int x = 0;
-                                    int y = 0;
-                                    int z = 0;
+                                    double x = 0;
+                                    double y = 0;
+                                    double z = 0;
                                     int id = 0;
                                     for (int i = 0; i < bodyNodes.size(); i++) {
                                         Node bodyNode = bodyNodes.get(i);
@@ -89,16 +89,18 @@ public class MemoryConnector {
                                         for (int j = 0; j < comNodes.size(); j++) {
                                             Node node = comNodes.get(j);
                                             Element partElement = (Element) node;
-                                            x = Integer.parseInt(partElement.getAttributeValue("x"));
-                                            y = Integer.parseInt(partElement.getAttributeValue("y"));
-                                            z = Integer.parseInt(partElement.getAttributeValue("z"));
+                                            x = Double.parseDouble(partElement.getAttributeValue("x"));
+                                            y = Double.parseDouble(partElement.getAttributeValue("y"));
+                                            z = Double.parseDouble(partElement.getAttributeValue("z"));
                                         }
                                     }
-                                    person = new Person(id, x, y, z);
+                                    person = new Person(id, (int) x, (int) y, (int) z);
                                     personReady = true;
+                                    cooldownCounter = threshold;
 
                                 } else {
-                                    System.out.println("wait for cooldown" + cooldownCounter);
+                                    personReady = true;
+
                                 }
 
                             }
@@ -142,8 +144,8 @@ public class MemoryConnector {
             personReady = false;
             return person;
         } else {
-            personReady = false;
-            return new Person(9999, 0, 0, 0);
+            Person p = new Person(9999, 0, 0, 0);
+            return p;
         }
 
     }

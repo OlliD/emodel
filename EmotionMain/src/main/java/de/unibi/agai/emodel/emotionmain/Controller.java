@@ -111,12 +111,10 @@ public class Controller {
         boolean update = false;
         boolean add = false;
         if (faceList.size() == 0) {
-            System.out.println("#### adding first face ####");
-
             faceList.addAll(detectedFaces);
 
         } else {
-            System.out.println("Received in total " + detectedFaces.size());
+            System.out.println("EMotionMain: Received in total " + detectedFaces.size());
             for (int j = 0; j < detectedFaces.size(); j++) {
 
                 Faces f = detectedFaces.get(j);
@@ -131,19 +129,19 @@ public class Controller {
                         faceList.get(i).setTimpStamp(f.getTimpStamp());
                         faceList.get(i).setViewCount(f.getViewCount());
                         faceList.get(i).setEmotions(f.getEmotions());
-                        System.out.println("ID " + faceList.get(i).getCurrentId() + " updated");
+                        System.out.println("EMotionMain: ID " + faceList.get(i).getCurrentId() + " updated");
                         add = false;
                         break;
                     }
                 }
                 if (add) {
                     faceList.add(f);
-                    System.out.println("ID " + f.getCurrentId() + " added");
+                    System.out.println("EMotionMain: ID " + f.getCurrentId() + " added");
                     add = false;
                 }
             }
         }
-        System.out.println("#### Now are " + faceList.size() +" items in List ####");
+        System.out.println("EMotionMain: Now are " + faceList.size() +" items in List ####");
 
     }
 

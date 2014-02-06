@@ -7,6 +7,7 @@ package de.unibi.agai.emodel.emotionstrategyselector;
 
 import com.sun.jmx.snmp.Timestamp;
 import de.unibi.agai.emodel.emotionstrategyselector.gui.StrategySelectorGui;
+import de.unibi.agai.emodel.emotionstrategyselector.robotconnector.HCGui;
 import de.unibi.agai.emodel.emotionstrategyselector.robotconnector.HeadPositions;
 import de.unibi.agai.emodel.emotionstrategyselector.robotconnector.Robot;
 import de.unibi.agai.emodel.emotionstrategyselector.xcf.MemoryConnector;
@@ -74,8 +75,8 @@ public class Controller {
         Collections.sort(poses);
 
         // Connection to the Robot
-        //HCGui eg = new HCGui(r, hp);
-        //eg.setVisible(true);
+        HCGui eg = new HCGui(r, hp);
+        eg.setVisible(true);
         mc.startListening();
     }
 
