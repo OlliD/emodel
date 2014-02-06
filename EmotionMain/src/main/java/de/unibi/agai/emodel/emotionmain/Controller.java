@@ -8,6 +8,7 @@ package de.unibi.agai.emodel.emotionmain;
 import com.sun.jmx.snmp.Timestamp;
 import de.unibi.agai.eb.BusException;
 import de.unibi.agai.emodel.emotionmain.xcf.MemoryConnector;
+import de.unibi.agai.emodel.emotionmain.xcf.MemoryConnectorSchematic;
 import de.unibi.agai.emotionlib.communication.EmotionTaskHandler;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -33,12 +34,14 @@ public class Controller {
     private ActiveMemory am_ST;
     private ActiveMemory am_V;
     private MemoryConnector speechConnector;
-    private MemoryConnector contextConnector;
     private MemoryConnector faceConnector;
+    private MemoryConnectorSchematic bodyConnector;
     private Map<String, Float> emotions;
     private Float threshold = 50f;
     private List<Faces> faceList;
     private Timestamp tstamp;
+    private Person p;
+    private Persons persons;
 
     public Controller() throws InitializeException, NameNotFoundException, InterruptedException, MemoryException, BusException {
         XcfManager xm = XcfManager.createXcfManager();
@@ -46,12 +49,19 @@ public class Controller {
         ActiveMemory am_V = xm.createActiveMemory("vision");
         tstamp = new Timestamp(System.currentTimeMillis());
         System.out.println("Current Time " + tstamp.getDate().getTime() / 1000);
-
-        contextConnector = new MemoryConnector("context", am_V);
+        
+        //ISR
         speechConnector = new MemoryConnector("speech", am_ST);
+        
+        // Shore
         faceConnector = new MemoryConnector("OBJECTS", am_V);
         emotions = new HashMap<String, Float>();
         faceList = new ArrayList<Faces>();
+        // Kinect
+        bodyConnector = new MemoryConnectorSchematic();
+        persons = new Persons();
+
+        //WASBAI 
         EmotionTaskHandler emoHandler = new EmotionTaskHandler();
         emoHandler.start();
 
@@ -59,18 +69,25 @@ public class Controller {
     }
 
     private void worker() throws InterruptedException, MemoryException {
+        //Empfange neue Gesichter / Emotion vom Shore-Erkenner
         faceConnector.startListening();
+        //Empfange neue Körper vom BodyDetector
+        bodyConnector.startListening("/PERCEPTS");
+
         int j = 0;
         while (true) {
             Thread.sleep(2000);
             emotions = faceConnector.getEmotionMap();
+            // Frage beim Connector ob ein neues Gesicht gibt
             updateFaceList(faceConnector.getFace());
+            // Frage beim Connector ob ein neuer Körper im Bild ist
+            updateBodyList(bodyConnector.getPerson());
 
             //Looking for the emotion map and receive a map of emotions (happy, sad, surprised, angry) with value for reliability
             //when one value is over the threshold the label will be inserted into the memory
             for (Map.Entry<String, Float> entry : emotions.entrySet()) {
                 if (entry.getValue() > threshold) {
-                    System.out.println(entry.getKey() + " = " + entry.getValue());
+                    System.out.println("EmotionMain: " + entry.getKey() + " = " + entry.getValue());
                     speechConnector.insertToMemory("mimicry", entry.getKey(), entry.getValue().toString());
                     speechConnector.insertToMemory("schematic", entry.getKey(), entry.getValue().toString());
 
@@ -108,8 +125,8 @@ public class Controller {
     // Füge das neue Gesicht in die Liste 
     public void updateFaceList(List<Faces> detectedFaces) {
 
-        boolean update = false;
-        boolean add = false;
+        boolean updateFaces = false;
+        boolean addFace = false;
         if (faceList.size() == 0) {
             faceList.addAll(detectedFaces);
 
@@ -121,8 +138,8 @@ public class Controller {
 
                 for (int i = 0; i < faceList.size(); i++) {
                     if (faceList.get(i).getCurrentId() != f.getCurrentId()) {
-                        update = false;
-                        add = true;
+                        updateFaces = false;
+                        addFace = true;
                     } else if (faceList.get(i).getCurrentId() == f.getCurrentId()) {
                         faceList.get(i).setCurrentId(f.getCurrentId());
                         faceList.get(i).setLastId(f.getLastId());
@@ -130,18 +147,18 @@ public class Controller {
                         faceList.get(i).setViewCount(f.getViewCount());
                         faceList.get(i).setEmotions(f.getEmotions());
                         System.out.println("EMotionMain: ID " + faceList.get(i).getCurrentId() + " updated");
-                        add = false;
+                        addFace = false;
                         break;
                     }
                 }
-                if (add) {
+                if (addFace) {
                     faceList.add(f);
                     System.out.println("EMotionMain: ID " + f.getCurrentId() + " added");
-                    add = false;
+                    addFace = false;
                 }
             }
         }
-        System.out.println("EMotionMain: Now are " + faceList.size() +" items in List ####");
+        System.out.println("EMotionMain: Now are " + faceList.size() + " items in List ####");
 
     }
 
@@ -151,5 +168,15 @@ public class Controller {
                 faceList.remove(f);
             }
         }
+    }
+
+    public void updateBodyList(Person p) {
+        if (p.getId() != 9999) {
+            persons.addNewPerson(p);
+        }
+    }
+
+    public void cleanUpBodyList() {
+
     }
 }

@@ -72,7 +72,6 @@ public class MemoryConnectorSchematic {
                             synchronized public void handleEvent(MemoryEvent e) {
                                 cooldownCounter--;
                                 if (cooldownCounter == 0) {
-                                    System.out.println("Pick Up The Person");
                                     personReady = false;
                                     XOPData xml = e.getData();
                                     Nodes bodyNodes = xml.getDocument().query("//BODYSKELETON");
