@@ -11,13 +11,20 @@ import de.unibi.agai.emodel.emotionstrategyselector.robotconnector.HCGui;
 import de.unibi.agai.emodel.emotionstrategyselector.robotconnector.HeadPositions;
 import de.unibi.agai.emodel.emotionstrategyselector.robotconnector.Robot;
 import de.unibi.agai.emodel.emotionstrategyselector.xcf.MemoryConnector;
-import de.unibi.agai.emotionlib.communication.EmotionTaskHandler;
+import de.unibi.agai.robots.Actuator;
+import de.unibi.agai.robots.Actuator;
+import de.unibi.flobi.Actuators;
+import static de.unibi.flobi.Actuators.neck_pan;
+import static de.unibi.flobi.Actuators.neck_roll;
+import static de.unibi.flobi.Actuators.neck_tilt;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
@@ -48,6 +55,7 @@ public class Controller {
     private boolean run = false;
     private Timestamp tstamp;
     private String currentStrategy;
+    private Map<Actuators, Float> userOrientation;
 
     public enum strategy {
 
@@ -57,6 +65,7 @@ public class Controller {
     }
 
     public Controller() throws MemoryException, InitializeException, NameNotFoundException, IOException, ExecutionException, InterruptedException, TimeoutException {
+        userOrientation = new HashMap<Actuators, Float>();
 
         ssg = new StrategySelectorGui();
         ssg.setVisible(true);
@@ -64,12 +73,20 @@ public class Controller {
 
         System.err.println("StrategySelector startet!");
         mc = new MemoryConnector(ssg);
-
         r = new Robot();
         hp = new HeadPositions();
 
+        int min_pan = (int) (r.getMin(Actuators.neck_pan));
+        int max_pan = (int) (r.getMax(Actuators.neck_pan));
+        int min_tilt = (int) (r.getMin(Actuators.neck_tilt));
+        int max_tilt = (int) (r.getMax(Actuators.neck_tilt));
+        int min_roll = (int) (r.getMin(Actuators.neck_roll));
+        int max_roll = (int) (r.getMax(Actuators.neck_roll));
+
         List<String> poses = new ArrayList();
         for (String s : hp.getPositions().keySet()) {
+            System.out.println("Position added");
+
             poses.add(s);
         }
         Collections.sort(poses);
@@ -134,9 +151,59 @@ public class Controller {
                     case ONOFF:
                         while (run) {
                             try {
-                                Thread.sleep(2000);
+                                Thread.sleep(1000);
                                 System.err.println("Running OnOff");
+                                cooldown++;
+
+                                if (layer1Active) {
+                                    emotion = mc.expressEmotion();
+
+                                    if (emotion != "") {
+                                        try {
+                                            System.out.println("MIMICRY");
+
+                                            sendEmotion(emotion);
+                                        } catch (IOException ex) {
+                                            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                                        } catch (ExecutionException ex) {
+                                            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                                        } catch (TimeoutException ex) {
+                                            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                                        } catch (InterruptedException ex) {
+                                            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                                        }
+                                    }
+                                }
+                                if (layer2Active) {
+                                    // PUT HERE SCHEMATIC FUNCTION
+                                    schematic();
+                                }
+
+                                if (layer3Active) {
+                                    // PUT HERE STRATEGEC FUNCTION
+                                }
+                                if (cooldown == 3) {
+                                    System.out.println("Look back");
+                                    cooldown = 0;
+                                    try {
+                                        r.executeMovement(hp.getPosition("neutral").getActuatorList(), 30, 150);
+                                    } catch (IOException ex) {
+                                        Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                                    } catch (ExecutionException ex) {
+                                        Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                                    } catch (InterruptedException ex) {
+                                        Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                                    } catch (TimeoutException ex) {
+                                        Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
+                                }
                             } catch (InterruptedException ex) {
+                                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (IOException ex) {
+                                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (ExecutionException ex) {
+                                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (TimeoutException ex) {
                                 Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
                             }
 
@@ -154,10 +221,21 @@ public class Controller {
 
     }
 
+    private void schematic() throws IOException, ExecutionException, InterruptedException, TimeoutException {
+        String[] pos = mc.lookAtPosition();
+        System.out.println("Get UserPos " + pos[0] + " " + pos[1] + " " + pos[2]);
+        if (pos[0] != null && pos[1] != null && pos[2] != null) {
+            lookAtPos(Integer.parseInt(pos[0]), Integer.parseInt(pos[1]), Integer.parseInt(pos[2]));
+
+        }
+    }
+
     private void onOffStrategy() throws IOException, ExecutionException, TimeoutException, InterruptedException {
 
         System.out.println("OnOffStrategic selected");
         currentStrategy = "onoff";
+
+        Actuator act;
 
         String emotion = "";
         int cooldown = 0;
@@ -200,6 +278,32 @@ public class Controller {
         }
     }
 
+    private void lookAtPos(int x, int y, int z) throws IOException, ExecutionException, InterruptedException, TimeoutException {
+        userOrientation.put(Actuators.neck_tilt, 0f);
+        userOrientation.put(Actuators.neck_roll, -2f);
+
+        float a = x;
+        float b = y;
+        float c = z;
+        float hyp = (float) Math.sqrt((a * a) + (b * b));
+
+        float beta = (float) Math.toDegrees(Math.acos(((Math.pow(a, 2) + Math.pow(hyp, 2) - Math.pow(b, 2))) / (2 * a * hyp)));
+        System.out.println("a " + a + " b " + b + " hyp " + hyp + " beta " + beta);
+
+        float hyp_gamma = (float) Math.sqrt((a * a) + (c * c));
+
+        float gamma = (float) Math.toDegrees(Math.acos(((Math.pow(a, 2) + Math.pow(hyp_gamma, 2) - Math.pow(c, 2))) / (2 * a * hyp_gamma)));
+
+        if (b > 0) {
+            beta = beta * -1;
+        }
+
+        userOrientation.put(Actuators.neck_pan, beta);
+        userOrientation.put(Actuators.neck_tilt, gamma);
+        r.executeMovement(userOrientation, 20, 20);
+    }
+
+    // ACTIONLISTENER 
     private void addListener() {
         this.ssg.setLayer1CheckboxListener(new Layer1CheckboxListener());
         this.ssg.setLayer2CheckboxListener(new Layer2CheckboxListener());

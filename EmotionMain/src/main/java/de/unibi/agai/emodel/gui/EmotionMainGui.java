@@ -6,6 +6,8 @@
 package de.unibi.agai.emodel.gui;
 
 import de.unibi.agai.emodel.emotionmain.xcf.MemoryConnector;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -24,25 +26,16 @@ import nu.xom.Element;
  *
  * @author odamm
  */
-public class MainGui extends javax.swing.JFrame {
+public class EmotionMainGui extends javax.swing.JFrame {
 
     private String elementName;
     private String attributeKey;
     private String attributeValue;
-    private XcfManager xm;
-    private ActiveMemory am_ST;
-    private ActiveMemory am_V;
-    private MemoryConnector speechConnector;
-    private MemoryConnector contextConnector;
-    private MemoryConnector faceConnector;
-    private Map<String, Float> emotions;
+
     /**
      * Creates new form MainGui
      */
-    public MainGui() throws InitializeException, NameNotFoundException, MemoryException {
-        //contextConnector = new MemoryConnector("context");
-        //speechConnector = new MemoryConnector("speech");
-        //faceConnector = new MemoryConnector("face");
+    public EmotionMainGui() throws InitializeException, NameNotFoundException, MemoryException {
         initComponents();
     }
 
@@ -56,6 +49,7 @@ public class MainGui extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel2 = new javax.swing.JPanel();
+        jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -64,19 +58,19 @@ public class MainGui extends javax.swing.JFrame {
         jTextField1 = new javax.swing.JTextField();
         jTextField2 = new javax.swing.JTextField();
         jTextField3 = new javax.swing.JTextField();
-        jButton3 = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        buttonClean = new javax.swing.JButton();
+        buttonInsert = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
-        jCheckBox1 = new javax.swing.JCheckBox();
-        jTextField4 = new javax.swing.JTextField();
+        checkBoxConnectToMemory = new javax.swing.JCheckBox();
+        textFieldShortTerm = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         jToggleButton2 = new javax.swing.JToggleButton();
         jLabel5 = new javax.swing.JLabel();
-        jTextField5 = new javax.swing.JTextField();
+        textFieldVision = new javax.swing.JTextField();
         jPanel5 = new javax.swing.JPanel();
-        jToggleButton1 = new javax.swing.JToggleButton();
-        jToggleButton3 = new javax.swing.JToggleButton();
+        buttonFaceEvents = new javax.swing.JToggleButton();
+        buttonContextEvent = new javax.swing.JToggleButton();
         jPanel6 = new javax.swing.JPanel();
         fieldHappy = new javax.swing.JTextField();
         fieldSad = new javax.swing.JTextField();
@@ -86,7 +80,11 @@ public class MainGui extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
-        jButton4 = new javax.swing.JButton();
+        jLabel10 = new javax.swing.JLabel();
+        fieldID = new javax.swing.JTextField();
+        jPanel7 = new javax.swing.JPanel();
+        buttonStart = new javax.swing.JToggleButton();
+        buttonStop = new javax.swing.JToggleButton();
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -98,6 +96,8 @@ public class MainGui extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 100, Short.MAX_VALUE)
         );
+
+        jButton1.setText("jButton1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -138,18 +138,18 @@ public class MainGui extends javax.swing.JFrame {
 
         jTextField3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jButton3.setText("Clear");
-        jButton3.setToolTipText("");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        buttonClean.setText("Clear");
+        buttonClean.setToolTipText("");
+        buttonClean.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                buttonCleanActionPerformed(evt);
             }
         });
 
-        jButton1.setText("Insert");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        buttonInsert.setText("Insert");
+        buttonInsert.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                buttonInsertActionPerformed(evt);
             }
         });
 
@@ -167,15 +167,15 @@ public class MainGui extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addGap(51, 51, 51)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE))
+                        .addComponent(jTextField2))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jButton3)
+                        .addComponent(buttonClean)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1)))
+                        .addComponent(buttonInsert)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -195,17 +195,17 @@ public class MainGui extends javax.swing.JFrame {
                     .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton3)
-                    .addComponent(jButton1))
+                    .addComponent(buttonClean)
+                    .addComponent(buttonInsert))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Memory"));
 
-        jCheckBox1.setText("Connect to Memory");
-        jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
+        checkBoxConnectToMemory.setText("Connect to Memory");
+        checkBoxConnectToMemory.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBox1ActionPerformed(evt);
+                checkBoxConnectToMemoryActionPerformed(evt);
             }
         });
 
@@ -245,22 +245,22 @@ public class MainGui extends javax.swing.JFrame {
 
         jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("listen to"));
 
-        jToggleButton1.setText("Facial Events");
-        jToggleButton1.setEnabled(false);
-        jToggleButton1.addActionListener(new java.awt.event.ActionListener() {
+        buttonFaceEvents.setText("Facial Events");
+        buttonFaceEvents.setEnabled(false);
+        buttonFaceEvents.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jToggleButton1ActionPerformed(evt);
+                buttonFaceEventsActionPerformed(evt);
             }
         });
 
-        jToggleButton3.setText("Context Events");
-        jToggleButton3.setEnabled(false);
-        jToggleButton3.setMaximumSize(new java.awt.Dimension(101, 29));
-        jToggleButton3.setMinimumSize(new java.awt.Dimension(101, 29));
-        jToggleButton3.setPreferredSize(new java.awt.Dimension(101, 29));
-        jToggleButton3.addActionListener(new java.awt.event.ActionListener() {
+        buttonContextEvent.setText("Context Events");
+        buttonContextEvent.setEnabled(false);
+        buttonContextEvent.setMaximumSize(new java.awt.Dimension(101, 29));
+        buttonContextEvent.setMinimumSize(new java.awt.Dimension(101, 29));
+        buttonContextEvent.setPreferredSize(new java.awt.Dimension(101, 29));
+        buttonContextEvent.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jToggleButton3ActionPerformed(evt);
+                buttonContextEventActionPerformed(evt);
             }
         });
 
@@ -271,17 +271,17 @@ public class MainGui extends javax.swing.JFrame {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jToggleButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jToggleButton3, javax.swing.GroupLayout.DEFAULT_SIZE, 159, Short.MAX_VALUE))
+                    .addComponent(buttonFaceEvents, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(buttonContextEvent, javax.swing.GroupLayout.DEFAULT_SIZE, 159, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jToggleButton1)
+                .addComponent(buttonFaceEvents)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jToggleButton3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(buttonContextEvent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -294,30 +294,30 @@ public class MainGui extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(jCheckBox1)
+                        .addComponent(checkBoxConnectToMemory)
                         .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(textFieldVision, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(textFieldShortTerm, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jCheckBox1)
+                .addComponent(checkBoxConnectToMemory)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(textFieldShortTerm, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(textFieldVision, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5))
                 .addGap(18, 18, 18)
                 .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -347,12 +347,9 @@ public class MainGui extends javax.swing.JFrame {
 
         jLabel9.setText("Surprised");
 
-        jButton4.setText("Get");
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
-            }
-        });
+        jLabel10.setText("ID");
+
+        fieldID.setText("jTextField4");
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -361,26 +358,27 @@ public class MainGui extends javax.swing.JFrame {
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel6)
-                            .addComponent(jLabel7)
-                            .addComponent(jLabel8)
-                            .addComponent(jLabel9))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
-                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(fieldHappy, javax.swing.GroupLayout.DEFAULT_SIZE, 111, Short.MAX_VALUE)
-                            .addComponent(fieldSad)
-                            .addComponent(fieldAngry)
-                            .addComponent(fieldSurprised)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton4)))
+                    .addComponent(jLabel6)
+                    .addComponent(jLabel7)
+                    .addComponent(jLabel8)
+                    .addComponent(jLabel9)
+                    .addComponent(jLabel10))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(fieldHappy, javax.swing.GroupLayout.DEFAULT_SIZE, 111, Short.MAX_VALUE)
+                    .addComponent(fieldSad)
+                    .addComponent(fieldAngry)
+                    .addComponent(fieldSurprised)
+                    .addComponent(fieldID))
                 .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel10)
+                    .addComponent(fieldID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(fieldHappy, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6))
@@ -396,8 +394,38 @@ public class MainGui extends javax.swing.JFrame {
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(fieldSurprised, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel9))
-                .addGap(18, 18, 18)
-                .addComponent(jButton4)
+                .addContainerGap(39, Short.MAX_VALUE))
+        );
+
+        jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder("Model"));
+
+        buttonStart.setText("Start");
+
+        buttonStop.setText("Stop");
+        buttonStop.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonStopActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(buttonStop, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(buttonStart, javax.swing.GroupLayout.DEFAULT_SIZE, 197, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel7Layout.setVerticalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(buttonStart)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(buttonStop)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -407,18 +435,17 @@ public class MainGui extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jButton2)
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(21, 21, 21))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())))
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGap(0, 195, Short.MAX_VALUE)
+                        .addComponent(jButton2))
+                    .addComponent(jPanel6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -427,12 +454,14 @@ public class MainGui extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 69, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
                         .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 87, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButton2)))
                 .addContainerGap())
         );
@@ -452,128 +481,102 @@ public class MainGui extends javax.swing.JFrame {
         System.exit(0);
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void buttonCleanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonCleanActionPerformed
         jTextField1.setText("");
         jTextField2.setText("");
-    jTextField3.setText("");    }//GEN-LAST:event_jButton3ActionPerformed
+    jTextField3.setText("");    }//GEN-LAST:event_buttonCleanActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void buttonInsertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonInsertActionPerformed
         elementName = jTextField1.getText();
         attributeKey = jTextField2.getText();
         attributeValue = jTextField3.getText();
 
         Element root = new Element(elementName);
         root.addAttribute(new Attribute(attributeKey, attributeValue));
-        try {
-            am_ST.insert(new XOPData(new Document(root)));
-        } catch (MemoryException ex) {
-            Logger.getLogger(MainGui.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        System.out.println("inserted in " + am_ST.getName());
+    }//GEN-LAST:event_buttonInsertActionPerformed
 
-    }//GEN-LAST:event_jButton1ActionPerformed
+    public void setShortTermName(String name) {
+        textFieldShortTerm.setText(name);
+    }
 
-    private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
-        try {
-            try {
-                try {
-                    xm = XcfManager.createXcfManager();
-                } catch (InitializeException ex) {
-                    Logger.getLogger(MainGui.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                am_ST = xm.createActiveMemory("ShortTerm");
-                am_V = xm.createActiveMemory("vision");
-                // TODO add your handling code here:
-            } catch (InitializeException ex) {
-                Logger.getLogger(MainGui.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (NameNotFoundException ex) {
-                Logger.getLogger(MainGui.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            jTextField4.setText(am_ST.getName());
-            jToggleButton1.setEnabled(true);
-            jToggleButton2.setEnabled(true);
-            jToggleButton3.setEnabled(true);
-            jTextField5.setText(am_V.getName());
-            
-            contextConnector = new MemoryConnector("context", am_V);
-            speechConnector = new MemoryConnector("speech", am_ST);
-            faceConnector = new MemoryConnector("OBJECTS", am_V);
-        } catch (InitializeException ex) {
-            Logger.getLogger(MainGui.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NameNotFoundException ex) {
-            Logger.getLogger(MainGui.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
+    public void setVisionName(String name) {
+        textFieldVision.setText(name);
+    }
 
-    }//GEN-LAST:event_jCheckBox1ActionPerformed
+    private void checkBoxConnectToMemoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkBoxConnectToMemoryActionPerformed
 
-    private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
+        buttonFaceEvents.setEnabled(true);
+        jToggleButton2.setEnabled(true);
+        buttonContextEvent.setEnabled(true);
+    }//GEN-LAST:event_checkBoxConnectToMemoryActionPerformed
 
-        if (jToggleButton1.isSelected()){
-            try {
-                faceConnector.startListening();
-            } catch (MemoryException ex) {
-                Logger.getLogger(MainGui.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-            
-            else
-                try {
-                    faceConnector.stopListening();
-        } catch (MemoryException ex) {
-            Logger.getLogger(MainGui.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_jToggleButton1ActionPerformed
+    private void buttonContextEventActionPerformed(java.awt.event.ActionEvent evt) {
+
+    }
+
+
+    private void buttonFaceEventsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonFaceEventsActionPerformed
+
+    }//GEN-LAST:event_buttonFaceEventsActionPerformed
 
     private void jToggleButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton2ActionPerformed
 
-        if (jToggleButton2.isSelected()){
-            try {
-                speechConnector.startListening();
-            } catch (MemoryException ex) {
-                Logger.getLogger(MainGui.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-            
-            else
-                try {
-                    speechConnector.stopListening();
-        } catch (MemoryException ex) {
-            Logger.getLogger(MainGui.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }//GEN-LAST:event_jToggleButton2ActionPerformed
 
-    private void jToggleButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton3ActionPerformed
+    // Nun im Controller!! 
+    /*
+    private void buttonContextEventActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonContextEventActionPerformed
 
-        if (jToggleButton3.isSelected()){
-            try {
-                contextConnector.startListening();
-            } catch (MemoryException ex) {
-                Logger.getLogger(MainGui.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-            else
-                try {
-                    contextConnector.stopListening();
-        } catch (MemoryException ex) {
-            Logger.getLogger(MainGui.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_jToggleButton3ActionPerformed
-
+        if (ButtonContextEvents.isSelected()){
+     try {
+     contextConnector.startListening();
+     } catch (MemoryException ex) {
+     Logger.getLogger(EmotionMainGui.class.getName()).log(Level.SEVERE, null, ex);
+     }
+     }
+     else
+     try {
+     contextConnector.stopListening();
+     } catch (MemoryException ex) {
+     Logger.getLogger(EmotionMainGui.class.getName()).log(Level.SEVERE, null, ex);
+     }
+    }//GEN-LAST:event_buttonContextEventActionPerformed
+*/
     private void fieldSadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fieldSadActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_fieldSadActionPerformed
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        emotions = new HashMap<String, Float>();
-        emotions = faceConnector.getEmotionMap();
-        fieldHappy.setText(emotions.get("Happy").toString());
-        fieldAngry.setText(emotions.get("Angry").toString());
-        fieldSad.setText(emotions.get("Sad").toString());
-        fieldSurprised.setText(emotions.get("Surprised").toString());
+    private void buttonStopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonStopActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_buttonStopActionPerformed
 
-                
-    }//GEN-LAST:event_jButton4ActionPerformed
+    public void setEmotionValues(int id, float happy, float angry, float sad, float surprised) {
+        fieldID.setText(String.valueOf(id));
+        fieldHappy.setText(String.valueOf(happy));
+        fieldAngry.setText(String.valueOf(angry));
+        fieldSad.setText(String.valueOf(sad));
+        fieldSurprised.setText(String.valueOf(surprised));
+    }
+
+    public void addButtonContextEventsListener(ActionListener l) {
+        buttonContextEvent.addActionListener(l);
+    }
+
+    public void addButtonFaceEventsListener(ActionListener l) {
+        buttonFaceEvents.addActionListener(l);
+    }
+
+    public void addButtonStartListener(ActionListener l) {
+        buttonStart.addActionListener(l);
+    }
+
+    public void addButtonStopListener(ActionListener l) {
+        buttonStop.addActionListener(l);
+    }
+
+    public void addCheckBoxConnectToMemoryListener(ActionListener l) {
+        checkBoxConnectToMemory.addActionListener(l);
+    }
 
     /**
      * @param args the command line arguments
@@ -592,13 +595,13 @@ public class MainGui extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MainGui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(EmotionMainGui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MainGui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(EmotionMainGui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MainGui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(EmotionMainGui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(MainGui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(EmotionMainGui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
@@ -606,29 +609,35 @@ public class MainGui extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    new MainGui().setVisible(true);
+                    new EmotionMainGui().setVisible(true);
                 } catch (InitializeException ex) {
-                    Logger.getLogger(MainGui.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(EmotionMainGui.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (NameNotFoundException ex) {
-                    Logger.getLogger(MainGui.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(EmotionMainGui.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (MemoryException ex) {
-                    Logger.getLogger(MainGui.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(EmotionMainGui.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton buttonClean;
+    private javax.swing.JToggleButton buttonContextEvent;
+    private javax.swing.JToggleButton buttonFaceEvents;
+    private javax.swing.JButton buttonInsert;
+    private javax.swing.JToggleButton buttonStart;
+    private javax.swing.JToggleButton buttonStop;
+    private javax.swing.JCheckBox checkBoxConnectToMemory;
     private javax.swing.JTextField fieldAngry;
     private javax.swing.JTextField fieldHappy;
+    private javax.swing.JTextField fieldID;
     private javax.swing.JTextField fieldSad;
     private javax.swing.JTextField fieldSurprised;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -643,13 +652,12 @@ public class MainGui extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
-    private javax.swing.JToggleButton jToggleButton1;
     private javax.swing.JToggleButton jToggleButton2;
-    private javax.swing.JToggleButton jToggleButton3;
+    private javax.swing.JTextField textFieldShortTerm;
+    private javax.swing.JTextField textFieldVision;
     // End of variables declaration//GEN-END:variables
 }

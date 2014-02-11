@@ -3,14 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package de.unibi.agai.emodel.emotionstrategyselector.xcf;
 
-
 import de.unibi.agai.emodel.emotionstrategyselector.gui.StrategySelectorGui;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 import net.sf.xcf.ActiveMemory;
 import net.sf.xcf.InitializeException;
@@ -23,15 +18,11 @@ import net.sf.xcf.memory.MemoryAction;
 import net.sf.xcf.memory.MemoryException;
 import net.sf.xcf.naming.NameNotFoundException;
 import net.sf.xcf.transport.XOPData;
-import net.sf.xcf.util.SynchronizedQueue;
 import nu.xom.Attribute;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Node;
 import nu.xom.Nodes;
-
- 
-
 
 /**
  *
@@ -39,203 +30,193 @@ import nu.xom.Nodes;
  */
 public class MemoryConnector {
 
-        public RemoteServer rs = null;
-        public XcfManager xm;
-       	private ActiveMemory am;
-	private MemoryEventAdapter mimircyEventAdapter;
-	private MemoryEventAdapter strategicEventAdapter;
-	private MemoryEventAdapter schematicEventAdapter;
-	private volatile boolean isListening = false;
-        private static final Logger LOGGER = Logger.getLogger(MemoryConnector.class.getName());
-	private static final String EMOTION_XPATH = "/eModel";
-        private StrategySelectorGui ssg; 
-        private boolean expressEmotion;
-        private String emotionToExpress="";
-        
-        
-        
-        public MemoryConnector(StrategySelectorGui ssg) throws InitializeException, NameNotFoundException {
-            xm = XcfManager.createXcfManager();
-            am = xm.createActiveMemory("ShortTerm");
-            this.ssg = ssg;
+    public RemoteServer rs = null;
+    public XcfManager xm;
+    private ActiveMemory am;
+    private MemoryEventAdapter mimircyEventAdapter;
+    private MemoryEventAdapter strategicEventAdapter;
+    private MemoryEventAdapter schematicEventAdapter;
+    private volatile boolean isListening = false;
+    private static final Logger LOGGER = Logger.getLogger(MemoryConnector.class.getName());
+    private static final String EMOTION_XPATH = "/eModel";
+    private StrategySelectorGui ssg;
+    private boolean expressEmotion;
+    private String emotionToExpress = "";
+    private String[] position;
+    private boolean lookAtPos = false;
 
-	} 
+    public MemoryConnector(StrategySelectorGui ssg) throws InitializeException, NameNotFoundException {
+        xm = XcfManager.createXcfManager();
+        am = xm.createActiveMemory("ShortTerm");
+        this.ssg = ssg;
+        position = new String[3];
+    }
 
+    public synchronized void insertToMemory() throws MemoryException {
+        Element root = new Element("eModel");
+        root.addAttribute(new Attribute("EModel", "MyMimicry"));
+        am.insert(new XOPData(new Document(root)));
+    }
 
-        public synchronized void insertToMemory() throws MemoryException{
-            Element root = new Element("eModel");
-            root.addAttribute(new Attribute("EModel", "MyMimicry"));
-            am.insert(new XOPData(new Document(root)));
-        }
-        
-        public synchronized void listenToMemory(){
-            try {
-                System.out.println("lets take a look in " + am.getName());
-                am.addListener(new MemoryEventAdapter(
-		MemoryAction.ALL, new XPath("/*")) {
-			synchronized public void handleEvent(
-			MemoryEvent e) {
-				System.out.println(" found something "+ e.getData()
-					.getDocumentAsText());
-			}});
-                
-	} catch(MemoryException e) {
-                }
-        }
-        
-        
-        public synchronized void startListening() throws MemoryException {
-            if (!isListening) {
-                    System.out.println("Now Listening to " + am.getName());
-                    if (mimircyEventAdapter == null){
-				MemoryAction action = MemoryAction.INSERT;
+    public synchronized void startListening() throws MemoryException {
+        if (!isListening) {
+            System.out.println("Now Listening to " + am.getName());
+            if (mimircyEventAdapter == null) {
+                MemoryAction action = MemoryAction.ALL;
 
-				mimircyEventAdapter = new MemoryEventAdapter(action, new XPath(
-						"/mimicry")) {
+                mimircyEventAdapter = new MemoryEventAdapter(action, new XPath(
+                        "//Mimicry")) {
 
-					@Override
-					synchronized public void handleEvent(MemoryEvent e) {
-                                                XOPData xml = e.getData();
+                            @Override
+                            synchronized public void handleEvent(MemoryEvent e) {
+                                XOPData xml = e.getData();
 
-						Nodes emotionNodes = xml.getDocument().query(
-								"/mimicry");
+                                Nodes emotionNodes = xml.getDocument().query(
+                                        "//Mimicry");
 
-						// Get the phoneme chain text
-						for (int i = 0; i < emotionNodes.size(); i++) {
+                                for (int i = 0; i < emotionNodes.size(); i++) {
 
-							Node node = emotionNodes.get(i);
-							if (node instanceof Element) {
-								Element partElement = (Element) node;
-                                                                if (!expressEmotion){
-                                                                    emotionToExpress = partElement.getAttributeValue("Emotion");
-                                                                    ssg.setLayer1Text(emotionToExpress);
-                                                                    expressEmotion = true;
-                                                                            }
+                                    Node node = emotionNodes.get(i);
+                                    if (node instanceof Element) {
+                                        Element partElement = (Element) node;
+                                        System.out.println("Found " + partElement.getAttributeValue("Emotion"));
+                                        if (!expressEmotion) {
+                                            emotionToExpress = partElement.getAttributeValue("Emotion");
+                                            ssg.setLayer1Text(emotionToExpress);
+                                            expressEmotion = true;
+                                        }
 
-                                                        } 
-						}
+                                    }
+                                }
 
-					}
-				};
-			}
-                        if (schematicEventAdapter == null){
-				MemoryAction action = MemoryAction.INSERT;
-
-				schematicEventAdapter = new MemoryEventAdapter(action, new XPath(
-						"/schematic")) {
-
-					@Override
-					synchronized public void handleEvent(MemoryEvent e) {
-                                                XOPData xml = e.getData();
-
-						Nodes emotionNodes = xml.getDocument().query(
-								"/schematic");
-
-						// Get the phoneme chain text
-						for (int i = 0; i < emotionNodes.size(); i++) {
-
-							Node node = emotionNodes.get(i);
-							if (node instanceof Element) {
-								Element partElement = (Element) node;
-                                                                if (!expressEmotion){
-                                                                    emotionToExpress = partElement.getAttributeValue("Emotion");
-                                                                    ssg.setLayer2Text(emotionToExpress);
-                                                                    expressEmotion = true;
-                                                                }
-                                                        } 
-						}
-
-					}
-				};
-			}
-                        if (strategicEventAdapter == null){
-				MemoryAction action = MemoryAction.INSERT;
-
-				strategicEventAdapter = new MemoryEventAdapter(action, new XPath(
-						"/strategic")) {
-
-					@Override
-					synchronized public void handleEvent(MemoryEvent e) {
-                                                XOPData xml = e.getData();
-
-						Nodes emotionNodes = xml.getDocument().query(
-								"/strategic");
-
-						// Get the phoneme chain text
-						for (int i = 0; i < emotionNodes.size(); i++) {
-
-							Node node = emotionNodes.get(i);
-							if (node instanceof Element) {
-								Element partElement = (Element) node;
-                                                                if (!expressEmotion){
-                                                                    emotionToExpress = partElement.getAttributeValue("Emotion");
-                                                                    ssg.setLayer3Text(emotionToExpress);
-                                                                    expressEmotion = true;
-                                                                    }
-                                                        } 
-                                                        
-						}
-					}
-				};
-			}
-		}
-	}
-        
-        public ActiveMemory getMemory (){
-            return am;
-        }
-        
-        public boolean isListening() {
-		return isListening;
-	}
-
-        public String expressEmotion(){
-            if (expressEmotion){
-                expressEmotion = false;
-                return emotionToExpress;
+                            }
+                        };
             }
-            else
-                return "";
-        }
-        
-        public void startListeningLayer1(boolean status) throws MemoryException{
-            if (status){
-                am.addListener(mimircyEventAdapter);
-                System.err.println("ESS:MemoryConnector - mimicry inserted");
-                isListening = true;
+            if (schematicEventAdapter == null) {
+                MemoryAction action = MemoryAction.ALL;
+
+                schematicEventAdapter = new MemoryEventAdapter(action, new XPath(
+                        "//Emotion")) {
+
+                            @Override
+                            synchronized public void handleEvent(MemoryEvent e) {
+                                lookAtPos = false;
+
+                                XOPData xml = e.getData();
+
+                                Nodes emotionNodes = xml.getDocument().query(
+                                        "//Schematic");
+
+                                for (int i = 0; i < emotionNodes.size(); i++) {
+
+                                    Node node = emotionNodes.get(i);
+                                    if (node instanceof Element) {
+                                        Element partElement = (Element) node;
+                                        position[0] = partElement.getAttributeValue("X");
+                                        position[1] = partElement.getAttributeValue("Y");
+                                        position[2] = partElement.getAttributeValue("Z");
+                                    }
+                                }
+                                lookAtPos = true;
+
+                            }
+
+                        };
             }
-            else {
-                am.removeListener(mimircyEventAdapter);
-                isListening = false;
+            if (strategicEventAdapter == null) {
+                MemoryAction action = MemoryAction.ALL;
+
+                strategicEventAdapter = new MemoryEventAdapter(action, new XPath(
+                        "/strategic")) {
+
+                            @Override
+                            synchronized public void handleEvent(MemoryEvent e) {
+                                XOPData xml = e.getData();
+
+                                Nodes emotionNodes = xml.getDocument().query(
+                                        "/strategic");
+
+                                for (int i = 0; i < emotionNodes.size(); i++) {
+
+                                    Node node = emotionNodes.get(i);
+                                    if (node instanceof Element) {
+                                        Element partElement = (Element) node;
+                                        if (!expressEmotion) {
+                                            emotionToExpress = partElement.getAttributeValue("Emotion");
+                                            ssg.setLayer3Text(emotionToExpress);
+                                            expressEmotion = true;
+                                        }
+                                    }
+
+                                }
+                            }
+                        };
             }
         }
+    }
 
-        public void startListeningLayer2(boolean status) throws MemoryException{
-            if (status){
-                am.addListener(schematicEventAdapter);
-                System.err.println("ESS:MemoryConnector - mimicry schematic");
-                isListening = true;
-            }
-            else {
-                am.removeListener(schematicEventAdapter);
-                isListening = false;
-            }
+    public ActiveMemory getMemory() {
+        return am;
+    }
+
+    public boolean isListening() {
+        return isListening;
+    }
+
+    public String[] lookAtPosition() {
+        if (lookAtPos = true){
+            lookAtPos = false;
+            return position;
         }
-        
-        public void startListeningLayer3(boolean status) throws MemoryException{
-            if (status){
-                am.addListener(strategicEventAdapter);
-                System.err.println("ESS:MemoryConnector - strategic inserted");
-                isListening = true;
-            }
-            else {
-                am.removeListener(strategicEventAdapter);
-                isListening = false;
-            }
+        else
+            return new String[3];
+
+    }
+
+    public String expressEmotion() {
+        if (expressEmotion) {
+            expressEmotion = false;
+            return emotionToExpress;
+        } else {
+            return "";
         }
-        
+    }
+
+    public void startListeningLayer1(boolean status) throws MemoryException {
+        if (status) {
+            am.addListener(mimircyEventAdapter);
+            System.err.println("ESS:MemoryConnector - mimicry inserted");
+            isListening = true;
+        } else {
+            am.removeListener(mimircyEventAdapter);
+            isListening = false;
+        }
+    }
+
+    public void startListeningLayer2(boolean status) throws MemoryException {
+        if (status) {
+            am.addListener(schematicEventAdapter);
+            System.err.println("ESS:MemoryConnector - schematic inserted");
+            isListening = true;
+        } else {
+            am.removeListener(schematicEventAdapter);
+            isListening = false;
+        }
+    }
+
+    public void startListeningLayer3(boolean status) throws MemoryException {
+        if (status) {
+            am.addListener(strategicEventAdapter);
+            System.err.println("ESS:MemoryConnector - strategic inserted");
+            isListening = true;
+        } else {
+            am.removeListener(strategicEventAdapter);
+            isListening = false;
+        }
+    }
+
     void stopListening() throws MemoryException {
-        if (isListening){
+        if (isListening) {
             am.removeListener(mimircyEventAdapter);
             am.removeListener(schematicEventAdapter);
             am.removeListener(strategicEventAdapter);

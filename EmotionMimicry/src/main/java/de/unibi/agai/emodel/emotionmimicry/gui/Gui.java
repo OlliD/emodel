@@ -3,11 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package de.unibi.agai.emodel.emotionmimicry.gui;
 
 import de.unibi.agai.emodel.emotionmimicry.ComputeMimicry;
 import de.unibi.agai.emodel.emotionmimicry.xcf.MemoryConnector;
+import java.awt.event.ActionListener;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.sf.xcf.memory.MemoryException;
@@ -21,6 +21,7 @@ public class Gui extends javax.swing.JFrame {
     private MemoryConnector mc;
     private ComputeMimicry cm;
     private String inputSelector = "";
+
     /**
      * Creates new form Gui
      */
@@ -47,8 +48,11 @@ public class Gui extends javax.swing.JFrame {
         buttonGroup1 = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
         jCheckBox1 = new javax.swing.JCheckBox();
-        jRadioButton1 = new javax.swing.JRadioButton();
-        jRadioButton3 = new javax.swing.JRadioButton();
+        radioButtonRMimic = new javax.swing.JRadioButton();
+        radioButtonShore = new javax.swing.JRadioButton();
+        radioButtonEmotionMain = new javax.swing.JRadioButton();
+        jTextField1 = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -63,43 +67,70 @@ public class Gui extends javax.swing.JFrame {
             }
         });
 
-        buttonGroup1.add(jRadioButton1);
-        jRadioButton1.setText("RMimic Input");
-        jRadioButton1.addActionListener(new java.awt.event.ActionListener() {
+        buttonGroup1.add(radioButtonRMimic);
+        radioButtonRMimic.setText("RMimic Input");
+        radioButtonRMimic.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButton1ActionPerformed(evt);
+                radioButtonRMimicActionPerformed(evt);
             }
         });
 
-        buttonGroup1.add(jRadioButton3);
-        jRadioButton3.setText("Shore Input");
-        jRadioButton3.addActionListener(new java.awt.event.ActionListener() {
+        buttonGroup1.add(radioButtonShore);
+        radioButtonShore.setText("Shore Input");
+        radioButtonShore.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButton3ActionPerformed(evt);
+                radioButtonShoreActionPerformed(evt);
             }
         });
+
+        buttonGroup1.add(radioButtonEmotionMain);
+        radioButtonEmotionMain.setText("EmotionMain Input");
+        radioButtonEmotionMain.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                radioButtonEmotionMainActionPerformed(evt);
+            }
+        });
+
+        jTextField1.setText("60");
+        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField1ActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("min. Reliability");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jCheckBox1)
-                .addGap(0, 213, Short.MAX_VALUE))
-            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jRadioButton3)
-                    .addComponent(jRadioButton1))
-                .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(radioButtonEmotionMain)
+                    .addComponent(radioButtonShore)
+                    .addComponent(radioButtonRMimic)
+                    .addComponent(jCheckBox1)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(3, 3, 3)
+                        .addComponent(jLabel1)))
+                .addGap(0, 63, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jRadioButton1)
+                .addComponent(radioButtonRMimic)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jRadioButton3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jCheckBox1))
+                .addComponent(radioButtonShore)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(radioButtonEmotionMain)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
+                .addGap(18, 18, 18)
+                .addComponent(jCheckBox1)
+                .addContainerGap())
         );
 
         jButton1.setText("Exit");
@@ -115,56 +146,97 @@ public class Gui extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jButton1)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton1)
-                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButton1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
-        if (jCheckBox1.isSelected()){
-            try {
-                mc.startListening(inputSelector);
-        } catch (MemoryException ex) {
-            Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        else try {
-            mc.stopListening();
-        } catch (MemoryException ex) {
-            Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
+        /*
+         if (jCheckBox1.isSelected()) {
+         try {
+         mc.startListening(inputSelector);
+         } catch (MemoryException ex) {
+         Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
+         }
+         } else {
+         try {
+         mc.stopListening();
+         } catch (MemoryException ex) {
+         Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
+         }
+         }*/
     }//GEN-LAST:event_jCheckBox1ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         System.exit(0);
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void jRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton1ActionPerformed
+    private void radioButtonRMimicActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioButtonRMimicActionPerformed
         this.jCheckBox1.setEnabled(true);
         this.inputSelector = "rmimic";
-        
-    }//GEN-LAST:event_jRadioButton1ActionPerformed
 
-    private void jRadioButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton3ActionPerformed
+    }//GEN-LAST:event_radioButtonRMimicActionPerformed
+
+    private void radioButtonShoreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioButtonShoreActionPerformed
         this.jCheckBox1.setEnabled(true);
         this.inputSelector = "shore";
 
-    }//GEN-LAST:event_jRadioButton3ActionPerformed
+    }//GEN-LAST:event_radioButtonShoreActionPerformed
+
+    private void radioButtonEmotionMainActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioButtonEmotionMainActionPerformed
+        this.jCheckBox1.setEnabled(true);
+        this.inputSelector = "emotion";
+    }//GEN-LAST:event_radioButtonEmotionMainActionPerformed
+
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField1ActionPerformed
+
+    public String getInputSelector() {
+        return inputSelector;
+    }
+
+    public boolean getCheckBoxState() {
+        if (jCheckBox1.isSelected()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    public int getReliability(){
+        return Integer.parseInt(jTextField1.getText());
+    }
+
+    public boolean getShoreButton(){
+        return radioButtonShore.isSelected();
+    }
+    
+    public boolean getRMimicButton(){
+        return radioButtonRMimic.isSelected();
+    }
+    
+    public boolean getEmotionMainButton(){
+        return radioButtonEmotionMain.isSelected();
+    }
+    public void setStartCheckBoxListener(ActionListener l) {
+        this.jCheckBox1.addActionListener(l);
+    }
 
     /**
      * @param args the command line arguments
@@ -205,8 +277,11 @@ public class Gui extends javax.swing.JFrame {
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton jButton1;
     private javax.swing.JCheckBox jCheckBox1;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JRadioButton jRadioButton1;
-    private javax.swing.JRadioButton jRadioButton3;
+    private javax.swing.JTextField jTextField1;
+    private javax.swing.JRadioButton radioButtonEmotionMain;
+    private javax.swing.JRadioButton radioButtonRMimic;
+    private javax.swing.JRadioButton radioButtonShore;
     // End of variables declaration//GEN-END:variables
 }

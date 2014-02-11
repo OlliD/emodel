@@ -3,16 +3,22 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.unibi.agai.emodel.emotionmain;
+package de.unibi.agai.emodel.emotionmain.types;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
  *
  * @author odamm
  */
-public class Faces {
+public class Face {
 
     //private String currentEmotion;
     private String lastEmotion;
@@ -23,7 +29,7 @@ public class Faces {
     private Map<String, Float> emotions;
 
     
-    public Faces(int currentId) {
+    public Face(int currentId) {
         this.currentId = currentId;
         this.timeStamp = 0;
         emotions = new HashMap<String, Float>();
@@ -37,13 +43,40 @@ public class Faces {
     public long getTimpStamp() {
         return timeStamp;
     }
+    
+    public void printEmotionList(){
+        Map<String, Float> sortedEmotions = new HashMap<String, Float>();
+        sortedEmotions = sortByValue(emotions);
+        System.out.println(sortedEmotions.keySet().toArray()[3]);
+        System.out.println(sortedEmotions.values().toArray()[3]);
+        for (Map.Entry<String, Float> entry : sortedEmotions.entrySet()) {
+            System.out.println(entry.getKey() + " " + entry.getValue());
+        }
+    }
+    
+    public float getEmotionByName(String name){
+        
+        return emotions.get(name);
+    }
+    
+    public String getMostLikelyEmotion(){
+        Map<String, Float> sortedEmotions = sortByValue(emotions);
+        //System.out.println(sortedEmotions.keySet().toArray()[3]);
+        //System.out.println(sortedEmotions.values().toArray()[3]);
+        
+        return (String) sortedEmotions.keySet().toArray()[3];
+    }
 
     public void setTimpStamp(long timpStamp) {
         this.timeStamp = timpStamp;
     }
 
-    public Faces getFace(){
-        return new Faces(999);
+    public Face getFace(){
+        return new Face(999);
+    }
+    
+    public float getReliability(String emotion){
+        return emotions.get(emotion);
     }
     
     public String getLastEmotion() {
@@ -109,4 +142,21 @@ public class Faces {
         System.out.println("##### ##### #####");
 
     }
+    
+    private Map sortByValue(Map map) {
+     List list = new LinkedList(map.entrySet());
+     Collections.sort(list, new Comparator() {
+          public int compare(Object o1, Object o2) {
+               return ((Comparable) ((Map.Entry) (o1)).getValue())
+              .compareTo(((Map.Entry) (o2)).getValue());
+          }
+     });
+
+    Map result = new LinkedHashMap();
+    for (Iterator it = list.iterator(); it.hasNext();) {
+        Map.Entry entry = (Map.Entry)it.next();
+        result.put(entry.getKey(), entry.getValue());
+    }
+    return result;
+} 
 }

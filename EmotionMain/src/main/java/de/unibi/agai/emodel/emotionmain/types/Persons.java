@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.unibi.agai.emodel.emotionmain;
+package de.unibi.agai.emodel.emotionmain.types;
 
 import java.util.ArrayList;
 
@@ -14,6 +14,11 @@ import java.util.ArrayList;
 public class Persons {
 
     private ArrayList<Person> persons;
+
+    private Person player;
+    private Person other;
+    private boolean secondPersonDetected = false;
+    private boolean playerDetected = false;
 
     public Persons() {
         persons = new ArrayList<Person>();
@@ -43,7 +48,7 @@ public class Persons {
                     persons.get(i).setX(person.getX());
                     persons.get(i).setY(person.getY());
                     persons.get(i).setZ(person.getZ());
-                    System.out.println("Person updated");
+                    System.out.println("Person updated. New X is: " + persons.get(i).getY());
                     add = false;
                     break;
                 } else if (distance(person, persons.get(i)) > 10) {
@@ -52,14 +57,36 @@ public class Persons {
             }
             if (add) {
                 persons.add(person);
+                if (distance(person, player) > 600) {
+                    secondPersonDetected = true;
+                    System.out.println("Found second person at: ");
+                    other=person;
+                }
                 add = false;
             }
         }
         if (persons.size() == 0) {
             persons.add(person);
+            player = person;
+            playerDetected = true;
             System.out.println("first Person added");
         }
 
+    }
+
+    public Person getPlayer() {
+        return player;
+    }
+    
+    public Person getOther(){
+        return other;
+    }
+    public boolean playerDetected(){
+        return playerDetected;
+    }
+    
+    public boolean otherPerson(){
+        return secondPersonDetected;
     }
 
     public void printList() {

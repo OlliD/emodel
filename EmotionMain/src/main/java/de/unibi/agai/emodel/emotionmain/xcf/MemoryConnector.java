@@ -5,7 +5,7 @@
  */
 package de.unibi.agai.emodel.emotionmain.xcf;
 
-import de.unibi.agai.emodel.emotionmain.Faces;
+import de.unibi.agai.emodel.emotionmain.types.Face;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -43,8 +43,8 @@ public class MemoryConnector {
     private static final String EMOTION_XPATH = "/eModel";
     private String xpath = "";
     private Map<String, Float> emotions;
-    private Faces face;
-    private List<Faces> faceList;
+    private Face face;
+    private List<Face> faceList;
     boolean faceReady = false;
     
     public MemoryConnector(String xpath, ActiveMemory mem) throws InitializeException, NameNotFoundException {
@@ -52,7 +52,7 @@ public class MemoryConnector {
         //xm = XcfManager.createXcfManager();
         //am = xm.createActiveMemory("ShortTerm");
         this.xpath = xpath;
-        faceList = new ArrayList<Faces>();
+        faceList = new ArrayList<Face>();
         emotions = new HashMap<String, Float>();
         
         emotions.put("Happy", 0f);
@@ -98,7 +98,7 @@ public class MemoryConnector {
                                         String str = partElement.getAttributeValue("Id");
                                         id = Integer.parseInt(partElement.getAttributeValue("Id"));
                                     }
-                                    face = new Faces(id);
+                                    face = new Face(id);
                                     face.setTimpStamp(timpStamp);
                                     
                                     Nodes emotionNodes = doc.query(
@@ -150,23 +150,24 @@ public class MemoryConnector {
         return emotions;
     }
     
-    public List<Faces> getFace(){
+    public List<Face> getFace(){
         if (faceReady){
             System.out.println("Sending List with " + faceList.size() + " items");
             return faceList;
         }
         else {
-            List<Faces> faceListDummy = new ArrayList<Faces>();
+            List<Face> faceListDummy = new ArrayList<Face>();
             return faceListDummy;
         }
             
     }
 
     public synchronized void insertToMemory(String elementName, String attributeKey, String attributeValue) throws MemoryException {
-        Element root = new Element(elementName);
-        root.addAttribute(new Attribute("Emotion", attributeKey));
-        root.addAttribute(new Attribute("Reliability", attributeValue));
-        System.err.println("EmotionMain: " + root.toString());
+        Element root = new Element("Emotion");
+        Element ele = new Element(elementName);
+        root.appendChild(ele);
+        ele.addAttribute(new Attribute("Emotion", attributeKey));
+        ele.addAttribute(new Attribute("Reliability", attributeValue));
         am.insert(new XOPData(new Document(root)));
     }
 }

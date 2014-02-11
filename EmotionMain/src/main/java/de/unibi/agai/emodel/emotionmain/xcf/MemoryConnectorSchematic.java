@@ -5,7 +5,7 @@
  */
 package de.unibi.agai.emodel.emotionmain.xcf;
 
-import de.unibi.agai.emodel.emotionmain.Person;
+import de.unibi.agai.emodel.emotionmain.types.Person;
 import java.util.logging.Logger;
 import net.sf.xcf.ActiveMemory;
 import net.sf.xcf.InitializeException;
@@ -42,7 +42,7 @@ public class MemoryConnectorSchematic {
     private boolean personReady = false;
     private Person person;
     private int cooldownCounter;
-    private int threshold = 15;
+    private int threshold = 2;
 
     public MemoryConnectorSchematic() throws InitializeException, NameNotFoundException {
         xm = XcfManager.createXcfManager();
@@ -51,13 +51,7 @@ public class MemoryConnectorSchematic {
 
     }
 
-    public synchronized void insertToMemory(String elementName, String attributeKey, String attributeValue) throws MemoryException {
-        Element root = new Element("eModel");
-        root.addAttribute(new Attribute("EModel", "MyMimicry"));
-        am.insert(new XOPData(new Document(root)));
-        System.out.println("inserted in " + am.getName());
 
-    }
 
     public synchronized void startListening(String xpath) throws MemoryException {
         if (!isListening) {
@@ -97,7 +91,7 @@ public class MemoryConnectorSchematic {
                                     cooldownCounter = threshold;
 
                                 } else {
-                                    personReady = true;
+                                    personReady = false;
 
                                 }
 
@@ -132,8 +126,17 @@ public class MemoryConnectorSchematic {
         am.removeListener(memoryEventAdapter);
     }
 
-    public void insertToMemory() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public synchronized void insertToMemory(String elementName, Person p) throws MemoryException {
+        Element root = new Element("Emotion");
+        Element ele = new Element(elementName); //Position
+        root.appendChild(ele);
+        ele.addAttribute(new Attribute("X", String.valueOf(p.getX())));
+        ele.addAttribute(new Attribute("Y", String.valueOf(p.getY())));
+        ele.addAttribute(new Attribute("Z", String.valueOf(p.getZ())));
+
+
+        
+        am.insert(new XOPData(new Document(root)));
     }
 
     public Person getPerson() {

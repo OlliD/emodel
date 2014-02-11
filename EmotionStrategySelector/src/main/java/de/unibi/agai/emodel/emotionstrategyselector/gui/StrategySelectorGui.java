@@ -5,9 +5,7 @@
  */
 package de.unibi.agai.emodel.emotionstrategyselector.gui;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeListener;
 
 /**
  *

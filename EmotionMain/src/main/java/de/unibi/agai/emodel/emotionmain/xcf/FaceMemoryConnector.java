@@ -6,7 +6,7 @@
 
 package de.unibi.agai.emodel.emotionmain.xcf;
 
-import de.unibi.agai.emodel.emotionmain.Faces;
+import de.unibi.agai.emodel.emotionmain.types.Face;
 import java.util.logging.Logger;
 import net.sf.xcf.ActiveMemory;
 import net.sf.xcf.InitializeException;

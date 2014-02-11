@@ -2,7 +2,7 @@ package de.unibi.agai.emodel.emotionmain;
 
 import de.unibi.agai.eb.BusException;
 import de.unibi.agai.emodel.emotionmain.xcf.MemoryConnector;
-import de.unibi.agai.emodel.gui.MainGui;
+import de.unibi.agai.emodel.gui.EmotionMainGui;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -20,8 +20,6 @@ public class Main
     
     public static void main( String[] args ) throws InitializeException, NameNotFoundException, MemoryException, InterruptedException, BusException
         {
-        MainGui gui = new MainGui();
-        gui.setVisible(true);
         Controller c = new Controller();
 
     }
