@@ -1,5 +1,7 @@
 package de.unibi.agai.emodel.emotionstrategyselector;
 
+import de.unibi.agai.dapi.pack.PackerNotFoundException;
+import de.unibi.agai.eb.BusException;
 import de.unibi.agai.emodel.emotionstrategyselector.gui.StrategySelectorGui;
 import de.unibi.agai.emodel.emotionstrategyselector.robotconnector.HCGui;
 import de.unibi.agai.emodel.emotionstrategyselector.xcf.MemoryConnector;
@@ -15,9 +17,9 @@ import net.sf.xcf.naming.NameNotFoundException;
  * Hello world!
  *
  */
-public class App 
+public class Main 
 {
-    public static void main( String[] args ) throws XcfException, InterruptedException, MemoryException, InitializeException, NameNotFoundException, IOException, ExecutionException, TimeoutException
+    public static void main( String[] args ) throws XcfException, InterruptedException, MemoryException, InitializeException, NameNotFoundException, IOException, ExecutionException, TimeoutException, BusException, PackerNotFoundException
     {
         Controller c = new Controller();
         //c.worker();

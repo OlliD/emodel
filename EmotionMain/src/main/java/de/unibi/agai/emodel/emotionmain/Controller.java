@@ -9,7 +9,6 @@ import de.unibi.agai.emodel.emotionmain.types.Persons;
 import de.unibi.agai.emodel.emotionmain.types.Face;
 import de.unibi.agai.emodel.emotionmain.types.Person;
 import com.sun.jmx.snmp.Timestamp;
-import com.sun.xml.internal.ws.client.ContentNegotiation;
 import de.unibi.agai.eb.BusException;
 import de.unibi.agai.emodel.emotionmain.xcf.MemoryConnector;
 import de.unibi.agai.emodel.emotionmain.xcf.MemoryConnectorSchematic;
@@ -70,8 +69,9 @@ public class Controller {
         persons = new Persons();
 
         //WASBAI 
-        EmotionTaskHandler emoHandler = new EmotionTaskHandler();
-        emoHandler.start();
+        //EmotionTaskHandler emoHandler = new EmotionTaskHandler();
+        //emoHandler.start();
+       
 
     }
 
@@ -100,13 +100,13 @@ public class Controller {
                         // Frage beim Connector ob ein neuer Körper im Bild ist
                         updateBodyList(bodyConnector.getPerson());
 
-                        Thread.sleep(2000);
+                        Thread.sleep(500);
 
                         //persons.printList();
                         if (persons.playerDetected()) {
                             bodyConnector.insertToMemory("Position", persons.getPlayer()); // change to getOther
                         }
-                        
+
                         if (persons.otherPerson()) {
                             persons.getOther().print();
                             System.out.println("Distance: " + persons.distance(persons.getPlayer(), persons.getOther()));
@@ -124,6 +124,7 @@ public class Controller {
                         //Looking for the emotion map and receive a map of emotions (happy, sad, surprised, angry) with value for reliability
                         //when one value is over the threshold the label will be inserted into the memory
                         cleanUpFaceList();
+                        cleanUpBodyList();
 
                         /*
                          System.out.println("### WORKER ### After Cleaning " + faceList.size() + " faces left");
@@ -250,7 +251,18 @@ public class Controller {
     }
 
     public void cleanUpBodyList() {
+        if (persons.getPlayer() != null) {
+            gui.setPositionX(persons.getPlayer().getX());
+            gui.setPositionY(persons.getPlayer().getY());
+            gui.setPositionZ(persons.getPlayer().getZ());
+        }
 
+        for (int i = 0; i < persons.getSize(); i++) {
+            if (((persons.get(i).getDetected()) + 20000) < System.currentTimeMillis()) {
+                persons.remove(i);
+            }
+        }
+        System.out.println(" Currently in PersonList " + persons.getSize());
     }
 
     class faceEventsListener implements ActionListener {
@@ -258,7 +270,11 @@ public class Controller {
         public void actionPerformed(ActionEvent e) {
             try {
                 //Empfange neue Gesichter / Emotion vom Shore-Erkenner
-                faceConnector.startListening();
+                if (!faceConnector.isListening()) {
+                    faceConnector.startListening();
+                } else if (faceConnector.isListening()) {
+                    faceConnector.stopListening();
+                }
             } catch (MemoryException ex) {
                 Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -271,7 +287,11 @@ public class Controller {
         public void actionPerformed(ActionEvent e) {
             try {
                 //Empfange neue Körper vom BodyDetector
-                bodyConnector.startListening("/PERCEPTS");
+                if (!bodyConnector.isListening()) {
+                    bodyConnector.startListening("/PERCEPTS");
+                } else if (bodyConnector.isListening()) {
+                    bodyConnector.stopListening();
+                }
             } catch (MemoryException ex) {
                 Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
             }

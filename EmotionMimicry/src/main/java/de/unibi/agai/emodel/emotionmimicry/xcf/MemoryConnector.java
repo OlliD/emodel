@@ -35,9 +35,6 @@ public class MemoryConnector {
     private final ActiveMemory am;
     private MemoryEventAdapter memoryEventAdapter;
     private volatile boolean isListening = false;
-    private static final Logger LOGGER = Logger.getLogger(MemoryConnector.class.getName());
-    private static final String EMOTION_XPATH = "/eModel";
-    private String xpath = "";
     private boolean eventTrigger = false;
     private String[] event;
 

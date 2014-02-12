@@ -43,6 +43,7 @@ public class MemoryConnectorSchematic {
     private Person person;
     private int cooldownCounter;
     private int threshold = 2;
+    private String xpath;
 
     public MemoryConnectorSchematic() throws InitializeException, NameNotFoundException {
         xm = XcfManager.createXcfManager();
@@ -51,9 +52,8 @@ public class MemoryConnectorSchematic {
 
     }
 
-
-
     public synchronized void startListening(String xpath) throws MemoryException {
+        this.xpath = xpath;
         if (!isListening) {
             System.out.println("Now Listening to " + am.getName());
             if (memoryEventAdapter == null) {
@@ -100,6 +100,8 @@ public class MemoryConnectorSchematic {
             }
 
             am.addListener(memoryEventAdapter);
+            System.out.println("Started Listening to " + am.getName() + " for /" + xpath + " events");
+
             isListening = true;
         }
     }
@@ -123,6 +125,8 @@ public class MemoryConnectorSchematic {
 
     public void stopListening() throws MemoryException {
         this.isListening = false;
+        System.out.println("Stopped Listening to " + am.getName() + " for /" + xpath + " events");
+
         am.removeListener(memoryEventAdapter);
     }
 
@@ -134,8 +138,6 @@ public class MemoryConnectorSchematic {
         ele.addAttribute(new Attribute("Y", String.valueOf(p.getY())));
         ele.addAttribute(new Attribute("Z", String.valueOf(p.getZ())));
 
-
-        
         am.insert(new XOPData(new Document(root)));
     }
 
@@ -143,6 +145,7 @@ public class MemoryConnectorSchematic {
         if (personReady) {
             cooldownCounter = threshold;
             personReady = false;
+            person.setDetected(System.currentTimeMillis());
             return person;
         } else {
             Person p = new Person(9999, 0, 0, 0);

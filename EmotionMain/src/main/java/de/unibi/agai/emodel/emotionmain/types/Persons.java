@@ -15,7 +15,7 @@ public class Persons {
 
     private ArrayList<Person> persons;
 
-    private Person player;
+    private int player;
     private Person other;
     private boolean secondPersonDetected = false;
     private boolean playerDetected = false;
@@ -45,6 +45,7 @@ public class Persons {
                 if (persons.get(i).getId() != person.getId()) {
                     add = true;
                 } else if (persons.get(i).getId() == person.getId()) {
+                    persons.get(i).setDetected(person.getDetected());
                     persons.get(i).setX(person.getX());
                     persons.get(i).setY(person.getY());
                     persons.get(i).setZ(person.getZ());
@@ -57,17 +58,17 @@ public class Persons {
             }
             if (add) {
                 persons.add(person);
-                if (distance(person, player) > 600) {
+                if (distance(person, getPlayer()) > 600) {
                     secondPersonDetected = true;
                     System.out.println("Found second person at: ");
-                    other=person;
+                    other = person;
                 }
                 add = false;
             }
         }
         if (persons.size() == 0) {
             persons.add(person);
-            player = person;
+            player = person.getId();
             playerDetected = true;
             System.out.println("first Person added");
         }
@@ -75,17 +76,23 @@ public class Persons {
     }
 
     public Person getPlayer() {
-        return player;
+        for (int i = 0; i < persons.size(); i++) {
+            if (persons.get(i).getId() == player) {
+                return persons.get(i);
+            }
+        }
+        return null;
     }
-    
-    public Person getOther(){
+
+    public Person getOther() {
         return other;
     }
-    public boolean playerDetected(){
+
+    public boolean playerDetected() {
         return playerDetected;
     }
-    
-    public boolean otherPerson(){
+
+    public boolean otherPerson() {
         return secondPersonDetected;
     }
 
@@ -100,6 +107,14 @@ public class Persons {
 
     public int getSize() {
         return persons.size();
+    }
+
+    public Person get(int i) {
+        return persons.get(i);
+    }
+
+    public void remove(int i) {
+        persons.remove(i);
     }
 
 }

@@ -66,8 +66,8 @@ public class HCGui extends javax.swing.JFrame {
             eyebrow_right.setMaximum((int) (r.getMax(Actuators.right_eyebrow) * 100));
             eyebrow_right.setMinimum((int) (r.getMin(Actuators.right_eyebrow) * 100));
 
-            lip_left.setMaximum((int) (r.getMax(Actuators.lip_left_upper) * 100));
-            lip_left.setMinimum((int) (r.getMin(Actuators.lip_left_upper) * 100));
+            lip_left.setMaximum((int) (r.getMin(Actuators.lip_left_upper) * 100));
+            lip_left.setMinimum((int) (r.getMax(Actuators.lip_left_upper) * 100));
 
             lip_right.setMaximum((int) (r.getMax(Actuators.lip_right_upper) * 100));
             lip_right.setMinimum((int) (r.getMin(Actuators.lip_right_upper) * 100));
@@ -75,8 +75,8 @@ public class HCGui extends javax.swing.JFrame {
             lip_center_down.setMaximum((int) (r.getMax(Actuators.lip_center_lower) * 100));
             lip_center_down.setMinimum((int) (r.getMin(Actuators.lip_center_lower) * 100));
 
-            lip_center_up.setMaximum((int) (r.getMax(Actuators.lip_center_upper) * 100));
-            lip_center_up.setMinimum((int) (r.getMin(Actuators.lip_center_upper) * 100));
+            lip_center_up.setMaximum((int) (r.getMin(Actuators.lip_center_upper) * 100));
+            lip_center_up.setMinimum((int) (r.getMax(Actuators.lip_center_upper) * 100));
 
             neck_pan.setMaximum((int) (r.getMax(Actuators.neck_pan) * 100));
             neck_pan.setMinimum((int) (r.getMin(Actuators.neck_pan) * 100));
@@ -84,8 +84,8 @@ public class HCGui extends javax.swing.JFrame {
             neck_tilt.setMaximum((int) (r.getMax(Actuators.neck_tilt) * 100));
             neck_tilt.setMinimum((int) (r.getMin(Actuators.neck_tilt) * 100));
 
-            neck_roll.setMaximum((int) (r.getMin(Actuators.neck_roll) * 100));
-            neck_roll.setMinimum((int) (r.getMax(Actuators.neck_roll) * 100));
+            neck_roll.setMaximum((int) (r.getMax(Actuators.neck_roll) * 100));
+            neck_roll.setMinimum((int) (r.getMin(Actuators.neck_roll) * 100));
 
             eye_left.setMaximum((int) (r.getMax(Actuators.left_eye_pan) * 100));
             eye_left.setMinimum((int) (r.getMin(Actuators.left_eye_pan) * 100));

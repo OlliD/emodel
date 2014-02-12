@@ -6,11 +6,17 @@
 package de.unibi.agai.emodel.emotionstrategyselector;
 
 import com.sun.jmx.snmp.Timestamp;
+import de.unibi.agai.dapi.pack.PackerNotFoundException;
+import de.unibi.agai.eb.BusException;
 import de.unibi.agai.emodel.emotionstrategyselector.gui.StrategySelectorGui;
 import de.unibi.agai.emodel.emotionstrategyselector.robotconnector.HCGui;
 import de.unibi.agai.emodel.emotionstrategyselector.robotconnector.HeadPositions;
 import de.unibi.agai.emodel.emotionstrategyselector.robotconnector.Robot;
 import de.unibi.agai.emodel.emotionstrategyselector.xcf.MemoryConnector;
+import de.unibi.agai.emotionlib.EmotionControlBase;
+import de.unibi.agai.emotionlib.communication.EmotionServer;
+import de.unibi.agai.emotionlib.communication.EmotionTaskHandler;
+import de.unibi.agai.emotionlib.output.EmotionalExpr;
 import de.unibi.agai.robots.Actuator;
 import de.unibi.agai.robots.Actuator;
 import de.unibi.flobi.Actuators;
@@ -41,7 +47,7 @@ public class Controller {
 
     private Robot r;
     private HeadPositions hp;
-    MemoryConnector mc;
+    private MemoryConnector mc;
     private String strategicEmotion;
     private String mimircyEmotion;
     private String schematicEmotion;
@@ -56,6 +62,11 @@ public class Controller {
     private Timestamp tstamp;
     private String currentStrategy;
     private Map<Actuators, Float> userOrientation;
+    private long startTime;
+    private long runtime;
+    private EmotionTaskHandler eth;
+    private EmotionServer es;
+    private int cooldown;
 
     public enum strategy {
 
@@ -64,7 +75,8 @@ public class Controller {
         PERCENTAGE
     }
 
-    public Controller() throws MemoryException, InitializeException, NameNotFoundException, IOException, ExecutionException, InterruptedException, TimeoutException {
+    public Controller() throws MemoryException, InitializeException, NameNotFoundException, IOException, ExecutionException, InterruptedException, TimeoutException, BusException, PackerNotFoundException {
+        cooldown = 0;
         userOrientation = new HashMap<Actuators, Float>();
 
         ssg = new StrategySelectorGui();
@@ -75,6 +87,10 @@ public class Controller {
         mc = new MemoryConnector(ssg);
         r = new Robot();
         hp = new HeadPositions();
+        EmotionControlBase ecb;
+
+        eth = new EmotionTaskHandler();
+        eth.activateVisualizion();
 
         int min_pan = (int) (r.getMin(Actuators.neck_pan));
         int max_pan = (int) (r.getMax(Actuators.neck_pan));
@@ -104,28 +120,65 @@ public class Controller {
             @Override
             public void run() {
                 String emotion = "";
-                int cooldown = 0;
-                strategy st = strategy.valueOf(currentStrategy.toUpperCase());
-                switch (st) {
+                switch (strategy.valueOf(currentStrategy.toUpperCase())) {
                     case TIME:
+                        boolean layer1Running = true;
+                        boolean layer2Running = true;
+                        boolean layer3Running = true;
                         while (run) {
+
                             try {
                                 System.err.println("Running TIME");
-                                emotion = mc.expressEmotion();
-                                if (emotion != "") {
-                                    try {
-                                        sendEmotion(emotion);
-                                    } catch (IOException ex) {
-                                        Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-                                    } catch (ExecutionException ex) {
-                                        Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-                                    } catch (TimeoutException ex) {
-                                        Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-                                    } catch (InterruptedException ex) {
-                                        Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-                                    }
+                                runtime = (System.currentTimeMillis() - startTime) / 1000;
+                                if (runtime < layer1Time) {
+                                    System.out.println("Runing layer 1 ");
+                                    emotion = mc.expressEmotion();
+                                } else {
+                                    layer1Running = false;
                                 }
-                                Thread.sleep(2000);
+
+                                if (runtime < layer2Time) {
+                                    System.out.println("Runing layer 2 ");
+                                    emotion = mc.expressEmotion();
+                                } else {
+                                    layer2Running = false;
+                                }
+
+                                if (runtime < layer3Time) {
+                                    System.out.println("Runing layer 3");
+                                    emotion = mc.expressEmotion();
+
+                                } else {
+                                    layer3Running = false;
+                                }
+
+                                System.out.println(layer1Running);
+                                System.out.println(layer2Running);
+                                System.out.println(layer3Running);
+
+                                if (!layer1Running && !layer2Running && !layer3Running) {
+                                    System.out.println("Time to stop");
+                                    run = false;
+                                    ssg.setLayer1Text("STOPPED");
+                                    ssg.setLayer2Text("STOPPED");
+                                    ssg.setLayer3Text("STOPPED");
+
+                                }
+                                /*
+                                 if (emotion != "") {
+                                 try {
+                                 sendEmotion(emotion);
+                                 } catch (IOException ex) {
+                                 Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                                 } catch (ExecutionException ex) {
+                                 Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                                 } catch (TimeoutException ex) {
+                                 Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                                 } catch (InterruptedException ex) {
+                                 Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                                 }
+                                 }*/
+                                Thread.sleep(1000);
                                 cooldown++;
 
                                 if (cooldown == 5) {
@@ -183,19 +236,7 @@ public class Controller {
                                     // PUT HERE STRATEGEC FUNCTION
                                 }
                                 if (cooldown == 3) {
-                                    System.out.println("Look back");
-                                    cooldown = 0;
-                                    try {
-                                        r.executeMovement(hp.getPosition("neutral").getActuatorList(), 30, 150);
-                                    } catch (IOException ex) {
-                                        Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-                                    } catch (ExecutionException ex) {
-                                        Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-                                    } catch (InterruptedException ex) {
-                                        Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-                                    } catch (TimeoutException ex) {
-                                        Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-                                    }
+                                    lookNeutral();
                                 }
                             } catch (InterruptedException ex) {
                                 Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
@@ -213,11 +254,6 @@ public class Controller {
 
             }
         }.start();
-
-    }
-
-    private void sendEmotion(String emotion) throws IOException, ExecutionException, TimeoutException, InterruptedException {
-        r.executeMovement(hp.getPosition(emotion.toLowerCase()).getActuatorList(), 30, 150);
 
     }
 
@@ -270,12 +306,21 @@ public class Controller {
                 cooldown++;
                 Thread.sleep(1000);
                 if (cooldown == 5) {
-                    cooldown = 0;
-                    r.executeMovement(hp.getPosition("neutral").getActuatorList(), 30, 150);
+                    lookNeutral();
                 }
 
             }
         }
+    }
+
+    private void sendEmotion(String emotion) throws IOException, ExecutionException, TimeoutException, InterruptedException {
+        r.executeMovement(hp.getPosition(emotion.toLowerCase()).getActuatorList(), 30, 150);
+    }
+
+    private void lookNeutral() throws ExecutionException, IOException, InterruptedException, TimeoutException {
+        System.out.println("Look back");
+        cooldown = 0;
+        r.executeMovement(hp.getPosition("neutral").getActuatorList(), 30, 150);
     }
 
     private void lookAtPos(int x, int y, int z) throws IOException, ExecutionException, InterruptedException, TimeoutException {
@@ -314,7 +359,11 @@ public class Controller {
         this.ssg.setjButton3Listener(new OnOffStrategySetActionListener());
         this.ssg.setStopButtonListener(new StopButtonListener());
         this.ssg.setStartButtonListener(new StartButtonListener());
+        this.ssg.addLookAroundListener(new LookAroundActionListener());
 
+        this.ssg.addBlinkListener(new BlinkActionListener());
+        this.ssg.addFacialListener(new FacialActionListener());
+        this.ssg.addProsodyListener(new ProsodyActionListener());
     }
 
     class Layer1CheckboxListener implements ActionListener {
@@ -377,8 +426,10 @@ public class Controller {
     class StartButtonListener implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
+            startTime = System.currentTimeMillis();
 
-            System.out.println("Start requested");
+            System.out.println("Starting time: " + startTime);
+
             run = true;
             try {
                 worker();
@@ -430,6 +481,55 @@ public class Controller {
             layer3Active = ssg.getOnOffCheckBoxLayer3();
             System.out.println("OnOffOnOffSET to " + layer1Active + " " + layer2Active + " " + layer3Active);
             currentStrategy = "OnOff";
+        }
+    }
+
+    class LookAroundActionListener implements ActionListener {
+
+        public void actionPerformed(ActionEvent e) {
+            if (ssg.getLookAroundStatus()) {
+                eth.startExpression(EmotionalExpr.lookAround);
+            } else if (!ssg.getLookAroundStatus()) {
+                eth.stopExpression(EmotionalExpr.lookAround);
+            }
+
+        }
+    }
+
+    class ProsodyActionListener implements ActionListener {
+
+        public void actionPerformed(ActionEvent e) {
+            if (ssg.getProsodyStatus()) {
+                eth.startExpression(EmotionalExpr.prosody);
+            } else if (!ssg.getFacialStatus()) {
+                eth.stopExpression(EmotionalExpr.prosody);
+            }
+
+        }
+    }
+
+    class BlinkActionListener implements ActionListener {
+
+        public void actionPerformed(ActionEvent e) {
+            if (ssg.getBlinkStatus()) {
+                eth.startExpression(EmotionalExpr.blink);
+            } else if (!ssg.getFacialStatus()) {
+                eth.stopExpression(EmotionalExpr.blink);
+                System.out.println("Stop blink");
+            }
+
+        }
+    }
+
+    class FacialActionListener implements ActionListener {
+
+        public void actionPerformed(ActionEvent e) {
+            if (ssg.getFacialStatus()) {
+                eth.startExpression(EmotionalExpr.facial);
+            } else if (!ssg.getFacialStatus()) {
+                eth.stopExpression(EmotionalExpr.facial);
+            }
+
         }
     }
 
