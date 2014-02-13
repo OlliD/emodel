@@ -111,6 +111,7 @@ public class Persons {
 
     public void printList() {
         for (int i = 0; i < persons.size(); i++) {
+            System.out.println("Player? " + persons.get(i).getPlayer());
             System.out.println("ID: " + persons.get(i).getId());
             System.out.println("XPos: " + persons.get(i).getX());
             System.out.println("YPos: " + persons.get(i).getY());

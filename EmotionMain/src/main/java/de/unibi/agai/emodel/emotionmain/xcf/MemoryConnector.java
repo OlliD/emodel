@@ -6,6 +6,7 @@
 package de.unibi.agai.emodel.emotionmain.xcf;
 
 import de.unibi.agai.emodel.emotionmain.types.Face;
+import de.unibi.agai.emodel.emotionmain.types.Person;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -152,7 +153,7 @@ public class MemoryConnector {
     
     public List<Face> getFace(){
         if (faceReady){
-            System.out.println("Sending List with " + faceList.size() + " items");
+            //System.out.println("Sending List with " + faceList.size() + " items");
             return faceList;
         }
         else {
@@ -166,6 +167,8 @@ public class MemoryConnector {
         Element root = new Element("Emotion");
         Element ele = new Element(elementName);
         root.appendChild(ele);
+        Object obj = new Person(1,1,1,1,true);
+        
         ele.addAttribute(new Attribute("Emotion", attributeKey));
         ele.addAttribute(new Attribute("Reliability", attributeValue));
         am.insert(new XOPData(new Document(root)));

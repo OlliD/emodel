@@ -30,6 +30,7 @@ public class Controller {
     private SchemataSelector ss;
     private boolean run = false;
     private Persons persons;
+    private Person old;
     private String[] p;
 
     public Controller() throws InitializeException, NameNotFoundException {

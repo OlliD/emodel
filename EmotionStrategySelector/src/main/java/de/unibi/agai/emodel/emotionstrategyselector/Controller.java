@@ -16,6 +16,7 @@ import de.unibi.agai.emotionlib.communication.EmotionServer;
 import de.unibi.agai.emotionlib.communication.EmotionTaskHandler;
 import de.unibi.agai.emotionlib.output.EmotionalExpr;
 import de.unibi.flobi.Actuators;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -59,8 +60,9 @@ public class Controller {
     private long runtime;
     private EmotionTaskHandler eth;
     private EmotionServer es;
-    private int cooldown;
+    //private int cooldown;
     private HCGui eg;
+    private float emoImpuls = 0f;
 
     public enum strategy {
 
@@ -70,7 +72,7 @@ public class Controller {
     }
 
     public Controller() throws MemoryException, InitializeException, NameNotFoundException, IOException, ExecutionException, InterruptedException, TimeoutException, BusException, PackerNotFoundException {
-        cooldown = 0;
+        //cooldown = 0;
         userOrientation = new HashMap<Actuators, Float>();
 
         ssg = new StrategySelectorGui();
@@ -119,7 +121,7 @@ public class Controller {
 
                         while (run) {
                             try {
-                                System.err.println("Running TIME");
+                                System.err.println("Running TIME " + (System.currentTimeMillis() / 10000));
                                 runtime = (System.currentTimeMillis() - startTime) / 1000;
                                 if (runtime < layer1Time) {
                                     if (layer1_cooldown == 0) {
@@ -179,9 +181,8 @@ public class Controller {
                     case ONOFF:
                         while (run) {
                             try {
-                                Thread.sleep(1000);
                                 System.err.println("Running OnOff");
-                                cooldown++;
+                                //cooldown++;
 
                                 if (layer1Active) {
                                     if (layer1_cooldown == 0) {
@@ -211,6 +212,8 @@ public class Controller {
 
                                     // PUT HERE STRATEGEC FUNCTION
                                 }
+                                Thread.sleep(1000);
+
                             } catch (InterruptedException ex) {
                                 Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
                             } catch (IOException ex) {
@@ -231,19 +234,32 @@ public class Controller {
 
     private void schematic() throws IOException, ExecutionException, InterruptedException, TimeoutException {
         String[] pos = mc.lookAtPosition();
+        
+
         System.out.println("Get UserPos " + pos[0] + " " + pos[1] + " " + pos[2]);
         if (pos[0] != null && pos[1] != null && pos[2] != null) {
+            ssg.settextFieldColorLayer2(Color.green);
             lookAtPos(Integer.parseInt(pos[0]), Integer.parseInt(pos[1]), Integer.parseInt(pos[2]));
         }
+        ssg.settextFieldColorLayer2(Color.red);
+
     }
 
     private void mimicry() throws IOException, ExecutionException, TimeoutException, InterruptedException {
         emotion = mc.expressEmotion();
         if (emotion != "none" && emotion != "") {
+            ssg.setLayer1Text(emotion);
+            ssg.settextFieldColorLayer1(Color.green);
             System.out.println("MIMICRY" + emotion);
             sendEmotion(emotion);
+            if (emotion.equalsIgnoreCase("happy")) {
+                mc.publishEmotionUpdate(0.3f);
+            }
             Thread.sleep(2000);
+            ssg.settextFieldColorLayer1(Color.red);
+            ssg.setLayer1Text("neutral");
             sendEmotion("neutral");
+
         } else if (emotion == "none") {
             sendEmotion("neutral");
         }
@@ -256,7 +272,7 @@ public class Controller {
 
     private void lookNeutral() throws ExecutionException, IOException, InterruptedException, TimeoutException {
         System.out.println("Look back");
-        cooldown = 0;
+        //cooldown = 0;
         r.executeMovement(hp.getPosition("neutral").getActuatorList(), 30, 150);
     }
 
@@ -303,6 +319,8 @@ public class Controller {
         this.ssg.addProsodyListener(new ProsodyActionListener());
 
         this.ssg.addButtonHeadControlListener(new hcGuiListener());
+
+        this.ssg.addbuttonSendImpulsActionListener(new EmotionImpulsActionListener());
     }
 
     class Layer1CheckboxListener implements ActionListener {
@@ -481,6 +499,16 @@ public class Controller {
             }
 
         }
+    }
+
+    class EmotionImpulsActionListener implements ActionListener {
+
+        public void actionPerformed(ActionEvent e) {
+            if (ssg.getEmotionalImpuls() != "") {
+                mc.publishEmotionUpdate(Float.parseFloat(ssg.getEmotionalImpuls()));
+            }
+        }
+
     }
 
 }

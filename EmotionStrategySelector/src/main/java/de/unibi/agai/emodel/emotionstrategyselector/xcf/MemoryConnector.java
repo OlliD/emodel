@@ -1,3 +1,4 @@
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -87,7 +88,7 @@ public class MemoryConnector {
                                     Node node = emotionNodes.get(i);
                                     if (node instanceof Element) {
                                         Element partElement = (Element) node;
-                                        System.out.println("Found " + partElement.getAttributeValue("Emotion"));
+                                        //System.out.println("Found " + partElement.getAttributeValue("Emotion"));
                                         if (!expressEmotion) {
                                             emotionToExpress = partElement.getAttributeValue("Emotion");
                                             expressEmotion = true;

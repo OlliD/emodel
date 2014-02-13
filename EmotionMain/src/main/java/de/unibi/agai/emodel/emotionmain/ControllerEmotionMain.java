@@ -105,6 +105,7 @@ public class ControllerEmotionMain {
                         }*/
 
                         if (persons.otherPerson()) {
+                            System.out.println("OTHER: ");
                             persons.getOther().print();
 //                           System.out.println("Distance: " + persons.distance(persons.getPlayer(), persons.getOther()));
                             bodyConnector.insertToMemory("Position", persons.getOther()); // change to getOther
@@ -256,11 +257,13 @@ public class ControllerEmotionMain {
         }
 
         for (int i = 0; i < persons.getSize(); i++) {
-            if (((persons.get(i).getDetected()) + 20000) < System.currentTimeMillis()) {
+            if (((persons.get(i).getDetected()) + 5000) < System.currentTimeMillis()) {
+                persons.printList();
                 persons.remove(i);
+                persons.printList();
             }
         }
-        System.out.println(" Currently in PersonList " + persons.getSize());
+        //System.out.println(" Currently in PersonList " + persons.getSize());
     }
 
     class faceEventsListener implements ActionListener {
