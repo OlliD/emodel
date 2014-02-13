@@ -86,7 +86,7 @@ public class MemoryConnectorSchematic {
                                             z = Double.parseDouble(partElement.getAttributeValue("z"));
                                         }
                                     }
-                                    person = new Person(id, (int) x, (int) y, (int) z);
+                                    person = new Person(id, (int) x, (int) y, (int) z, false);
                                     personReady = true;
                                     cooldownCounter = threshold;
 
@@ -148,7 +148,7 @@ public class MemoryConnectorSchematic {
             person.setDetected(System.currentTimeMillis());
             return person;
         } else {
-            Person p = new Person(9999, 0, 0, 0);
+            Person p = new Person(9999, 0, 0, 0, false);
             return p;
         }
 

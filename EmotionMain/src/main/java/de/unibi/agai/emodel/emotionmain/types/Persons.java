@@ -19,6 +19,7 @@ public class Persons {
     private Person other;
     private boolean secondPersonDetected = false;
     private boolean playerDetected = false;
+    private Person firstPerson;
 
     public Persons() {
         persons = new ArrayList<Person>();
@@ -49,7 +50,7 @@ public class Persons {
                     persons.get(i).setX(person.getX());
                     persons.get(i).setY(person.getY());
                     persons.get(i).setZ(person.getZ());
-                    System.out.println("Person updated. New X is: " + persons.get(i).getY());
+//                    System.out.println("Person updated. New X is: " + persons.get(i).getY());
                     add = false;
                     break;
                 } else if (distance(person, persons.get(i)) > 10) {
@@ -58,30 +59,42 @@ public class Persons {
             }
             if (add) {
                 persons.add(person);
-                if (distance(person, getPlayer()) > 600) {
-                    secondPersonDetected = true;
+                if (distance(person, getPlayer()) > 500) {
                     System.out.println("Found second person at: ");
                     other = person;
+                    secondPersonDetected = true;
                 }
                 add = false;
             }
         }
-        if (persons.size() == 0) {
+        if (persons.isEmpty()) {
+            person.setPlayer(true);
             persons.add(person);
+            firstPerson = person;
             player = person.getId();
             playerDetected = true;
+            
             System.out.println("first Person added");
         }
 
     }
 
     public Person getPlayer() {
+        //System.out.println("Getting Player");
         for (int i = 0; i < persons.size(); i++) {
-            if (persons.get(i).getId() == player) {
+            if (persons.get(i).getPlayer()) {
                 return persons.get(i);
             }
         }
-        return null;
+        return new Person(9999, 0, 0, 0, false);
+    }
+
+    public Person getFirstPerson() {
+        return firstPerson;
+    }
+
+    public void setFirstPerson(Person firstPerson) {
+        this.firstPerson = firstPerson;
     }
 
     public Person getOther() {

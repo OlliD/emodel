@@ -5,7 +5,13 @@
  */
 package de.unibi.agai.emodel.emotionstrategyselector.xcf;
 
+import de.unibi.agai.eb.BusException;
+import de.unibi.agai.emodel.emotionstrategyselector.Controller;
 import de.unibi.agai.emodel.emotionstrategyselector.gui.StrategySelectorGui;
+import de.unibi.agai.xtt.TaskCommunicationException;
+import de.unibi.agai.xtt.client.TaskSubmissionService;
+import de.unibi.agai.xtt.eb.xcf.XcfTaskClientBus;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.sf.xcf.ActiveMemory;
 import net.sf.xcf.InitializeException;
@@ -39,16 +45,18 @@ public class MemoryConnector {
     private volatile boolean isListening = false;
     private static final Logger LOGGER = Logger.getLogger(MemoryConnector.class.getName());
     private static final String EMOTION_XPATH = "/eModel";
-    private StrategySelectorGui ssg;
     private boolean expressEmotion;
     private String emotionToExpress = "";
     private String[] position;
     private boolean lookAtPos = false;
+    private TaskSubmissionService<Document> tss = null;
 
-    public MemoryConnector(StrategySelectorGui ssg) throws InitializeException, NameNotFoundException {
+    public MemoryConnector() throws InitializeException, NameNotFoundException, BusException {
         xm = XcfManager.createXcfManager();
         am = xm.createActiveMemory("ShortTerm");
-        this.ssg = ssg;
+        XcfTaskClientBus clientBus = new XcfTaskClientBus(am);
+        tss = new TaskSubmissionService<Document>(clientBus);
+
         position = new String[3];
     }
 
@@ -82,7 +90,6 @@ public class MemoryConnector {
                                         System.out.println("Found " + partElement.getAttributeValue("Emotion"));
                                         if (!expressEmotion) {
                                             emotionToExpress = partElement.getAttributeValue("Emotion");
-                                            ssg.setLayer1Text(emotionToExpress);
                                             expressEmotion = true;
                                         }
 
@@ -143,7 +150,6 @@ public class MemoryConnector {
                                         Element partElement = (Element) node;
                                         if (!expressEmotion) {
                                             emotionToExpress = partElement.getAttributeValue("Emotion");
-                                            ssg.setLayer3Text(emotionToExpress);
                                             expressEmotion = true;
                                         }
                                     }
@@ -152,6 +158,21 @@ public class MemoryConnector {
                             }
                         };
             }
+        }
+    }
+
+    public void publishEmotionUpdate(Float value) {
+
+        Element root = new Element("EmotionalImpulse");
+
+        Element values = new Element("values");
+        values.addAttribute(new Attribute("impulse", Float.toString(value)));
+        //values.addAttribute(new Attribute("value", Double.toString(value)));
+        root.appendChild(values);
+        try {
+            tss.submit(new Document(root));
+        } catch (TaskCommunicationException ex) {
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -164,12 +185,12 @@ public class MemoryConnector {
     }
 
     public String[] lookAtPosition() {
-        if (lookAtPos = true){
+        if (lookAtPos = true) {
             lookAtPos = false;
             return position;
-        }
-        else
+        } else {
             return new String[3];
+        }
 
     }
 

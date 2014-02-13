@@ -5,7 +5,6 @@
  */
 package de.unibi.agai.emodel.emotionstrategyselector;
 
-import com.sun.jmx.snmp.Timestamp;
 import de.unibi.agai.dapi.pack.PackerNotFoundException;
 import de.unibi.agai.eb.BusException;
 import de.unibi.agai.emodel.emotionstrategyselector.gui.StrategySelectorGui;
@@ -13,16 +12,10 @@ import de.unibi.agai.emodel.emotionstrategyselector.robotconnector.HCGui;
 import de.unibi.agai.emodel.emotionstrategyselector.robotconnector.HeadPositions;
 import de.unibi.agai.emodel.emotionstrategyselector.robotconnector.Robot;
 import de.unibi.agai.emodel.emotionstrategyselector.xcf.MemoryConnector;
-import de.unibi.agai.emotionlib.EmotionControlBase;
 import de.unibi.agai.emotionlib.communication.EmotionServer;
 import de.unibi.agai.emotionlib.communication.EmotionTaskHandler;
 import de.unibi.agai.emotionlib.output.EmotionalExpr;
-import de.unibi.agai.robots.Actuator;
-import de.unibi.agai.robots.Actuator;
 import de.unibi.flobi.Actuators;
-import static de.unibi.flobi.Actuators.neck_pan;
-import static de.unibi.flobi.Actuators.neck_roll;
-import static de.unibi.flobi.Actuators.neck_tilt;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -59,14 +52,15 @@ public class Controller {
     private boolean layer2Active;
     private boolean layer3Active;
     private boolean run = false;
-    private Timestamp tstamp;
     private String currentStrategy;
     private Map<Actuators, Float> userOrientation;
+    private String emotion = "";
     private long startTime;
     private long runtime;
     private EmotionTaskHandler eth;
     private EmotionServer es;
     private int cooldown;
+    private HCGui eg;
 
     public enum strategy {
 
@@ -83,11 +77,8 @@ public class Controller {
         ssg.setVisible(true);
         addListener();
 
-        System.err.println("StrategySelector startet!");
-        mc = new MemoryConnector(ssg);
         r = new Robot();
         hp = new HeadPositions();
-        EmotionControlBase ecb;
 
         eth = new EmotionTaskHandler();
         eth.activateVisualizion();
@@ -102,14 +93,12 @@ public class Controller {
         List<String> poses = new ArrayList();
         for (String s : hp.getPositions().keySet()) {
             System.out.println("Position added");
-
             poses.add(s);
         }
         Collections.sort(poses);
 
         // Connection to the Robot
-        HCGui eg = new HCGui(r, hp);
-        eg.setVisible(true);
+        mc = new MemoryConnector();
         mc.startListening();
     }
 
@@ -119,83 +108,69 @@ public class Controller {
         new Thread() {
             @Override
             public void run() {
-                String emotion = "";
+                int layer1_cooldown = 0;
+                int layer2_cooldown = 0;
+                int layer3_cooldown = 0;
                 switch (strategy.valueOf(currentStrategy.toUpperCase())) {
                     case TIME:
                         boolean layer1Running = true;
                         boolean layer2Running = true;
                         boolean layer3Running = true;
-                        while (run) {
 
+                        while (run) {
                             try {
                                 System.err.println("Running TIME");
                                 runtime = (System.currentTimeMillis() - startTime) / 1000;
                                 if (runtime < layer1Time) {
-                                    System.out.println("Runing layer 1 ");
-                                    emotion = mc.expressEmotion();
+                                    if (layer1_cooldown == 0) {
+                                        mimicry();
+                                        layer1_cooldown = 6;
+                                    } else if (layer1_cooldown != 0) {
+                                        layer1_cooldown--;
+                                    }
                                 } else {
                                     layer1Running = false;
                                 }
 
                                 if (runtime < layer2Time) {
-                                    System.out.println("Runing layer 2 ");
-                                    emotion = mc.expressEmotion();
+                                    if (layer2_cooldown == 0) {
+                                        schematic();
+                                        layer2_cooldown = 6;
+                                    } else if (layer2_cooldown != 0) {
+                                        layer2_cooldown--;
+                                    }
                                 } else {
                                     layer2Running = false;
                                 }
 
                                 if (runtime < layer3Time) {
-                                    System.out.println("Runing layer 3");
-                                    emotion = mc.expressEmotion();
-
+                                    if (layer3_cooldown == 0) {
+                                        schematic();
+                                        layer3_cooldown = 6;
+                                    } else if (layer3_cooldown != 0) {
+                                        layer3_cooldown--;
+                                    }
                                 } else {
                                     layer3Running = false;
                                 }
 
-                                System.out.println(layer1Running);
-                                System.out.println(layer2Running);
-                                System.out.println(layer3Running);
-
                                 if (!layer1Running && !layer2Running && !layer3Running) {
-                                    System.out.println("Time to stop");
                                     run = false;
                                     ssg.setLayer1Text("STOPPED");
                                     ssg.setLayer2Text("STOPPED");
                                     ssg.setLayer3Text("STOPPED");
 
                                 }
-                                /*
-                                 if (emotion != "") {
-                                 try {
-                                 sendEmotion(emotion);
-                                 } catch (IOException ex) {
-                                 Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-                                 } catch (ExecutionException ex) {
-                                 Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-                                 } catch (TimeoutException ex) {
-                                 Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-                                 } catch (InterruptedException ex) {
-                                 Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-                                 }
-                                 }*/
-                                Thread.sleep(1000);
-                                cooldown++;
 
-                                if (cooldown == 5) {
-                                    cooldown = 0;
-                                    try {
-                                        r.executeMovement(hp.getPosition("neutral").getActuatorList(), 30, 150);
-                                    } catch (IOException ex) {
-                                        Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-                                    } catch (ExecutionException ex) {
-                                        Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-                                    } catch (InterruptedException ex) {
-                                        Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-                                    } catch (TimeoutException ex) {
-                                        Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-                                    }
-                                }
+                                Thread.sleep(500);
+
                             } catch (InterruptedException ex) {
+                                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (IOException ex) {
+                                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (ExecutionException ex) {
+                                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (TimeoutException ex) {
                                 Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
                             }
 
@@ -209,34 +184,32 @@ public class Controller {
                                 cooldown++;
 
                                 if (layer1Active) {
-                                    emotion = mc.expressEmotion();
-
-                                    if (emotion != "") {
-                                        try {
-                                            System.out.println("MIMICRY");
-
-                                            sendEmotion(emotion);
-                                        } catch (IOException ex) {
-                                            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-                                        } catch (ExecutionException ex) {
-                                            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-                                        } catch (TimeoutException ex) {
-                                            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-                                        } catch (InterruptedException ex) {
-                                            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-                                        }
+                                    if (layer1_cooldown == 0) {
+                                        mimicry();
+                                        layer1_cooldown = 6;
+                                    } else if (layer1_cooldown != 0) {
+                                        layer1_cooldown--;
                                     }
                                 }
                                 if (layer2Active) {
                                     // PUT HERE SCHEMATIC FUNCTION
-                                    schematic();
+                                    if (layer1_cooldown == 0) {
+                                        schematic();
+                                        layer1_cooldown = 6;
+                                    } else if (layer1_cooldown != 0) {
+                                        layer1_cooldown--;
+                                    }
                                 }
 
                                 if (layer3Active) {
+                                    if (layer1_cooldown == 0) {
+                                        schematic();
+                                        layer1_cooldown = 6;
+                                    } else if (layer1_cooldown != 0) {
+                                        layer1_cooldown--;
+                                    }
+
                                     // PUT HERE STRATEGEC FUNCTION
-                                }
-                                if (cooldown == 3) {
-                                    lookNeutral();
                                 }
                             } catch (InterruptedException ex) {
                                 Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
@@ -251,7 +224,6 @@ public class Controller {
                         }
                         break;
                 }
-
             }
         }.start();
 
@@ -262,55 +234,20 @@ public class Controller {
         System.out.println("Get UserPos " + pos[0] + " " + pos[1] + " " + pos[2]);
         if (pos[0] != null && pos[1] != null && pos[2] != null) {
             lookAtPos(Integer.parseInt(pos[0]), Integer.parseInt(pos[1]), Integer.parseInt(pos[2]));
-
         }
     }
 
-    private void onOffStrategy() throws IOException, ExecutionException, TimeoutException, InterruptedException {
-
-        System.out.println("OnOffStrategic selected");
-        currentStrategy = "onoff";
-
-        Actuator act;
-
-        String emotion = "";
-        int cooldown = 0;
-        while (true) {
-            emotion = mc.expressEmotion();
-            if (emotion != "") {
-                sendEmotion(emotion);
-            }
-            cooldown++;
-            Thread.sleep(1000);
-            if (cooldown == 5) {
-                cooldown = 0;
-                r.executeMovement(hp.getPosition("neutral").getActuatorList(), 30, 150);
-            }
-
+    private void mimicry() throws IOException, ExecutionException, TimeoutException, InterruptedException {
+        emotion = mc.expressEmotion();
+        if (emotion != "none" && emotion != "") {
+            System.out.println("MIMICRY" + emotion);
+            sendEmotion(emotion);
+            Thread.sleep(2000);
+            sendEmotion("neutral");
+        } else if (emotion == "none") {
+            sendEmotion("neutral");
         }
 
-    }
-
-    private void timeStrategy() throws IOException, ExecutionException, TimeoutException, InterruptedException {
-        if (layer1Time > 0 || layer2Time > 0 || layer3Time > 0) {
-            currentStrategy = "time";
-            long currentTime = tstamp.getDate().getTime();
-            System.out.println("Time Strategy selected - current Time" + tstamp);
-            String emotion = "";
-            int cooldown = 0;
-            while (true) {
-                emotion = mc.expressEmotion();
-                if (emotion != "") {
-                    sendEmotion(emotion);
-                }
-                cooldown++;
-                Thread.sleep(1000);
-                if (cooldown == 5) {
-                    lookNeutral();
-                }
-
-            }
-        }
     }
 
     private void sendEmotion(String emotion) throws IOException, ExecutionException, TimeoutException, InterruptedException {
@@ -364,6 +301,8 @@ public class Controller {
         this.ssg.addBlinkListener(new BlinkActionListener());
         this.ssg.addFacialListener(new FacialActionListener());
         this.ssg.addProsodyListener(new ProsodyActionListener());
+
+        this.ssg.addButtonHeadControlListener(new hcGuiListener());
     }
 
     class Layer1CheckboxListener implements ActionListener {
@@ -392,9 +331,7 @@ public class Controller {
             } catch (MemoryException ex) {
                 Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
             }
-
         }
-
     }
 
     class Layer3CheckboxListener implements ActionListener {
@@ -408,9 +345,7 @@ public class Controller {
             } catch (MemoryException ex) {
                 Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
             }
-
         }
-
     }
 
     class StopButtonListener implements ActionListener {
@@ -528,6 +463,21 @@ public class Controller {
                 eth.startExpression(EmotionalExpr.facial);
             } else if (!ssg.getFacialStatus()) {
                 eth.stopExpression(EmotionalExpr.facial);
+            }
+
+        }
+    }
+
+    class hcGuiListener implements ActionListener {
+
+        public void actionPerformed(ActionEvent e) {
+
+            if (ssg.getButtonHeadControlState()) {
+                eg = new HCGui(r, hp);
+                eg.setVisible(true);
+            } else if (!ssg.getButtonHeadControlState()) {
+                eg.setVisible(false);
+
             }
 
         }

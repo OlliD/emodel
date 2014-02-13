@@ -92,7 +92,16 @@ public class ComputeMimicry {
                         } catch (MemoryException ex) {
                             Logger.getLogger(ComputeMimicry.class.getName()).log(Level.SEVERE, null, ex);
                         }
-                    } 
+                    } else if (!mc.eventTriggered()) {
+                        String[] ret = new String[2];
+                        ret[0] = "none";
+                        ret[1] = "0f";
+                        try {
+                            pushReaction(ret);
+                        } catch (MemoryException ex) {
+                            Logger.getLogger(ComputeMimicry.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
                 }
             }
         }.start();

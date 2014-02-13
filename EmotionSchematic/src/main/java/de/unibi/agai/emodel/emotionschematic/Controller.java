@@ -38,7 +38,6 @@ public class Controller {
         persons = new Persons();
         mc = new MemoryConnector();
         p = new String[3];
-        //ss = new SchemataSelector();
         gui.setVisible(true);
     }
 

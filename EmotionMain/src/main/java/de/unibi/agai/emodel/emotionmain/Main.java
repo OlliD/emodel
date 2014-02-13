@@ -20,7 +20,7 @@ public class Main
     
     public static void main( String[] args ) throws InitializeException, NameNotFoundException, MemoryException, InterruptedException, BusException
         {
-        Controller c = new Controller();
+        ControllerEmotionMain c = new ControllerEmotionMain();
 
     }
 }

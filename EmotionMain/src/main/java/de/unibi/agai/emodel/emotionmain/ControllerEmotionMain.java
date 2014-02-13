@@ -13,13 +13,10 @@ import de.unibi.agai.eb.BusException;
 import de.unibi.agai.emodel.emotionmain.xcf.MemoryConnector;
 import de.unibi.agai.emodel.emotionmain.xcf.MemoryConnectorSchematic;
 import de.unibi.agai.emodel.gui.EmotionMainGui;
-import de.unibi.agai.emotionlib.communication.EmotionTaskHandler;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.sf.xcf.ActiveMemory;
@@ -32,7 +29,7 @@ import net.sf.xcf.naming.NameNotFoundException;
  *
  * @author odamm
  */
-public class Controller {
+public class ControllerEmotionMain {
 
     private XcfManager xm;
     private ActiveMemory am;
@@ -44,16 +41,15 @@ public class Controller {
     private MemoryConnector faceConnector;
 
     private MemoryConnectorSchematic bodyConnector;
-    private Map<String, Float> emotions;
+    //private Map<String, Float> emotions;
     private Float threshold = 50f;
     private List<Face> faceList;
-    private Timestamp tstamp;
     private Person p;
     private Persons persons;
     private EmotionMainGui gui;
-    private boolean run = true;
+    private boolean run = false;
 
-    public Controller() throws InitializeException, NameNotFoundException, InterruptedException, MemoryException, BusException {
+    public ControllerEmotionMain() throws InitializeException, NameNotFoundException, InterruptedException, MemoryException, BusException {
 
         // Initialize the GUI
         gui = new EmotionMainGui();
@@ -61,17 +57,16 @@ public class Controller {
 
         addActionListener();
 
-        tstamp = new Timestamp(System.currentTimeMillis());
-        System.out.println("Current Time " + tstamp.getDate().getTime() / 1000);
+        System.out.println("Current Time " + System.currentTimeMillis());
 
-        emotions = new HashMap<String, Float>();
+//        emotions = new HashMap<String, Float>();
 
         persons = new Persons();
+        this.worker();
 
         //WASBAI 
         //EmotionTaskHandler emoHandler = new EmotionTaskHandler();
         //emoHandler.start();
-       
 
     }
 
@@ -80,6 +75,7 @@ public class Controller {
         gui.addButtonFaceEventsListener(new faceEventsListener());
         gui.addCheckBoxConnectToMemoryListener(new ConnectToMemoryListener());
         gui.addButtonStartListener(new startListener());
+        gui.addButtonStopListener(new stopListener());
     }
 
     private void worker() throws MemoryException {
@@ -90,7 +86,7 @@ public class Controller {
             public void run() {
                 while (run) {
                     try {
-                        emotions = faceConnector.getEmotionMap();
+//                        emotions = faceConnector.getEmotionMap();
                         // Frage beim Connector ob ein neues Gesicht gibt
                         updateFaceList(faceConnector.getFace());
                         if (!faceList.isEmpty()) {
@@ -103,13 +99,14 @@ public class Controller {
                         Thread.sleep(500);
 
                         //persons.printList();
+                       /*
                         if (persons.playerDetected()) {
                             bodyConnector.insertToMemory("Position", persons.getPlayer()); // change to getOther
-                        }
+                        }*/
 
                         if (persons.otherPerson()) {
                             persons.getOther().print();
-                            System.out.println("Distance: " + persons.distance(persons.getPlayer(), persons.getOther()));
+//                           System.out.println("Distance: " + persons.distance(persons.getPlayer(), persons.getOther()));
                             bodyConnector.insertToMemory("Position", persons.getOther()); // change to getOther
                         }
 
@@ -119,7 +116,7 @@ public class Controller {
                                 getFirstFace().getEmotionByName("Sad"),
                                 getFirstFace().getEmotionByName("Surprised"));
 
-                        System.out.println("Most Likely Emotion: " + getFirstFace().getMostLikelyEmotion() + " " + getFirstFace().getReliability(getFirstFace().getMostLikelyEmotion()));
+                        //System.out.println("Most Likely Emotion: " + getFirstFace().getMostLikelyEmotion() + " " + getFirstFace().getReliability(getFirstFace().getMostLikelyEmotion()));
 
                         //Looking for the emotion map and receive a map of emotions (happy, sad, surprised, angry) with value for reliability
                         //when one value is over the threshold the label will be inserted into the memory
@@ -137,9 +134,9 @@ public class Controller {
                          j++;
                          */
                     } catch (InterruptedException ex) {
-                        Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(ControllerEmotionMain.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (MemoryException ex) {
-                        Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(ControllerEmotionMain.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }
@@ -161,6 +158,7 @@ public class Controller {
     }
 
     // Füge das neue Gesicht in die Liste 
+    /*
     public void showFacialEmotionReliability() {
         for (Map.Entry<String, Float> entry : emotions.entrySet()) {
             if (entry.getValue() > threshold) {
@@ -173,7 +171,7 @@ public class Controller {
             }
         }
     }
-
+*/
     public void updateFaceList(List<Face> detectedFaces) {
         boolean updateFaces = false;
         boolean addFace = false;
@@ -181,7 +179,7 @@ public class Controller {
             faceList.addAll(detectedFaces);
 
         } else {
-            System.out.println("EMotionMain: Received in total " + detectedFaces.size());
+            //System.out.println("EMotionMain: Received in total " + detectedFaces.size());
             for (int j = 0; j < detectedFaces.size(); j++) {
 
                 Face f = detectedFaces.get(j);
@@ -196,7 +194,7 @@ public class Controller {
                         faceList.get(i).setTimpStamp(f.getTimpStamp());
                         faceList.get(i).setViewCount(f.getViewCount());
                         faceList.get(i).setEmotions(f.getEmotions());
-                        System.out.println("EMotionMain: ID " + faceList.get(i).getCurrentId() + " updated");
+                        //System.out.println("EMotionMain: ID " + faceList.get(i).getCurrentId() + " updated");
                         addFace = false;
                         break;
                     }
@@ -276,7 +274,7 @@ public class Controller {
                     faceConnector.stopListening();
                 }
             } catch (MemoryException ex) {
-                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(ControllerEmotionMain.class.getName()).log(Level.SEVERE, null, ex);
             }
             System.out.println("Listen to Shore");
         }
@@ -293,7 +291,7 @@ public class Controller {
                     bodyConnector.stopListening();
                 }
             } catch (MemoryException ex) {
-                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(ControllerEmotionMain.class.getName()).log(Level.SEVERE, null, ex);
             }
             System.out.println("Listen to Kinect");
         }
@@ -302,11 +300,13 @@ public class Controller {
     class startListener implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
+            run = true;
             try {
                 worker();
             } catch (MemoryException ex) {
-                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(ControllerEmotionMain.class.getName()).log(Level.SEVERE, null, ex);
             }
+
         }
     }
 
@@ -314,6 +314,7 @@ public class Controller {
 
         public void actionPerformed(ActionEvent e) {
             run = false;
+            System.out.println("STOP");
         }
     }
 
@@ -337,9 +338,9 @@ public class Controller {
 
                 System.out.println("EmotionMain: Connected to Mem");
             } catch (InitializeException ex) {
-                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(ControllerEmotionMain.class.getName()).log(Level.SEVERE, null, ex);
             } catch (NameNotFoundException ex) {
-                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(ControllerEmotionMain.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
