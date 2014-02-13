@@ -26,7 +26,7 @@ public class HeadPositions {
         //filename = System.getenv("prefix") + "/share/HeadControl/positions.xml";
         filename = "/homes/odamm/positions.xml";
 
-        System.out.println("Path: " + System.getenv("prefix") + "/share/HeadControl/positions.xml");
+        System.out.println("Path: " + filename);
         try {
             parsePositions();
         } catch (ParsingException ex) {
@@ -139,7 +139,7 @@ public class HeadPositions {
 
 
 
-        Element newPos = new Element("Position");
+        Element newPos = new Element("position");
         Attribute aPosId = new Attribute("id", posName);
         Attribute aRamp = new Attribute("ramp", String.valueOf(ramp));
         Attribute aSpeed = new Attribute("maxSpeed", String.valueOf(speed));

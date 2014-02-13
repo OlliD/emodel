@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package de.unibi.agai.emodel.emotionmimicry.xcf;
 
 import java.util.logging.Logger;
@@ -31,97 +30,104 @@ import nu.xom.Nodes;
  */
 public class MemoryConnector {
 
-        public RemoteServer rs = null;
-        public XcfManager xm;
-       	private final ActiveMemory am;
-	private MemoryEventAdapter memoryEventAdapter;
-	private volatile boolean isListening = false;
-        private static final Logger LOGGER = Logger.getLogger(MemoryConnector.class.getName());
-	private static final String EMOTION_XPATH = "/eModel";
-        private String xpath = "";
-        private boolean eventTrigger = false;
-        private String event = "";
+    public RemoteServer rs = null;
+    public XcfManager xm;
+    private final ActiveMemory am;
+    private MemoryEventAdapter memoryEventAdapter;
+    private volatile boolean isListening = false;
+    private boolean eventTrigger = false;
+    private String[] event;
 
+    public MemoryConnector() throws InitializeException, NameNotFoundException {
+        xm = XcfManager.createXcfManager();
+        am = xm.createActiveMemory("ShortTerm");
+        event = new String[2];
 
-        public MemoryConnector() throws InitializeException, NameNotFoundException {
-            xm = XcfManager.createXcfManager();
-            am = xm.createActiveMemory("ShortTerm");
+    }
 
-	} 
+    public synchronized void startListening(String inputSelector) throws MemoryException {
+        final String is = inputSelector;
+        if (!isListening) {
+            if (memoryEventAdapter == null) {
+                MemoryAction action = MemoryAction.INSERT;
 
-        public synchronized void startListening(String inputSelector) throws MemoryException {
-            final String is = inputSelector;
-            if (!isListening) {
-                    if (memoryEventAdapter == null){
-				MemoryAction action = MemoryAction.INSERT;
+                memoryEventAdapter = new MemoryEventAdapter(action, new XPath(
+                        "//" + inputSelector)) {
 
-				memoryEventAdapter = new MemoryEventAdapter(action, new XPath(
-						"/"+is)) {
+                            @Override
+                            synchronized public void handleEvent(MemoryEvent e) {
+                                XOPData xml = e.getData();
 
-					@Override
-					synchronized public void handleEvent(MemoryEvent e) {
-                                                XOPData xml = e.getData();
+                                Nodes emotionNodes = xml.getDocument().query(
+                                        "//Facial");
 
-						Nodes emotionNodes = xml.getDocument().query(
-								"/*");
-                                                
-                                                if(is.equals("rmimic")){
-                                                    System.out.println("handle rmimic");
-                                                    
-                                                }
-                                                else if(is.equals("shore")){
-                                                    for (int i = 0; i < emotionNodes.size(); i++) {
+                                if (is.equals("rmimic")) {
+                                    System.out.println("handle rmimic");
 
-                                                            Node node = emotionNodes.get(i);
-                                                            if (node instanceof Element) {
-                                                                    Element partElement = (Element) node;
-                                                                    System.out.println(partElement.getAttributeValue("emotion"));
-                                                            } 
-                                                    }
-                                                }
+                                } else if (is.equals("shore")) {
+                                    for (int i = 0; i < emotionNodes.size(); i++) {
 
-					}
-				};
-			}
-                        System.out.println("Now Listening to " + am.getName() + "for /" + is + " events");
+                                        Node node = emotionNodes.get(i);
+                                        if (node instanceof Element) {
+                                            Element partElement = (Element) node;
+                                            System.out.println(partElement.getAttributeValue("emotion"));
+                                        }
+                                    }
+                                } else if (is.equals("Facial")) {
+                                    for (int i = 0; i < emotionNodes.size(); i++) {
+                                        Node node = emotionNodes.get(i);
+                                        if (node instanceof Element) {
+                                            Element partElement = (Element) node;
+                                            event[0] = partElement.getAttributeValue("Emotion");
+                                            event[1] = partElement.getAttributeValue("Reliability");
 
-			am.addListener(memoryEventAdapter);
-			isListening = true;
-		}
-	}
-        
-        public ActiveMemory getMemory (){
-            return am;
+                                        }
+                                    }
+                                }
+                                eventTrigger = true;
+                            }
+                        };
+            }
+            System.out.println("Now Listening to " + am.getName() + "for /" + is + " events");
+
+            am.addListener(memoryEventAdapter);
+            isListening = true;
         }
-        
-        public boolean isListening() {
-		return isListening;
-	}
+    }
+
+    public synchronized void insertToMemory(String elementName, String emotion) throws MemoryException {
+        Element root = new Element("Emotion");
+        Element ele = new Element(elementName);
+        root.appendChild(ele);
+        ele.addAttribute(new Attribute("Emotion", emotion));
+        am.insert(new XOPData(new Document(root)));
+        System.out.println("MIMICRY: Inserted emotion " + emotion);
+    }
+
+    public ActiveMemory getMemory() {
+        return am;
+    }
+
+    public boolean isListening() {
+        return isListening;
+    }
 
     /**
      *
      * @throws MemoryException
      */
     public void stopListening() throws MemoryException {
-            am.removeListener(memoryEventAdapter);
-            this.isListening = false;
-    }
-    
-	
-
-        public boolean eventTriggered () {
-            return eventTrigger;
-        }
-        
-        
-        
-        public String getEvent(){
-            eventTrigger = false;
-            return event;
-        }
-
+        am.removeListener(memoryEventAdapter);
+        this.isListening = false;
     }
 
+    public boolean eventTriggered() {
+        return eventTrigger;
+    }
 
-    
+    public String[] getEvent() {
+        eventTrigger = false;
+        return event;
+    }
 
+}

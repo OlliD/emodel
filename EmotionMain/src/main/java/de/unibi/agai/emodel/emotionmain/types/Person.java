@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.unibi.agai.emodel.emotionmain;
+package de.unibi.agai.emodel.emotionmain.types;
 
 /**
  *
@@ -17,12 +17,14 @@ public class Person {
     int z = 0;
     long detected = 0;
     long updated = 0;
+    boolean player = false;
 
-    public Person(int id, int x, int y, int z) {
+    public Person(int id, int x, int y, int z, boolean player) {
         this.id = id;
         this.x = x;
         this.y = y;
         this.z = z;
+        this.player = player;
     }
 
     public int getX() {
@@ -73,6 +75,14 @@ public class Person {
         this.id = id;
     }
 
+    public void setPlayer(boolean player) {
+        this.player = player;
+    }
+
+    public boolean getPlayer() {
+        return this.player;
+    }
+
     public void print() {
         System.out.println(" ");
         System.out.println("#######");
@@ -80,8 +90,9 @@ public class Person {
         System.out.println("X: " + x);
         System.out.println("Y: " + y);
         System.out.println("Z: " + z);
+        System.out.println("Player: " + player);
         System.out.println("#######");
         System.out.println(" ");
-        
+
     }
 }

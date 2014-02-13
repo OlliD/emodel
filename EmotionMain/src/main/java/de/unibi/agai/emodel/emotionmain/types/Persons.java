@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.unibi.agai.emodel.emotionmain;
+package de.unibi.agai.emodel.emotionmain.types;
 
 import java.util.ArrayList;
 
@@ -14,6 +14,12 @@ import java.util.ArrayList;
 public class Persons {
 
     private ArrayList<Person> persons;
+
+    private int player;
+    private Person other;
+    private boolean secondPersonDetected = false;
+    private boolean playerDetected = false;
+    private Person firstPerson;
 
     public Persons() {
         persons = new ArrayList<Person>();
@@ -40,10 +46,11 @@ public class Persons {
                 if (persons.get(i).getId() != person.getId()) {
                     add = true;
                 } else if (persons.get(i).getId() == person.getId()) {
+                    persons.get(i).setDetected(person.getDetected());
                     persons.get(i).setX(person.getX());
                     persons.get(i).setY(person.getY());
                     persons.get(i).setZ(person.getZ());
-                    System.out.println("Person updated");
+//                    System.out.println("Person updated. New X is: " + persons.get(i).getY());
                     add = false;
                     break;
                 } else if (distance(person, persons.get(i)) > 10) {
@@ -52,14 +59,54 @@ public class Persons {
             }
             if (add) {
                 persons.add(person);
+                if (distance(person, getPlayer()) > 500) {
+                    System.out.println("Found second person at: ");
+                    other = person;
+                    secondPersonDetected = true;
+                }
                 add = false;
             }
         }
-        if (persons.size() == 0) {
+        if (persons.isEmpty()) {
+            person.setPlayer(true);
             persons.add(person);
+            firstPerson = person;
+            player = person.getId();
+            playerDetected = true;
+            
             System.out.println("first Person added");
         }
 
+    }
+
+    public Person getPlayer() {
+        //System.out.println("Getting Player");
+        for (int i = 0; i < persons.size(); i++) {
+            if (persons.get(i).getPlayer()) {
+                return persons.get(i);
+            }
+        }
+        return new Person(9999, 0, 0, 0, false);
+    }
+
+    public Person getFirstPerson() {
+        return firstPerson;
+    }
+
+    public void setFirstPerson(Person firstPerson) {
+        this.firstPerson = firstPerson;
+    }
+
+    public Person getOther() {
+        return other;
+    }
+
+    public boolean playerDetected() {
+        return playerDetected;
+    }
+
+    public boolean otherPerson() {
+        return secondPersonDetected;
     }
 
     public void printList() {
@@ -73,6 +120,14 @@ public class Persons {
 
     public int getSize() {
         return persons.size();
+    }
+
+    public Person get(int i) {
+        return persons.get(i);
+    }
+
+    public void remove(int i) {
+        persons.remove(i);
     }
 
 }

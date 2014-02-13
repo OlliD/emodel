@@ -44,11 +44,13 @@ public class MemoryConnector {
     private Person person;
     private int cooldownCounter;
     private int threshold = 15;
+    private String[] position;
 
     public MemoryConnector() throws InitializeException, NameNotFoundException {
         xm = XcfManager.createXcfManager();
         am = xm.createActiveMemory("ShortTerm");
         cooldownCounter = threshold;
+        position = new String[3];
 
     }
 
@@ -59,53 +61,97 @@ public class MemoryConnector {
         System.out.println("inserted in " + am.getName());
 
     }
+    /*
+     public synchronized void startListening(String xpath) throws MemoryException {
+     if (!isListening) {
+     System.out.println("Now Listening to " + am.getName());
+     if (memoryEventAdapter == null) {
+     MemoryAction action = MemoryAction.REPLACE;
 
-    public synchronized void startListening(String xpath) throws MemoryException {
+     memoryEventAdapter = new MemoryEventAdapter(action, new XPath(
+     xpath)) {
+
+     @Override
+     synchronized public void handleEvent(MemoryEvent e) {
+     cooldownCounter--;
+     if (cooldownCounter == 0) {
+     System.out.println("Pick Up The Person");
+     personReady = false;
+     XOPData xml = e.getData();
+     Nodes bodyNodes = xml.getDocument().query("//BODYSKELETON");
+     double x = 0;
+     double y = 0;
+     double z = 0;
+     int id = 0;
+     for (int i = 0; i < bodyNodes.size(); i++) {
+     Node bodyNode = bodyNodes.get(i);
+     Element bodyElement = (Element) bodyNode;
+     id = Integer.parseInt(bodyElement.getAttributeValue("id"));
+     Nodes comNodes = bodyNode.query("//COM");
+     for (int j = 0; j < comNodes.size(); j++) {
+     Node node = comNodes.get(j);
+     Element partElement = (Element) node;
+     x = Double.parseDouble(partElement.getAttributeValue("x"));
+     y = Double.parseDouble(partElement.getAttributeValue("y"));
+     z = Double.parseDouble(partElement.getAttributeValue("z"));
+     }
+     }
+     person = new Person(id, (int) x, (int) y, (int) z);
+     personReady = true;
+     cooldownCounter = threshold;
+
+     } else {
+     personReady = true;
+
+     }
+
+     }
+     };
+     }
+
+     am.addListener(memoryEventAdapter);
+     isListening = true;
+     }
+     }
+     */
+
+    public synchronized void startListening(String inputSelector) throws MemoryException {
+        final String is = inputSelector;
         if (!isListening) {
-            System.out.println("Now Listening to " + am.getName());
             if (memoryEventAdapter == null) {
-                MemoryAction action = MemoryAction.REPLACE;
+                MemoryAction action = MemoryAction.INSERT;
 
                 memoryEventAdapter = new MemoryEventAdapter(action, new XPath(
-                        xpath)) {
+                        "//" + inputSelector)) {
 
                             @Override
                             synchronized public void handleEvent(MemoryEvent e) {
-                                cooldownCounter--;
-                                if (cooldownCounter == 0) {
-                                    System.out.println("Pick Up The Person");
-                                    personReady = false;
-                                    XOPData xml = e.getData();
-                                    Nodes bodyNodes = xml.getDocument().query("//BODYSKELETON");
-                                    double x = 0;
-                                    double y = 0;
-                                    double z = 0;
-                                    int id = 0;
-                                    for (int i = 0; i < bodyNodes.size(); i++) {
-                                        Node bodyNode = bodyNodes.get(i);
-                                        Element bodyElement = (Element) bodyNode;
-                                        id = Integer.parseInt(bodyElement.getAttributeValue("id"));
-                                        Nodes comNodes = bodyNode.query("//COM");
-                                        for (int j = 0; j < comNodes.size(); j++) {
-                                            Node node = comNodes.get(j);
-                                            Element partElement = (Element) node;
-                                            x = Double.parseDouble(partElement.getAttributeValue("x"));
-                                            y = Double.parseDouble(partElement.getAttributeValue("y"));
-                                            z = Double.parseDouble(partElement.getAttributeValue("z"));
-                                        }
+                                personReady = false;
+
+                                XOPData xml = e.getData();
+
+                                Nodes emotionNodes = xml.getDocument().query(
+                                        "//Position");
+
+                                System.out.println(emotionNodes.size());
+                                for (int i = 0; i < emotionNodes.size(); i++) {
+                                    Node node = emotionNodes.get(i);
+                                    if (node instanceof Element) {
+                                        Element partElement = (Element) node;
+                                        position[0] = partElement.getAttributeValue("X");
+                                        position[1] = partElement.getAttributeValue("Y");
+                                        position[2] = partElement.getAttributeValue("Z");
                                     }
-                                    person = new Person(id, (int) x, (int) y, (int) z);
-                                    personReady = true;
-                                    cooldownCounter = threshold;
-
-                                } else {
-                                    personReady = true;
-
                                 }
+                                personReady = true;
 
+                                System.out.println("Person at " + position[0] + " " + position[1] + " " + position[2]);
+
+                                eventTrigger = true;
                             }
                         };
             }
+            System.out.println("Now Listening to " + am.getName() + " for /" + is + " events");
 
             am.addListener(memoryEventAdapter);
             isListening = true;
@@ -134,19 +180,31 @@ public class MemoryConnector {
         am.removeListener(memoryEventAdapter);
     }
 
-    public void insertToMemory() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public synchronized void insertToMemory(String elementName, String[] position) throws MemoryException {
+        Element root = new Element("Emotion");
+        Element ele = new Element(elementName);
+        root.appendChild(ele);
+        String x = position[0];
+        String y = position[1];
+        String z = position[2];
+        ele.addAttribute(new Attribute("X", x));
+        ele.addAttribute(new Attribute("Y", y));
+        ele.addAttribute(new Attribute("Z", z));
+
+        am.insert(new XOPData(new Document(root)));
     }
 
-    public Person getPerson() {
+    public String[] getCoordinates() {
+        String[] pos;
         if (personReady) {
             cooldownCounter = threshold;
             personReady = false;
-            return person;
+            return position;
         } else {
-            Person p = new Person(9999, 0, 0, 0);
-            return p;
+            pos = new String[3];
+            return pos;
         }
 
     }
+
 }

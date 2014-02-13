@@ -30,14 +30,14 @@ public class Controller {
     private SchemataSelector ss;
     private boolean run = false;
     private Persons persons;
-    private Person p;
+    private String[] p;
 
     public Controller() throws InitializeException, NameNotFoundException {
         gui = new SchematicGui();
         addActionListener();
         persons = new Persons();
         mc = new MemoryConnector();
-        //ss = new SchemataSelector();
+        p = new String[3];
         gui.setVisible(true);
     }
 
@@ -48,21 +48,23 @@ public class Controller {
 
     private void worker() throws MemoryException {
         if (bodyDetector) {
-            mc.startListening("/PERCEPTS");
+            mc.startListening("Emotion");
             new Thread() {
                 @Override
                 public void run() {
                     while (run) {
                         try {
-                            p = mc.getPerson();
-                            if (p.getId() != 9999) {
-                                persons.addNewPerson(p);
+                            p = mc.getCoordinates();
+                            if (p[0] != null || p[1] != null || p[2] != null){
+                                
+                                mc.insertToMemory("Schematic", p);
+
                             }
                             Thread.sleep(2000);
-                            
-                            System.out.println("Currently detected " + persons.getSize());
-                            
+
                         } catch (InterruptedException ex) {
+                            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (MemoryException ex) {
                             Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
