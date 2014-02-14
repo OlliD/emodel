@@ -38,7 +38,7 @@ public class Controller {
         addActionListener();
         persons = new Persons();
         mc = new MemoryConnector();
-        p = new String[3];
+        p = new String[4];
         gui.setVisible(true);
     }
 
@@ -55,12 +55,11 @@ public class Controller {
                 public void run() {
                     while (run) {
                         try {
-                            p = mc.getCoordinates();
-                            if (p[0] != null || p[1] != null || p[2] != null){
-                                
-                                mc.insertToMemory("Schematic", p);
-
+                            if (mc.personReady()) {
+                                p = mc.getCoordinates();
                             }
+                            mc.insertToMemory("Schematic", p); // TODO: Refactor to PERSON!! 
+
                             Thread.sleep(2000);
 
                         } catch (InterruptedException ex) {

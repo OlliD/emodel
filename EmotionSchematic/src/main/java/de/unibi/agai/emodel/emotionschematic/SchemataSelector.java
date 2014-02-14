@@ -52,9 +52,9 @@ this.mc = mc;
     private void checkForSchemata() throws InterruptedException{
         while (true){
             Thread.sleep(1000);
-            if (mc.eventTriggered()){
+            if (mc.personReady()){
                 //System.out.println("get Event " + mc.getEvent());
-                pushReaction(mc.getEvent());
+                pushReaction(mc.getCoordinates());
             }
             else
                 System.out.println("nothing to do");
@@ -62,7 +62,7 @@ this.mc = mc;
            
     }
     
-    private void pushReaction(String event){
+    private void pushReaction(String[] event){
 	for (int temp = 0; temp < eventList.getLength(); temp++) {
  
 		Node nNode = eventList.item(temp);

@@ -60,14 +60,12 @@ public class ControllerEmotionMain {
         System.out.println("Current Time " + System.currentTimeMillis());
 
 //        emotions = new HashMap<String, Float>();
-
         persons = new Persons();
         this.worker();
 
         //WASBAI 
         //EmotionTaskHandler emoHandler = new EmotionTaskHandler();
         //emoHandler.start();
-
     }
 
     private void addActionListener() {
@@ -88,29 +86,33 @@ public class ControllerEmotionMain {
                     try {
 //                        emotions = faceConnector.getEmotionMap();
                         // Frage beim Connector ob ein neues Gesicht gibt
-                        updateFaceList(faceConnector.getFace());
+                        if (faceConnector.faceListReady()) {
+                            updateFaceList(faceConnector.getFace());
+                        }
                         if (!faceList.isEmpty()) {
                             speechConnector.insertToMemory("Facial", getFirstFace().getMostLikelyEmotion(), Float.toString(getFirstFace().getReliability(getFirstFace().getMostLikelyEmotion())));
                         }
 
                         // Frage beim Connector ob ein neuer Körper im Bild ist
-                        updateBodyList(bodyConnector.getPerson());
-
+                        
+                        if (bodyConnector.personReady()) {
+                            updateBodyList(bodyConnector.getPerson());
+                        }
+                        
                         Thread.sleep(500);
 
                         //persons.printList();
                        /*
-                        if (persons.playerDetected()) {
-                            bodyConnector.insertToMemory("Position", persons.getPlayer()); // change to getOther
-                        }*/
-
+                         if (persons.playerDetected()) {
+                         bodyConnector.insertToMemory("Position", persons.getPlayer()); // change to getOther
+                         }*/
                         if (persons.otherPerson()) {
                             System.out.println("OTHER: ");
                             persons.getOther().print();
 //                           System.out.println("Distance: " + persons.distance(persons.getPlayer(), persons.getOther()));
                             bodyConnector.insertToMemory("Position", persons.getOther()); // change to getOther
                         }
-
+                        // Die Werte fuer die Reliability jeder Emotion wird in die GUI geschrieben
                         gui.setEmotionValues(getFirstFace().getCurrentId(),
                                 getFirstFace().getEmotionByName("Happy"),
                                 getFirstFace().getEmotionByName("Angry"),
@@ -118,7 +120,6 @@ public class ControllerEmotionMain {
                                 getFirstFace().getEmotionByName("Surprised"));
 
                         //System.out.println("Most Likely Emotion: " + getFirstFace().getMostLikelyEmotion() + " " + getFirstFace().getReliability(getFirstFace().getMostLikelyEmotion()));
-
                         //Looking for the emotion map and receive a map of emotions (happy, sad, surprised, angry) with value for reliability
                         //when one value is over the threshold the label will be inserted into the memory
                         cleanUpFaceList();
@@ -160,19 +161,19 @@ public class ControllerEmotionMain {
 
     // Füge das neue Gesicht in die Liste 
     /*
-    public void showFacialEmotionReliability() {
-        for (Map.Entry<String, Float> entry : emotions.entrySet()) {
-            if (entry.getValue() > threshold) {
-                //System.out.println("EmotionMain: " + entry.getKey() + " = " + entry.getValue());
-                //       speechConnector.insertToMemory("mimicry", entry.getKey(), entry.getValue().toString());
-                //     speechConnector.insertToMemory("schematic", entry.getKey(), entry.getValue().toString());
+     public void showFacialEmotionReliability() {
+     for (Map.Entry<String, Float> entry : emotions.entrySet()) {
+     if (entry.getValue() > threshold) {
+     //System.out.println("EmotionMain: " + entry.getKey() + " = " + entry.getValue());
+     //       speechConnector.insertToMemory("mimicry", entry.getKey(), entry.getValue().toString());
+     //     speechConnector.insertToMemory("schematic", entry.getKey(), entry.getValue().toString());
 
-                emotions.put(entry.getKey(), 0f);
+     emotions.put(entry.getKey(), 0f);
 
-            }
-        }
-    }
-*/
+     }
+     }
+     }
+     */
     public void updateFaceList(List<Face> detectedFaces) {
         boolean updateFaces = false;
         boolean addFace = false;
@@ -212,14 +213,13 @@ public class ControllerEmotionMain {
     }
 
     public Face getFirstFace() {
-        if (faceList.size() > 0) {
+        if (!faceList.isEmpty()) {
             Face f = faceList.get(0);
             for (int i = 0; i < faceList.size(); i++) {
                 if (f.getCurrentId() > faceList.get(i).getCurrentId()) {
                     f = faceList.get(i);
                 }
             }
-
             return f;
         } else {
             return new Face(999);

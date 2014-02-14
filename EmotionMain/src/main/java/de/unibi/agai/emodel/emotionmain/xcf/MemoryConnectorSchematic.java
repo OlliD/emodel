@@ -36,19 +36,19 @@ public class MemoryConnectorSchematic {
     private MemoryEventAdapter memoryEventAdapter;
     private volatile boolean isListening = false;
     private static final Logger LOGGER = Logger.getLogger(MemoryConnector.class.getName());
-    private static final String EMOTION_XPATH = "/eModel";
-    private boolean eventTrigger = false;
-    private String event = "";
+    //private static final String EMOTION_XPATH = "/eModel";
+    //private boolean eventTrigger = false;
+    //private String event = "";
     private boolean personReady = false;
     private Person person;
-    private int cooldownCounter;
-    private int threshold = 2;
+    //private int cooldownCounter;
+    //private int threshold = 2;
     private String xpath;
 
     public MemoryConnectorSchematic() throws InitializeException, NameNotFoundException {
         xm = XcfManager.createXcfManager();
         am = xm.createActiveMemory("ShortTerm");
-        cooldownCounter = threshold;
+        //cooldownCounter = threshold;
 
     }
 
@@ -64,9 +64,10 @@ public class MemoryConnectorSchematic {
 
                             @Override
                             synchronized public void handleEvent(MemoryEvent e) {
-                                cooldownCounter--;
-                                if (cooldownCounter == 0) {
-                                    personReady = false;
+//                                cooldownCounter--;
+//                                if (cooldownCounter == 0) {
+                                if (!personReady) {
+//                                    personReady = false;
                                     XOPData xml = e.getData();
                                     Nodes bodyNodes = xml.getDocument().query("//BODYSKELETON");
                                     double x = 0;
@@ -87,12 +88,13 @@ public class MemoryConnectorSchematic {
                                         }
                                     }
                                     person = new Person(id, (int) x, (int) y, (int) z, false);
+                                    person.setDetected(System.currentTimeMillis());
+
                                     personReady = true;
-                                    cooldownCounter = threshold;
+//                                    cooldownCounter = threshold;
 
-                                } else {
-                                    personReady = false;
-
+//                                } else {
+//                                    personReady = false;
                                 }
 
                             }
@@ -113,15 +115,16 @@ public class MemoryConnectorSchematic {
     public boolean isListening() {
         return isListening;
     }
+    /*
+     public boolean eventTriggered() {
+     return eventTrigger;
+     }
 
-    public boolean eventTriggered() {
-        return eventTrigger;
-    }
-
-    public String getEvent() {
-        eventTrigger = false;
-        return event;
-    }
+     public String getEvent() {
+     eventTrigger = false;
+     return event;
+     }
+     */
 
     public void stopListening() throws MemoryException {
         this.isListening = false;
@@ -137,20 +140,23 @@ public class MemoryConnectorSchematic {
         ele.addAttribute(new Attribute("X", String.valueOf(p.getX())));
         ele.addAttribute(new Attribute("Y", String.valueOf(p.getY())));
         ele.addAttribute(new Attribute("Z", String.valueOf(p.getZ())));
-
+        ele.addAttribute(new Attribute("Player", String.valueOf(p.getPlayer())));
         am.insert(new XOPData(new Document(root)));
     }
 
+    public boolean personReady(){
+        return personReady;
+    }
+    
     public Person getPerson() {
-        if (personReady) {
-            cooldownCounter = threshold;
-            personReady = false;
-            person.setDetected(System.currentTimeMillis());
-            return person;
-        } else {
-            Person p = new Person(9999, 0, 0, 0, false);
-            return p;
-        }
+//        if (personReady) {
+//            cooldownCounter = threshold;
+        personReady = false;
+        return person;
+//        } else {
+//            Person p = new Person(9999, 0, 0, 0, false);
+//            return p;
+//        }
 
     }
 }

@@ -37,9 +37,9 @@ public class MemoryConnector {
     private MemoryEventAdapter memoryEventAdapter;
     private volatile boolean isListening = false;
     private static final Logger LOGGER = Logger.getLogger(MemoryConnector.class.getName());
-    private static final String EMOTION_XPATH = "/eModel";
+    //private static final String EMOTION_XPATH = "/eModel";
     private boolean eventTrigger = false;
-    private String event = "";
+    //private String event = "";
     private boolean personReady = false;
     private Person person;
     private int cooldownCounter;
@@ -50,7 +50,7 @@ public class MemoryConnector {
         xm = XcfManager.createXcfManager();
         am = xm.createActiveMemory("ShortTerm");
         cooldownCounter = threshold;
-        position = new String[3];
+        position = new String[4];
 
     }
 
@@ -126,28 +126,32 @@ public class MemoryConnector {
 
                             @Override
                             synchronized public void handleEvent(MemoryEvent e) {
-                                personReady = false;
+                                if (!personReady) {
+                                    //personReady = false;
 
-                                XOPData xml = e.getData();
+                                    XOPData xml = e.getData();
 
-                                Nodes emotionNodes = xml.getDocument().query(
-                                        "//Position");
+                                    Nodes emotionNodes = xml.getDocument().query(
+                                            "//Position");
 
-                                System.out.println(emotionNodes.size());
-                                for (int i = 0; i < emotionNodes.size(); i++) {
-                                    Node node = emotionNodes.get(i);
-                                    if (node instanceof Element) {
-                                        Element partElement = (Element) node;
-                                        position[0] = partElement.getAttributeValue("X");
-                                        position[1] = partElement.getAttributeValue("Y");
-                                        position[2] = partElement.getAttributeValue("Z");
+                                    System.out.println(emotionNodes.size());
+                                    for (int i = 0; i < emotionNodes.size(); i++) {
+                                        Node node = emotionNodes.get(i);
+                                        if (node instanceof Element) {
+                                            Element partElement = (Element) node;
+                                            position[0] = partElement.getAttributeValue("X");
+                                            position[1] = partElement.getAttributeValue("Y");
+                                            position[2] = partElement.getAttributeValue("Z");
+                                            position[3] = partElement.getAttributeValue("Player");
+
+                                        }
                                     }
+                                    personReady = true;
+
+                                    System.out.println("Person at " + position[0] + " " + position[1] + " " + position[2] + position);
+
+                                    eventTrigger = true;
                                 }
-                                personReady = true;
-
-                                System.out.println("Person at " + position[0] + " " + position[1] + " " + position[2]);
-
-                                eventTrigger = true;
                             }
                         };
             }
@@ -166,14 +170,33 @@ public class MemoryConnector {
         return isListening;
     }
 
-    public boolean eventTriggered() {
-        return eventTrigger;
+    public boolean personReady(){
+        return personReady;
     }
+    
+    public String[] getCoordinates() {
+    //    String[] pos;
+    //    if (personReady) {
+    //        cooldownCounter = threshold;
+            personReady = false;
+            return position;
+    //    } else {
+    //        pos = new String[3];
+    //        return pos;
+    //    }
+    }
+    
+    
+    /*
+     public boolean eventTriggered() {
+     return eventTrigger;
+     }
 
-    public String getEvent() {
-        eventTrigger = false;
-        return event;
-    }
+     public String getEvent() {
+     eventTrigger = false;
+     return event;
+     }
+     */
 
     public void stopListening() throws MemoryException {
         this.isListening = false;
@@ -192,19 +215,6 @@ public class MemoryConnector {
         ele.addAttribute(new Attribute("Z", z));
 
         am.insert(new XOPData(new Document(root)));
-    }
-
-    public String[] getCoordinates() {
-        String[] pos;
-        if (personReady) {
-            cooldownCounter = threshold;
-            personReady = false;
-            return position;
-        } else {
-            pos = new String[3];
-            return pos;
-        }
-
     }
 
 }

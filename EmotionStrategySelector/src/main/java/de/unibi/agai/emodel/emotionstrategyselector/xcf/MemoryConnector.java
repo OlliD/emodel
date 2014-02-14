@@ -58,7 +58,7 @@ public class MemoryConnector {
         XcfTaskClientBus clientBus = new XcfTaskClientBus(am);
         tss = new TaskSubmissionService<Document>(clientBus);
 
-        position = new String[3];
+        position = new String[4];
     }
 
     public synchronized void insertToMemory() throws MemoryException {
@@ -123,7 +123,8 @@ public class MemoryConnector {
                                         position[0] = partElement.getAttributeValue("X");
                                         position[1] = partElement.getAttributeValue("Y");
                                         position[2] = partElement.getAttributeValue("Z");
-                                    }
+                                        position[3] = partElement.getAttributeValue("Player");
+                                     }
                                 }
                                 lookAtPos = true;
 
@@ -190,7 +191,7 @@ public class MemoryConnector {
             lookAtPos = false;
             return position;
         } else {
-            return new String[3];
+            return new String[4];
         }
 
     }

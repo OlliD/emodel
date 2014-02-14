@@ -237,7 +237,7 @@ public class Controller {
         
 
         System.out.println("Get UserPos " + pos[0] + " " + pos[1] + " " + pos[2]);
-        if (pos[0] != null && pos[1] != null && pos[2] != null) {
+        if (pos[0] != null && pos[1] != null && pos[2] != null && pos[3] == "false") {
             ssg.settextFieldColorLayer2(Color.green);
             lookAtPos(Integer.parseInt(pos[0]), Integer.parseInt(pos[1]), Integer.parseInt(pos[2]));
         }
