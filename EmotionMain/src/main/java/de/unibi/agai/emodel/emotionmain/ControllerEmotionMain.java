@@ -8,13 +8,16 @@ package de.unibi.agai.emodel.emotionmain;
 import de.unibi.agai.emodel.emotionmain.types.Persons;
 import de.unibi.agai.emodel.emotionmain.types.Face;
 import de.unibi.agai.emodel.emotionmain.types.Person;
-import com.sun.jmx.snmp.Timestamp;
 import de.unibi.agai.eb.BusException;
 import de.unibi.agai.emodel.emotionmain.xcf.MemoryConnector;
 import de.unibi.agai.emodel.emotionmain.xcf.MemoryConnectorSchematic;
 import de.unibi.agai.emodel.gui.EmotionMainGui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -48,6 +51,10 @@ public class ControllerEmotionMain {
     private Persons persons;
     private EmotionMainGui gui;
     private boolean run = false;
+
+    private File logFile;
+    private FileWriter fw;
+    private PrintWriter pw;
 
     public ControllerEmotionMain() throws InitializeException, NameNotFoundException, InterruptedException, MemoryException, BusException {
 
@@ -89,16 +96,16 @@ public class ControllerEmotionMain {
                         if (faceConnector.faceListReady()) {
                             updateFaceList(faceConnector.getFace());
                         }
-                        if (!faceList.isEmpty()) {
+                        if (!faceList.isEmpty()) { // TODO: 
+                            logToFile(getFirstFace().getMostLikelyEmotion() + " " + Float.toString(getFirstFace().getReliability(getFirstFace().getMostLikelyEmotion())));
                             speechConnector.insertToMemory("Facial", getFirstFace().getMostLikelyEmotion(), Float.toString(getFirstFace().getReliability(getFirstFace().getMostLikelyEmotion())));
                         }
 
                         // Frage beim Connector ob ein neuer Körper im Bild ist
-                        
                         if (bodyConnector.personReady()) {
                             updateBodyList(bodyConnector.getPerson());
                         }
-                        
+
                         Thread.sleep(500);
 
                         //persons.printList();
@@ -138,6 +145,8 @@ public class ControllerEmotionMain {
                     } catch (InterruptedException ex) {
                         Logger.getLogger(ControllerEmotionMain.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (MemoryException ex) {
+                        Logger.getLogger(ControllerEmotionMain.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IOException ex) {
                         Logger.getLogger(ControllerEmotionMain.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
@@ -305,8 +314,14 @@ public class ControllerEmotionMain {
         public void actionPerformed(ActionEvent e) {
             run = true;
             try {
+                logFile = new File("/homes/odamm/log_" + System.currentTimeMillis() + ".txt");
+                fw = new FileWriter(logFile.getPath(), true);
+                pw = new PrintWriter(fw);
+
                 worker();
             } catch (MemoryException ex) {
+                Logger.getLogger(ControllerEmotionMain.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
                 Logger.getLogger(ControllerEmotionMain.class.getName()).log(Level.SEVERE, null, ex);
             }
 
@@ -316,8 +331,18 @@ public class ControllerEmotionMain {
     class stopListener implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
-            run = false;
-            System.out.println("STOP");
+            try {
+                run = false;
+                fw.flush();
+                fw.close();
+
+                pw.flush();
+                pw.close();
+
+                System.out.println("STOP");
+            } catch (IOException ex) {
+                Logger.getLogger(ControllerEmotionMain.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
@@ -348,4 +373,9 @@ public class ControllerEmotionMain {
         }
     }
 
+    private void logToFile(String str) throws IOException {
+
+        pw.println(str);
+
+    }
 }

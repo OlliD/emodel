@@ -7,11 +7,8 @@ package de.unibi.agai.emodel.emotionschematic;
 
 import de.unibi.agai.emodel.emotionschematic.gui.SchematicGui;
 import de.unibi.agai.emodel.emotionschematic.xcf.MemoryConnector;
-import java.awt.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.sf.xcf.InitializeException;
@@ -45,6 +42,8 @@ public class Controller {
     private void addActionListener() {
         gui.addButtonStartListener(new ButtonStartListener());
         gui.addButtonStopListener(new ButtonStopListener());
+        gui.addButtonDialogContinueListener(new ButtonDialogContinueListener());
+        gui.addButtonDialogInterruptListener(new ButtonDialogInterruptListener());
     }
 
     private void worker() throws MemoryException {
@@ -100,4 +99,31 @@ public class Controller {
         }
 
     }
+
+    class ButtonDialogInterruptListener implements ActionListener {
+
+        public void actionPerformed(ActionEvent e) {
+            try {
+                mc.interuptDialog("interrupt");
+            } catch (MemoryException ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
+
+    }
+
+    class ButtonDialogContinueListener implements ActionListener {
+
+        public void actionPerformed(ActionEvent e) {
+            try {
+                mc.say("Dump basterd", String.valueOf(0.0f) , String.valueOf(0.0f), String.valueOf(0.0f));
+                //mc.interuptDialog("interruptdone");
+            } catch (MemoryException ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+    }
+
 }

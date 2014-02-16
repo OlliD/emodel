@@ -7,6 +7,7 @@ package de.unibi.agai.emodel.emotionschematic.xcf;
 
 import de.unibi.agai.emodel.emotionschematic.Person;
 import java.util.logging.Logger;
+import javax.sound.midi.SysexMessage;
 import net.sf.xcf.ActiveMemory;
 import net.sf.xcf.InitializeException;
 import net.sf.xcf.RemoteServer;
@@ -16,9 +17,9 @@ import net.sf.xcf.event.MemoryEvent;
 import net.sf.xcf.event.MemoryEventAdapter;
 import net.sf.xcf.memory.MemoryAction;
 import net.sf.xcf.memory.MemoryException;
+import net.sf.xcf.memory.MemoryExceptionType;
 import net.sf.xcf.naming.NameNotFoundException;
 import net.sf.xcf.transport.XOPData;
-import net.sf.xcf.util.SynchronizedQueue;
 import nu.xom.Attribute;
 import nu.xom.Document;
 import nu.xom.Element;
@@ -170,23 +171,22 @@ public class MemoryConnector {
         return isListening;
     }
 
-    public boolean personReady(){
+    public boolean personReady() {
         return personReady;
     }
-    
+
     public String[] getCoordinates() {
-    //    String[] pos;
-    //    if (personReady) {
-    //        cooldownCounter = threshold;
-            personReady = false;
-            return position;
-    //    } else {
-    //        pos = new String[3];
-    //        return pos;
-    //    }
+        //    String[] pos;
+        //    if (personReady) {
+        //        cooldownCounter = threshold;
+        personReady = false;
+        return position;
+        //    } else {
+        //        pos = new String[3];
+        //        return pos;
+        //    }
     }
-    
-    
+
     /*
      public boolean eventTriggered() {
      return eventTrigger;
@@ -197,10 +197,19 @@ public class MemoryConnector {
      return event;
      }
      */
-
     public void stopListening() throws MemoryException {
         this.isListening = false;
         am.removeListener(memoryEventAdapter);
+    }
+
+    public synchronized void interuptDialog(String msg) throws MemoryException {
+        Element root = new Element("Emotion");
+        root.addAttribute(new Attribute("Typ", "Strategic"));
+        Element ele = new Element("Strategic");
+        root.appendChild(ele);
+        ele.addAttribute(new Attribute("Flobi", "24"));
+        ele.addAttribute(new Attribute("Human", "24"));
+        am.insert(new XOPData(new Document(root)));
     }
 
     public synchronized void insertToMemory(String elementName, String[] position) throws MemoryException {
@@ -215,6 +224,28 @@ public class MemoryConnector {
         ele.addAttribute(new Attribute("Z", z));
 
         am.insert(new XOPData(new Document(root)));
+    }
+
+    public synchronized void say(String utterance, String p, String a, String d) throws MemoryException {
+        Element root = new Element("SAY");
+        Element xmldata = new Element("xmldata");
+        Element utt = new Element("UTTERANCE");
+        utt.appendChild(utterance);
+        xmldata.appendChild(utt);
+        Element pad = new Element("PAD");
+        pad.addAttribute(new Attribute("pleasure", p));
+        pad.addAttribute(new Attribute("arousal", a));
+        pad.addAttribute(new Attribute("dominance", d));
+        Element timestamp = new Element("TIMESTAMP");
+        Element initiated = new Element("xtt:initiated");
+        String ts = String.valueOf(System.currentTimeMillis());
+        initiated.addAttribute(new Attribute("value", ts));
+        timestamp.appendChild(initiated);
+        root.appendChild(xmldata);
+        root.appendChild(pad);
+        root.appendChild(timestamp);
+        am.insert(new XOPData(new Document(root)));
+
     }
 
 }

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite failures="0" time="0.009" errors="0" skipped="0" tests="1" name="de.unibi.agai.emodel.emotionmain.AppTest">
+<testsuite failures="0" time="0.008" errors="0" skipped="0" tests="1" name="de.unibi.agai.emodel.emotionmain.AppTest">
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
-    <property name="sun.boot.library.path" value="/vol/ai/java/versions/x64/jdk1.7.0_11/jre/lib/amd64"/>
-    <property name="java.vm.version" value="23.6-b04"/>
+    <property name="sun.boot.library.path" value="/vol/ai/java/versions/x64/jdk1.7.0_45/jre/lib/amd64"/>
+    <property name="java.vm.version" value="24.45-b08"/>
     <property name="java.vm.vendor" value="Oracle Corporation"/>
     <property name="java.vendor.url" value="http://java.oracle.com/"/>
     <property name="path.separator" value=":"/>
@@ -15,19 +15,19 @@
     <property name="sun.os.patch.level" value="unknown"/>
     <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
     <property name="user.dir" value="/homes/odamm/develop/emodel/EmotionMain"/>
-    <property name="java.runtime.version" value="1.7.0_11-b21"/>
+    <property name="java.runtime.version" value="1.7.0_45-b18"/>
     <property name="java.awt.graphicsenv" value="sun.awt.X11GraphicsEnvironment"/>
-    <property name="java.endorsed.dirs" value="/vol/ai/java/versions/x64/jdk1.7.0_11/jre/lib/endorsed"/>
+    <property name="java.endorsed.dirs" value="/vol/ai/java/versions/x64/jdk1.7.0_45/jre/lib/endorsed"/>
     <property name="os.arch" value="amd64"/>
     <property name="java.io.tmpdir" value="/tmp"/>
     <property name="line.separator" value="
 "/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="os.name" value="Linux"/>
-    <property name="maven.ext.class.path" value="/vol/ai/share/netbeans-current/java/maven-nblib/netbeans-eventspy.jar"/>
-    <property name="classworlds.conf" value="/vol/ai/share/netbeans-current/java/maven/bin/m2.conf"/>
+    <property name="maven.ext.class.path" value="/vol/ai/share/netbeans/current/java/maven-nblib/netbeans-eventspy.jar"/>
+    <property name="classworlds.conf" value="/vol/ai/share/netbeans/current/java/maven/bin/m2.conf"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
-    <property name="java.library.path" value="/vol/ai/java/versions/x64/jdk-latest/jre/lib/amd64:/vol/ai/java/versions/x64/jdk-latest/jre/lib/i386:/vol/airobots/releases/flobiSFB:/vol/airobots/releases/flobiSFB/lib:/vol/airobots/releases/flobiSFB/usr/lib:usr/lib:/usr/java/packages/lib/amd64:/usr/lib64:/lib64:/lib:/usr/lib"/>
+    <property name="java.library.path" value="/vol/ai/java/versions/x64/jdk-latest/jre/lib/amd64:/vol/ai/java/versions/x64/jdk-latest/jre/lib/i386:/vol/airobots/releases/flobiSFB:/vol/airobots/releases/flobiSFB/lib:/vol/airobots/releases/flobiSFB/usr/lib:/usr/java/packages/lib/amd64:/usr/lib64:/lib64:/lib:/usr/lib"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="java.class.version" value="51.0"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
@@ -38,21 +38,21 @@
     <property name="file.encoding" value="UTF-8"/>
     <property name="java.specification.version" value="1.7"/>
     <property name="user.name" value="odamm"/>
-    <property name="java.class.path" value="/vol/ai/share/netbeans-current/java/maven/boot/plexus-classworlds-2.4.jar"/>
+    <property name="java.class.path" value="/vol/ai/share/netbeans/current/java/maven/boot/plexus-classworlds-2.4.jar"/>
     <property name="java.vm.specification.version" value="1.7"/>
     <property name="sun.arch.data.model" value="64"/>
-    <property name="java.home" value="/vol/ai/java/versions/x64/jdk1.7.0_11/jre"/>
-    <property name="sun.java.command" value="org.codehaus.plexus.classworlds.launcher.Launcher -Dmaven.ext.class.path=/vol/ai/share/netbeans-current/java/maven-nblib/netbeans-eventspy.jar clean install"/>
+    <property name="java.home" value="/vol/ai/java/versions/x64/jdk1.7.0_45/jre"/>
+    <property name="sun.java.command" value="org.codehaus.plexus.classworlds.launcher.Launcher -Dmaven.ext.class.path=/vol/ai/share/netbeans/current/java/maven-nblib/netbeans-eventspy.jar clean install"/>
     <property name="java.specification.vendor" value="Oracle Corporation"/>
     <property name="user.language" value="en"/>
     <property name="awt.toolkit" value="sun.awt.X11.XToolkit"/>
     <property name="java.vm.info" value="mixed mode"/>
-    <property name="java.version" value="1.7.0_11"/>
-    <property name="java.ext.dirs" value="/vol/ai/java/versions/x64/jdk1.7.0_11/jre/lib/ext:/usr/java/packages/lib/ext"/>
+    <property name="java.version" value="1.7.0_45"/>
+    <property name="java.ext.dirs" value="/vol/ai/java/versions/x64/jdk1.7.0_45/jre/lib/ext:/usr/java/packages/lib/ext"/>
     <property name="securerandom.source" value="file:/dev/./urandom"/>
-    <property name="sun.boot.class.path" value="/vol/ai/java/versions/x64/jdk1.7.0_11/jre/lib/resources.jar:/vol/ai/java/versions/x64/jdk1.7.0_11/jre/lib/rt.jar:/vol/ai/java/versions/x64/jdk1.7.0_11/jre/lib/sunrsasign.jar:/vol/ai/java/versions/x64/jdk1.7.0_11/jre/lib/jsse.jar:/vol/ai/java/versions/x64/jdk1.7.0_11/jre/lib/jce.jar:/vol/ai/java/versions/x64/jdk1.7.0_11/jre/lib/charsets.jar:/vol/ai/java/versions/x64/jdk1.7.0_11/jre/lib/jfr.jar:/vol/ai/java/versions/x64/jdk1.7.0_11/jre/classes"/>
+    <property name="sun.boot.class.path" value="/vol/ai/java/versions/x64/jdk1.7.0_45/jre/lib/resources.jar:/vol/ai/java/versions/x64/jdk1.7.0_45/jre/lib/rt.jar:/vol/ai/java/versions/x64/jdk1.7.0_45/jre/lib/sunrsasign.jar:/vol/ai/java/versions/x64/jdk1.7.0_45/jre/lib/jsse.jar:/vol/ai/java/versions/x64/jdk1.7.0_45/jre/lib/jce.jar:/vol/ai/java/versions/x64/jdk1.7.0_45/jre/lib/charsets.jar:/vol/ai/java/versions/x64/jdk1.7.0_45/jre/lib/jfr.jar:/vol/ai/java/versions/x64/jdk1.7.0_45/jre/classes"/>
     <property name="java.vendor" value="Oracle Corporation"/>
-    <property name="maven.home" value="/vol/ai/share/netbeans-current/java/maven"/>
+    <property name="maven.home" value="/vol/ai/share/netbeans/current/java/maven"/>
     <property name="file.separator" value="/"/>
     <property name="java.vendor.url.bug" value="http://bugreport.sun.com/bugreport/"/>
     <property name="sun.cpu.endian" value="little"/>

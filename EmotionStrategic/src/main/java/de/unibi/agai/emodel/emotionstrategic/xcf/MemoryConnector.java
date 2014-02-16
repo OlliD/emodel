@@ -3,9 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package de.unibi.agai.emodel.emotionstrategic.xcf;
-
 
 import java.util.logging.Logger;
 import net.sf.xcf.ActiveMemory;
@@ -25,88 +23,84 @@ import nu.xom.Element;
 import nu.xom.Node;
 import nu.xom.Nodes;
 
-
-
 /**
  *
  * @author odamm
  */
 public class MemoryConnector {
 
-        public RemoteServer rs = null;
-        public XcfManager xm;
-       	private final ActiveMemory am;
-	private MemoryEventAdapter memoryEventAdapter;
-	private volatile boolean isListening = false;
-        private static final Logger LOGGER = Logger.getLogger(MemoryConnector.class.getName());
-	private static final String EMOTION_XPATH = "/eModel";
-        
-        public MemoryConnector() throws InitializeException, NameNotFoundException {
-            xm = XcfManager.createXcfManager();
-            am = xm.createActiveMemory("ShortTerm");
+    public RemoteServer rs = null;
+    public XcfManager xm;
+    private final ActiveMemory am;
+    private MemoryEventAdapter memoryEventAdapter;
+    private volatile boolean isListening = false;
+    private static final Logger LOGGER = Logger.getLogger(MemoryConnector.class.getName());
+    private static final String EMOTION_XPATH = "/eModel";
 
-	} 
+    public MemoryConnector() throws InitializeException, NameNotFoundException {
+        xm = XcfManager.createXcfManager();
+        am = xm.createActiveMemory("ShortTerm");
 
+    }
 
-        public synchronized void insertToMemory(String elementName, String attributeKey, String attributeValue) throws MemoryException{
-            Element root = new Element("eModel");
-            root.addAttribute(new Attribute("EModel", "MyMimicry"));
-            am.insert(new XOPData(new Document(root)));
-            System.out.println("inserted in " + am.getName());
+    public synchronized void insertToMemory(String elementName, String attributeKey, String attributeValue) throws MemoryException {
+        Element root = new Element("eModel");
+        root.addAttribute(new Attribute("EModel", "MyMimicry"));
+        am.insert(new XOPData(new Document(root)));
+        System.out.println("inserted in " + am.getName());
 
-        }
-        
-        
-        public synchronized void startListening( ) throws MemoryException {
-		
-            if (!isListening) {
-                    System.out.println("Now Listening to " + am.getName());
-                    if (memoryEventAdapter == null){
-				MemoryAction action = MemoryAction.INSERT;
+    }
 
-				memoryEventAdapter = new MemoryEventAdapter(action, new XPath(
-						"/Strategic")) {
+    public synchronized void startListening() throws MemoryException {
 
-					@Override
-					synchronized public void handleEvent(MemoryEvent e) {
-                                                XOPData xml = e.getData();
+        if (!isListening) {
+            System.out.println("Now Listening to " + am.getName());
+            if (memoryEventAdapter == null) {
+                MemoryAction action = MemoryAction.INSERT;
 
-						Nodes emotionNodes = xml.getDocument().query(
-								"/*");
+                memoryEventAdapter = new MemoryEventAdapter(action, new XPath(
+                        "//Emotion[@Typ=\"Strategic\"]")) {
 
-						// Get the phoneme chain text
-						for (int i = 0; i < emotionNodes.size(); i++) {
+                            @Override
+                            synchronized public void handleEvent(MemoryEvent e) {
+                                XOPData xml = e.getData();
+                                Nodes emotionNodes = xml.getDocument().query(
+                                        "/Strategic");
 
-							Node node = emotionNodes.get(i);
-							if (node instanceof Element) {
-								Element partElement = (Element) node;
-                                                                System.out.println(partElement.getAttributeValue("EModel"));
-                                                        } 
-						}
+                                // Get the phoneme chain text
+                                for (int i = 0; i < emotionNodes.size(); i++) {
 
-					}
-				};
-			}
+                                    Node node = emotionNodes.get(i);
+                                    System.out.println(node.toXML());
+                                    if (node instanceof Element) {
+                                        
+                                        Element partElement = (Element) node;
+                                        System.out.println(partElement.toXML());
+                                        System.out.println(partElement.getAttributeValue("Flobi"));
+                                        System.out.println(partElement.getAttributeValue("Human"));
 
-			am.addListener(memoryEventAdapter);
-			isListening = true;
-		}
-	}
-        
-        public ActiveMemory getMemory (){
-            return am;
-        }
-        
-        public boolean isListening() {
-		return isListening;
-	}
+                                    }
+                                }
 
-    public void stopListening() throws MemoryException {
-            this.isListening = false;
-            am.removeListener(memoryEventAdapter);
+                            }
+                        };
+            }
+
+            am.addListener(memoryEventAdapter);
+            isListening = true;
         }
     }
 
+    public ActiveMemory getMemory() {
+        return am;
+    }
 
-    
+    public boolean isListening() {
+        return isListening;
+    }
 
+    public void stopListening() throws MemoryException {
+        this.isListening = false;
+        am.removeListener(memoryEventAdapter);
+    }
+}

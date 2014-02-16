@@ -133,6 +133,20 @@ public class MemoryConnectorSchematic {
         am.removeListener(memoryEventAdapter);
     }
 
+    
+    public synchronized void say (String utterance, String p, String a, String d) throws MemoryException {
+        Element root = new Element("SAY");
+        Element utt = new Element("Utterance");
+        utt.appendChild(utterance);
+        Element pad = new Element("PAD");
+        pad.addAttribute(new Attribute("p", p));
+        pad.addAttribute(new Attribute("a", a));
+        pad.addAttribute(new Attribute("d", d));
+        root.appendChild(utt);
+        root.appendChild(pad);
+        am.insert(new XOPData(new Document(root)));
+        
+    }
     public synchronized void insertToMemory(String elementName, Person p) throws MemoryException {
         Element root = new Element("Emotion");
         Element ele = new Element(elementName); //Position
