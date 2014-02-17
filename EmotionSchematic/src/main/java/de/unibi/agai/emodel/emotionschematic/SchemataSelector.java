@@ -12,8 +12,6 @@ import java.io.IOException;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import net.sf.xcf.memory.MemoryException;
-import net.sf.xcf.xml.DocumentBuilder;
-import nu.xom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;

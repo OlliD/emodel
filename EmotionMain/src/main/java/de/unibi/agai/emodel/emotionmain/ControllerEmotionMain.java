@@ -97,8 +97,11 @@ public class ControllerEmotionMain {
                             updateFaceList(faceConnector.getFace());
                         }
                         if (!faceList.isEmpty()) { // TODO: 
-                            logToFile(getFirstFace().getMostLikelyEmotion() + " " + Float.toString(getFirstFace().getReliability(getFirstFace().getMostLikelyEmotion())));
-                            speechConnector.insertToMemory("Facial", getFirstFace().getMostLikelyEmotion(), Float.toString(getFirstFace().getReliability(getFirstFace().getMostLikelyEmotion())));
+                            if (getFirstFace().getReliability(getFirstFace().getMostLikelyEmotion()) > 20f) {
+                                logToFile(getFirstFace().getMostLikelyEmotion() + " " + Float.toString(getFirstFace().getReliability(getFirstFace().getMostLikelyEmotion())));
+                                speechConnector.insertToMemory("Facial", getFirstFace().getMostLikelyEmotion(),
+                                        Float.toString(getFirstFace().getReliability(getFirstFace().getMostLikelyEmotion())));
+                            }
                         }
 
                         // Frage beim Connector ob ein neuer Körper im Bild ist
@@ -109,15 +112,16 @@ public class ControllerEmotionMain {
                         Thread.sleep(500);
 
                         //persons.printList();
-                       /*
-                         if (persons.playerDetected()) {
-                         bodyConnector.insertToMemory("Position", persons.getPlayer()); // change to getOther
-                         }*/
+                        if (persons.playerDetected()) {
+                            bodyConnector.insertToMemory("Position", persons.getPlayer()); // change to getOther
+                        }
                         if (persons.otherPerson()) {
                             System.out.println("OTHER: ");
                             persons.getOther().print();
 //                           System.out.println("Distance: " + persons.distance(persons.getPlayer(), persons.getOther()));
-                            bodyConnector.insertToMemory("Position", persons.getOther()); // change to getOther
+                            if (persons.getOther().getX() != 0 && persons.getOther().getY() != 0 && persons.getOther().getZ() != 0) {
+                                bodyConnector.insertToMemory("Position", persons.getOther()); // change to getOther
+                            }
                         }
                         // Die Werte fuer die Reliability jeder Emotion wird in die GUI geschrieben
                         gui.setEmotionValues(getFirstFace().getCurrentId(),
@@ -268,7 +272,9 @@ public class ControllerEmotionMain {
         for (int i = 0; i < persons.getSize(); i++) {
             if (((persons.get(i).getDetected()) + 5000) < System.currentTimeMillis()) {
                 persons.printList();
-                persons.remove(i);
+                if (!persons.get(i).getPlayer()) {
+                    persons.remove(i);
+                }
                 persons.printList();
             }
         }

@@ -9,6 +9,8 @@ import de.unibi.agai.emodel.emotionschematic.gui.SchematicGui;
 import de.unibi.agai.emodel.emotionschematic.xcf.MemoryConnector;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.sf.xcf.InitializeException;
@@ -29,6 +31,8 @@ public class Controller {
     private Persons persons;
     private Person old;
     private String[] p;
+    private int interruptCounter = 0;
+    private Map<Integer, String> schematic_map;
 
     public Controller() throws InitializeException, NameNotFoundException {
         gui = new SchematicGui();
@@ -36,6 +40,12 @@ public class Controller {
         persons = new Persons();
         mc = new MemoryConnector();
         p = new String[4];
+
+        schematic_map = new HashMap<Integer, String>();
+        schematic_map.put(1, "Hallo, wir spielen gerade eine Partie wer bin ich");
+        schematic_map.put(2, "Bitte lass uns weiter spielen");
+        schematic_map.put(3, "Jetzt geh bitte und lass uns weiter spielen");
+
         gui.setVisible(true);
     }
 
@@ -56,9 +66,17 @@ public class Controller {
                         try {
                             if (mc.personReady()) {
                                 p = mc.getCoordinates();
-                            }
-                            mc.insertToMemory("Schematic", p); // TODO: Refactor to PERSON!! 
+                                if (p[3].equals("true")) {
+                                    gui.setPlayer(p[0], p[1], p[2], p[3]);
+                                } else if (p[3].equals("false")) {
+                                    gui.setOther(p[0], p[1], p[2], p[3]);
+                                }
 
+                                System.out.println(p[0] + " " + p[1] + " " + p[2] + " " + p[3]);
+                            }
+                            if (p[0] != null && p[1] != null && p[2] != null && p[3] != null) {
+                                mc.insertToMemory("Schematic", p); // TODO: Refactor to PERSON!! 
+                            }
                             Thread.sleep(2000);
 
                         } catch (InterruptedException ex) {
@@ -117,8 +135,8 @@ public class Controller {
 
         public void actionPerformed(ActionEvent e) {
             try {
-                mc.say("Dump basterd", String.valueOf(0.0f) , String.valueOf(0.0f), String.valueOf(0.0f));
-                //mc.interuptDialog("interruptdone");
+                //mc.say("Bitte lass uns weiter spielen", String.valueOf(0.0f) , String.valueOf(1.0f), String.valueOf(0.4f));
+                mc.interuptDialog("interruptdone");
             } catch (MemoryException ex) {
                 Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
             }

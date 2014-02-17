@@ -6,7 +6,6 @@
 
 package de.unibi.agai.emodel.emotionmain.xcf;
 
-import de.unibi.agai.emodel.emotionmain.types.Face;
 import java.util.logging.Logger;
 import net.sf.xcf.ActiveMemory;
 import net.sf.xcf.InitializeException;
@@ -19,9 +18,6 @@ import net.sf.xcf.memory.MemoryAction;
 import net.sf.xcf.memory.MemoryException;
 import net.sf.xcf.naming.NameNotFoundException;
 import net.sf.xcf.transport.XOPData;
-import net.sf.xcf.util.SynchronizedQueue;
-import nu.xom.Attribute;
-import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Node;
 import nu.xom.Nodes;

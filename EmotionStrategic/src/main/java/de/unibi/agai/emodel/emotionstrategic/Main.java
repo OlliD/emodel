@@ -19,9 +19,8 @@ public class Main
 {
     public static void main( String[] args ) throws InitializeException, NameNotFoundException
     {
-        MemoryConnector mc = new MemoryConnector();
-        Gui gui = new Gui(mc);
-        gui.setVisible(true);
+        ControllerStrategic c = new ControllerStrategic();
+
     }
     
     

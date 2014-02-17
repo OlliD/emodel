@@ -42,7 +42,6 @@ public class Persons {
         boolean add = false;
         if (persons.size() > 0) {
             for (int i = 0; i < persons.size(); i++) {
-                System.out.println("Checking ID");
                 if (persons.get(i).getId() != person.getId()) {
                     add = true;
                 } else if (persons.get(i).getId() == person.getId()) {
@@ -73,8 +72,9 @@ public class Persons {
             firstPerson = person;
             player = person.getId();
             playerDetected = true;
-            
+
             System.out.println("first Person added");
+            person.print();
         }
 
     }

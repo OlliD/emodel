@@ -7,10 +7,6 @@ package de.unibi.agai.emodel.emotionschematic.gui;
 
 import de.unibi.agai.emodel.emotionschematic.xcf.MemoryConnector;
 import java.awt.event.ActionListener;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JCheckBox;
-import net.sf.xcf.memory.MemoryException;
 
 /**
  *
@@ -25,6 +21,7 @@ public class SchematicGui extends javax.swing.JFrame {
      */
     public SchematicGui() {
         initComponents();
+        this.setTitle("Schematic GUI");
     }
 
     /**
@@ -368,18 +365,18 @@ public class SchematicGui extends javax.swing.JFrame {
         buttonDialogContinue.addActionListener(l);
     }
     
-    public void setPlayer(int x, int y, int z, boolean player) {
-        textFieldPlayerX.setText(String.valueOf(x));
-        textFieldPlayerY.setText(String.valueOf(y));
-        textFieldPlayerZ.setText(String.valueOf(z));
-        textFieldPlayer.setText(String.valueOf(player));
+    public void setPlayer(String x, String y, String z, String player) {
+        textFieldPlayerX.setText((x));
+        textFieldPlayerY.setText((y));
+        textFieldPlayerZ.setText((z));
+        textFieldPlayer.setText((player));
     }
 
-    public void setOther(int x, int y, int z, boolean player) {
-        textFieldOtherX.setText(String.valueOf(x));
-        textFieldOtherY.setText(String.valueOf(y));
-        textFieldOtherZ.setText(String.valueOf(z));
-        textFieldOther.setText(String.valueOf(player));
+    public void setOther(String x, String y, String z, String player) {
+        textFieldOtherX.setText((x));
+        textFieldOtherY.setText((y));
+        textFieldOtherZ.setText((z));
+        textFieldOther.setText((player));
     }
 
     public void addButtonStartListener(ActionListener l) {

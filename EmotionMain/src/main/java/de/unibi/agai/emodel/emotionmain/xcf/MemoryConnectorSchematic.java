@@ -78,6 +78,7 @@ public class MemoryConnectorSchematic {
                                         Node bodyNode = bodyNodes.get(i);
                                         Element bodyElement = (Element) bodyNode;
                                         id = Integer.parseInt(bodyElement.getAttributeValue("id"));
+                                        System.out.println("ID is: " + id);
                                         Nodes comNodes = bodyNode.query("//COM");
                                         for (int j = 0; j < comNodes.size(); j++) {
                                             Node node = comNodes.get(j);
@@ -149,6 +150,7 @@ public class MemoryConnectorSchematic {
     }
     public synchronized void insertToMemory(String elementName, Person p) throws MemoryException {
         Element root = new Element("Emotion");
+        root.addAttribute(new Attribute("Component","EmotionMain"));
         Element ele = new Element(elementName); //Position
         root.appendChild(ele);
         ele.addAttribute(new Attribute("X", String.valueOf(p.getX())));

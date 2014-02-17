@@ -110,6 +110,9 @@ public class ComputeMimicry {
     private void pushReaction(String[] event) throws MemoryException {
         if (Double.parseDouble(event[1]) > reliability) {
             System.out.println("sending Emotion to Mimic");
+            if (event[0].equals("Happy")){
+                System.out.println("more happy");
+            }
             mc.insertToMemory("Mimicry", event[0]);
         }
     }

@@ -172,6 +172,7 @@ public class MemoryConnector {
     public synchronized void insertToMemory(String elementName, String attributeKey, String attributeValue) throws MemoryException {
         Element root = new Element("Emotion");
         Element ele = new Element(elementName);
+        root.addAttribute(new Attribute("Component", "EmotionMain"));
         root.appendChild(ele);
         
         ele.addAttribute(new Attribute("Emotion", attributeKey));

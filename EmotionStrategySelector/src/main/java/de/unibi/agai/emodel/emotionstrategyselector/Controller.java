@@ -60,7 +60,6 @@ public class Controller {
     private long runtime;
     private EmotionTaskHandler eth;
     private EmotionServer es;
-    //private int cooldown;
     private HCGui eg;
     private float emoImpuls = 0f;
 
@@ -147,7 +146,7 @@ public class Controller {
 
                                 if (runtime < layer3Time) {
                                     if (layer3_cooldown == 0) {
-                                        schematic();
+                                        strategic();
                                         layer3_cooldown = 6;
                                     } else if (layer3_cooldown != 0) {
                                         layer3_cooldown--;
@@ -174,14 +173,16 @@ public class Controller {
                                 Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
                             } catch (TimeoutException ex) {
                                 Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (MemoryException ex) {
+                                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
                             }
 
                         }
                         break;
                     case ONOFF:
+                        System.err.println("Running OnOff");
                         while (run) {
                             try {
-                                System.err.println("Running OnOff");
                                 //cooldown++;
 
                                 if (layer1Active) {
@@ -204,7 +205,7 @@ public class Controller {
 
                                 if (layer3Active) {
                                     if (layer1_cooldown == 0) {
-                                        schematic();
+                                        strategic();
                                         layer1_cooldown = 6;
                                     } else if (layer1_cooldown != 0) {
                                         layer1_cooldown--;
@@ -212,7 +213,7 @@ public class Controller {
 
                                     // PUT HERE STRATEGEC FUNCTION
                                 }
-                                Thread.sleep(1000);
+                                Thread.sleep(200);
 
                             } catch (InterruptedException ex) {
                                 Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
@@ -221,6 +222,8 @@ public class Controller {
                             } catch (ExecutionException ex) {
                                 Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
                             } catch (TimeoutException ex) {
+                                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (MemoryException ex) {
                                 Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
                             }
 
@@ -234,12 +237,12 @@ public class Controller {
 
     private void schematic() throws IOException, ExecutionException, InterruptedException, TimeoutException {
         String[] pos = mc.lookAtPosition();
-        
 
         System.out.println("Get UserPos " + pos[0] + " " + pos[1] + " " + pos[2]);
         if (pos[0] != null && pos[1] != null && pos[2] != null && pos[3] == "false") {
             ssg.settextFieldColorLayer2(Color.green);
             lookAtPos(Integer.parseInt(pos[0]), Integer.parseInt(pos[1]), Integer.parseInt(pos[2]));
+
         }
         ssg.settextFieldColorLayer2(Color.red);
 
@@ -250,9 +253,8 @@ public class Controller {
         if (emotion != "none" && emotion != "") {
             ssg.setLayer1Text(emotion);
             ssg.settextFieldColorLayer1(Color.green);
-            System.out.println("MIMICRY" + emotion);
             sendEmotion(emotion);
-            if (emotion.equalsIgnoreCase("happy")) {
+            if (emotion.equalsIgnoreCase("Happy")) {
                 mc.publishEmotionUpdate(0.3f);
             }
             Thread.sleep(2000);
@@ -264,6 +266,27 @@ public class Controller {
             sendEmotion("neutral");
         }
 
+    }
+
+    private void strategic() throws MemoryException, InterruptedException {
+        if (mc.strategic()) {
+            String[] string = mc.getStrategicReaction();
+            if (string[0].equals("OtherQuestion")) {
+                System.out.println("Strategic goes on with: " + string[0] + " and has to say " + string[1]);
+                mc.say(string[1], "Sad");
+                Thread.sleep(1000);
+                mc.continueDialog(string[0]);
+            } else if (string[0].equals("TriggerEmotion")) {
+                System.out.println("Strategic goes on with: " + string[0] + " and has to say " + string[1]);
+                mc.say(string[1], "Neutral");
+                Thread.sleep(1000);
+                mc.continueDialog(string[0]);
+            } else {
+                System.out.println("Default");
+                mc.continueDialog(string[0]);
+            }
+
+        }
     }
 
     private void sendEmotion(String emotion) throws IOException, ExecutionException, TimeoutException, InterruptedException {
