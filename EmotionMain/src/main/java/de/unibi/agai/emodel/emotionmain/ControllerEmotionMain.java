@@ -45,13 +45,14 @@ public class ControllerEmotionMain {
 
     private MemoryConnectorSchematic bodyConnector;
     //private Map<String, Float> emotions;
-    private Float threshold = 50f;
+    //private Float threshold = 50f;
     private List<Face> faceList;
     private Person p;
     private Persons persons;
     private EmotionMainGui gui;
     private boolean run = false;
-
+    
+    //Writing detected faces to disk
     private File logFile;
     private FileWriter fw;
     private PrintWriter pw;
@@ -96,6 +97,7 @@ public class ControllerEmotionMain {
                         if (faceConnector.faceListReady()) {
                             updateFaceList(faceConnector.getFace());
                         }
+                        // Nur etwas tun wenn die Reliabilty des detektierten Gesichtes bei min. 20 liegt
                         if (!faceList.isEmpty()) { // TODO: 
                             if (getFirstFace().getReliability(getFirstFace().getMostLikelyEmotion()) > 20f) {
                                 logToFile(getFirstFace().getMostLikelyEmotion() + " " + Float.toString(getFirstFace().getReliability(getFirstFace().getMostLikelyEmotion())));
@@ -263,7 +265,7 @@ public class ControllerEmotionMain {
     }
 
     public void cleanUpBodyList() {
-        if (persons.getPlayer() != null) {
+        if (persons.playerDetected()) {
             gui.setPositionX(persons.getPlayer().getX());
             gui.setPositionY(persons.getPlayer().getY());
             gui.setPositionZ(persons.getPlayer().getZ());

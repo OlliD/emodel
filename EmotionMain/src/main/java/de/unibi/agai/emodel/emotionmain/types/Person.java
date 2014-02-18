@@ -86,11 +86,11 @@ public class Person {
     public void print() {
         System.out.println(" ");
         System.out.println("#######");
+        System.out.println("Player: " + player);
         System.out.println("ID: " + id);
         System.out.println("X: " + x);
         System.out.println("Y: " + y);
         System.out.println("Z: " + z);
-        System.out.println("Player: " + player);
         System.out.println("#######");
         System.out.println(" ");
 

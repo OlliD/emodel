@@ -15,7 +15,7 @@ public class Persons {
 
     private ArrayList<Person> persons;
 
-    private int player;
+    private int playerID;
     private Person other;
     private boolean secondPersonDetected = false;
     private boolean playerDetected = false;
@@ -25,6 +25,7 @@ public class Persons {
         persons = new ArrayList<Person>();
 
     }
+    // Bestimme die Entfernung zwischen zwei Personen
 
     public double distance(Person p, Person p2) {
         long dx = p.getX() - p2.getX();
@@ -69,24 +70,43 @@ public class Persons {
         if (persons.isEmpty()) {
             person.setPlayer(true);
             persons.add(person);
+            // Die erste Person die detektiert wird ist der Spieler
             firstPerson = person;
-            player = person.getId();
+            playerID = person.getId();
             playerDetected = true;
-
-            System.out.println("first Person added");
             person.print();
         }
 
     }
 
-    public Person getPlayer() {
-        //System.out.println("Getting Player");
-        for (int i = 0; i < persons.size(); i++) {
-            if (persons.get(i).getPlayer()) {
-                return persons.get(i);
-            }
+    public boolean isPlayer(Person p){
+        if (p.getId() == firstPerson.getId()){
+            return true;
         }
-        return new Person(9999, 0, 0, 0, false);
+        else return false;
+    }
+    
+    public boolean isPlayerDetected() {
+        return playerDetected;
+    }
+
+    public void setPlayerDetected(boolean playerDetected) {
+        this.playerDetected = playerDetected;
+    }
+
+    /*public Person getPlayer() {
+     //System.out.println("Getting Player");
+     for (int i = 0; i < persons.size(); i++) {
+     if (persons.get(i).getPlayer()) {
+     return persons.get(i);
+     }
+     }
+     return new Person(9999, 0, 0, 0, false);
+     }
+     */
+    
+    public Person getPlayer() {
+        return firstPerson;
     }
 
     public Person getFirstPerson() {
