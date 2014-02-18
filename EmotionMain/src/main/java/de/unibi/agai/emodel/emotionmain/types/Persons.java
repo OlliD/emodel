@@ -39,7 +39,7 @@ public class Persons {
      Person schon vorhanden ist (ID / Distance) und aktualisere sie. Sonst füge
      sie hinzu
      */
-    public void addNewPerson(Person person) {
+    public void addPerson(Person person) {
         boolean add = false;
         if (persons.size() > 0) {
             for (int i = 0; i < persons.size(); i++) {
@@ -64,6 +64,9 @@ public class Persons {
                     other = person;
                     secondPersonDetected = true;
                 }
+                if (isPlayer(person)) {
+                    updatePlayer(person);
+                }
                 add = false;
             }
         }
@@ -79,15 +82,20 @@ public class Persons {
 
     }
 
-    public boolean isPlayer(Person p){
-        if (p.getId() == firstPerson.getId()){
-            return true;
+    public void updatePlayer(Person p) {
+        if (p.getId() == firstPerson.getId()) {
+            firstPerson.setX(p.getX());
+            firstPerson.setY(p.getY());
+            firstPerson.setZ(p.getZ());
         }
-        else return false;
     }
-    
-    public boolean isPlayerDetected() {
-        return playerDetected;
+
+    public boolean isPlayer(Person p) {
+        if (p.getId() == firstPerson.getId()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public void setPlayerDetected(boolean playerDetected) {
@@ -104,12 +112,7 @@ public class Persons {
      return new Person(9999, 0, 0, 0, false);
      }
      */
-    
     public Person getPlayer() {
-        return firstPerson;
-    }
-
-    public Person getFirstPerson() {
         return firstPerson;
     }
 

@@ -35,12 +35,11 @@ import net.sf.xcf.naming.NameNotFoundException;
 public class ControllerEmotionMain {
 
     private XcfManager xm;
-    private ActiveMemory am;
+    //private ActiveMemory am;
     private ActiveMemory memory_ShortTerm;
     private ActiveMemory memory_Vision;
 
     private MemoryConnector speechConnector;
-    private MemoryConnector contextConnector;
     private MemoryConnector faceConnector;
 
     private MemoryConnectorSchematic bodyConnector;
@@ -108,7 +107,7 @@ public class ControllerEmotionMain {
 
                         // Frage beim Connector ob ein neuer Körper im Bild ist
                         if (bodyConnector.personReady()) {
-                            updateBodyList(bodyConnector.getPerson());
+                            persons.addPerson(bodyConnector.getPerson());
                         }
 
                         Thread.sleep(500);
@@ -248,20 +247,6 @@ public class ControllerEmotionMain {
             }
         }
         //System.out.println("After CleanUp there are " + faceList.size() + " in List");
-    }
-
-    public void pushFacialEmotion() {
-
-    }
-
-    public void pushContextEvent() {
-
-    }
-
-    public void updateBodyList(Person p) {
-        if (p.getId() != 9999) {
-            persons.addNewPerson(p);
-        }
     }
 
     public void cleanUpBodyList() {
